@@ -23,7 +23,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-    const pathName = usePathname()
+  const pathName = usePathname()
 
   // Helper function to determine if the current link is active
   const getLinkClass = (href: string) => {
@@ -52,8 +52,8 @@ export default function RootLayout({
                   <Image
                     src="/assets/images/DTU_Logo_White.png"
                     alt="DTU Logo"
-                    width={48}
-                    height={48}
+                    width={35}
+                    height={35}
                   />
                 </div>
                 <div className="ml-6">
@@ -93,6 +93,27 @@ export default function RootLayout({
 
         {/* Main Content */}
         <main>{children}</main>
+
+        {/* Footer */}
+        <footer className="bg-red-700 text-center mt-auto">
+          <div className="max-w-screen-xl px-4 py-4 mx-auto space-y-8 overflow-hidden sm:px-6 lg:px-8 mt-10">
+            <nav className="flex flex-wrap justify-center -mx-5 -my-2">
+              <div className="px-5 py-2">
+                <a href="#" className="text-base leading-6 text-white hover:underline">
+                  <strong>Om</strong>
+                </a>
+              </div>
+              <div className="px-5 py-2">
+                <a href={contactPath} className="text-base leading-6 text-white hover:underline">
+                  <strong>Om</strong>
+                </a>
+              </div>
+            </nav>
+            <p className="mt-8 text-base leading-6 text-center text-white">
+              <strong>Sidst opdateret: Mar 2025 <br /> Lavet af: Nikolaj & Frederik</strong>
+            </p>
+          </div>
+        </footer>
       </body>
     </html>
   );
