@@ -1,32 +1,49 @@
-import Head from 'next/head';
+'use client';
+// src/app/courses/page.tsx
+import { useEffect, useState } from 'react';
 
+interface Course {
+  course_id: string;
+  course_name: string;
+  credits: number;
+  category: string;
+}
 
 export default function Courses() {
-    return (
-        <>
-            <Head>
-                <meta charSet="UTF-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>DTU Software Technology</title>
-                <link rel="icon" type="image/x-icon" href="/assets/icons/favicon-32x32.png" />
-                <script src="https://cdn.tailwindcss.com" />
-            </Head>
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-            <div className="flex flex-col min-h-screen">
+  useEffect(() => {
+    // Fetch data from the API route you created
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch('/api/courses');
+        const data: Course[] = await response.json();
+        setCourses(data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                {/* Main Body Content */}
-                <div className="container mx-auto">
-                    <div className="flex justify-center items-center h-screen">
-                        <div className="text-center">
-                            <h1 className="text-4xl font-bold">Welcome to DTU Software Technology</h1>
-                            <p className="text-lg">
-                                This is a simple website to show how to deploy a website using GitHub Pages
-                            </p>
-                        </div>
-                    </div>
-                </div>
+    fetchCourses();
+  }, []);
 
-            </div>
-        </>
-    );
-};
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <h1>Courses</h1>
+      <ul>
+        {courses.map((course) => (
+          <li key={course.course_id}>
+            {course.course_name} - {course.course_id}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
