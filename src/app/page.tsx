@@ -1,11 +1,5 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react';
-
-export default async function HomePage() {
-
+export default function HomePage() {
   return (
-
     <div className="flex flex-col min-h-screen">
       {/* Main Content */}
       <main className="container mx-auto px-4 py-10">
@@ -33,7 +27,7 @@ export default async function HomePage() {
         <section className="max-w-4xl mx-auto mt-20">
           <h2 className="text-2xl font-semibold mb-4">Sidste nyt</h2>
           <div className="space-y-6">
-            {[ // News Data Array
+            {[
               { date: 'Februar 7, 2025', title: 'Ny studieforløb hjemmeside', content: 'Den tidligere hjemmeside for studieforløb for softwareteknologi er blevet opdateret og erstattet af denne hjemmeside.', link: 'https://www2.compute.dtu.dk/softwareteknologi/index.html' },
               { date: 'November 30, 2023', title: 'Tilpasset kursusnummer for Projektledelse', content: 'Udbydes som 3-ugers kursus i januar og august og tages fortrinsvist sent i studiet.' },
               { date: 'July 28, 2023', title: 'Tilpasset siden til det nye polytekniske grundlag', content: 'Opdatering af siden og eksemplariske studieforløb tilpasset regler for studerende fra 2023.' },
@@ -46,12 +40,15 @@ export default async function HomePage() {
               <div key={index} className="border-b pb-4">
                 <p className="text-sm text-gray-500">{news.date}</p>
                 <h3 className="text-lg font-semibold">{news.title}</h3>
-                <p className="text-gray-700">
-                  {news.content}
+                <div className="text-gray-700">
+                  <p>{news.content}</p>
                   {news.link && (
-                    <> <br /> <a href={news.link} className="text-blue-600 hover:underline">Læs mere</a> </>
+                    <p>
+                      <a href={news.link} className="text-blue-600 hover:underline">Læs mere</a>
+                    </p>
                   )}
-                </p>
+                </div>
+
               </div>
             ))}
           </div>
