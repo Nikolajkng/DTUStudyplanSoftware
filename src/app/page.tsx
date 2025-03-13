@@ -5,38 +5,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Top Navigation Bar */}
-      <nav className="bg-red-700">
-        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex flex-1 items-center justify-start">
-              <div className="flex shrink-0 items-center">
-                <Image src="/assets/images/DTU_Logo_White.png" alt="DTU Logo" width={48} height={48} />
-              </div>
-              <div className="ml-6">
-                <div className="flex space-x-4">
-                  <Link href="/" className="rounded-md bg-red-900 px-3 py-2 text-sm font-medium text-white">
-                    Hovedside
-                  </Link>
-                  <Link href="/mine" className="rounded-md px-3 py-2 text-sm font-medium text-red-300 hover:bg-red-700 hover:text-white">
-                    Mine Studieforløb
-                  </Link>
-                  <Link href="/recommended" className="rounded-md px-3 py-2 text-sm font-medium text-red-300 hover:bg-red-700 hover:text-white">
-                    Anbefalede Studieforløb
-                  </Link>
-                  <Link href="/course" className="rounded-md px-3 py-2 text-sm font-medium text-red-300 hover:bg-red-700 hover:text-white">
-                    Kurser
-                  </Link>
-                  <Link href="/contact" className="rounded-md px-3 py-2 text-sm font-medium text-red-300 hover:bg-red-700 hover:text-white">
-                    Kontakt
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+     
       {/* Main Content */}
       <main className="container mx-auto px-4 py-10">
         <div className="text-center">
