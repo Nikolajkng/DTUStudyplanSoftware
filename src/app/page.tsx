@@ -1,11 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { Key, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react';
 
-export default function HomePage() {
+export default async function HomePage() {
 
   return (
+
     <div className="flex flex-col min-h-screen">
-     
       {/* Main Content */}
       <main className="container mx-auto px-4 py-10">
         <div className="text-center">

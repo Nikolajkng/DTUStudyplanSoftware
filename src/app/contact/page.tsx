@@ -13,7 +13,7 @@ export default function MyStudyPlan() {
             </Head>
 
             <div className="flex flex-col min-h-screen">
-                
+
                 {/* Main Body Content */}
                 <div className="max-w-3xl mx-auto bg-gray-50 shadow-lg rounded-lg p-6 flex space-x-6 mt-20">
                     <img
@@ -78,10 +78,6 @@ export default function MyStudyPlan() {
                     </div>
                 </div>
             </div>
-
-            {/* Footer (edit it in footer.js file!) */}
-            <div id="footer"></div>
-            <script src="/js/footer.js" />
         </>
     );
 };
