@@ -2,7 +2,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
-import "./globals.css";
+import "./styles/globals.css";
 import { usePathname } from "next/navigation";
 import Head from "next/head";
 
