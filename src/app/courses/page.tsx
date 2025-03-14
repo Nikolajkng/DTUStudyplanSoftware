@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 interface Course {
   course_id: string;
   course_name: string;
-  credits: number;
-  category: string;
+  ects: number;
+  course_type: string;
 }
 
 export default function Courses() {
@@ -40,7 +40,7 @@ export default function Courses() {
       <ul>
         {courses.map((course) => (
           <li key={course.course_id}>
-            {course.course_name} - {course.course_id}
+            {course.course_name} - {course.course_id} - {course.ects} ECTS - {course.course_type}
           </li>
         ))}
       </ul>
