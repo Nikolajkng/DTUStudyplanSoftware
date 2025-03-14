@@ -1,16 +1,12 @@
-import Head from 'next/head';
 
 export default function MyStudyPlan() {
+
+
+
+
+
     return (
         <>
-            <Head>
-                <meta charSet="UTF-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>DTU Software Technology</title>
-                <link rel="icon" type="image/x-icon" href="assets/icons/favicon-32x32.png" />
-                <link rel="stylesheet" href="css/styles.css" />
-                <script src="https://cdn.tailwindcss.com" />
-            </Head>
 
             <div className="flex flex-col min-h-screen">
 
