@@ -1,5 +1,5 @@
 #!/bin/bash
 while true; do
-    ./git/DTUStudyPlan/DTUStudyPlanSoftware/polling.sh
+    bash /git/DTUStudyPlan/DTUStudyPlanSoftware/polling.sh
     sleep 60  # Sleep for 60 seconds before checking again
 done
