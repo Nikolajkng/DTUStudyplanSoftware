@@ -20,6 +20,7 @@ if [ "$LATEST_COMMIT" != "$LAST_COMMIT" ]; then
     # New commit detected, pull the latest changes
     echo "New commit detected, pulling latest changes..."
 
+    git stash
     git pull origin $BRANCH
     npm run build
     PORT=5000 npm start
