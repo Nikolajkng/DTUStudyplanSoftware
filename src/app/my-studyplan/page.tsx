@@ -9,7 +9,6 @@ import {
     useDroppable,
 } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import "../styles/grid.css";
 import "../styles/courses.css";
 
