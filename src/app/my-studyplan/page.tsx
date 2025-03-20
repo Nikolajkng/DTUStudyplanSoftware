@@ -22,8 +22,6 @@ export default function MyStudyPlan() {
     };
 
 
-
-
     const initialCourses: Course[] = [
         { id: 1, name: "Machine Learning", ects: 5 },
         { id: 2, name: "Matematik 1", ects: 20 },
