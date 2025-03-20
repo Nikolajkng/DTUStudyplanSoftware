@@ -8,18 +8,19 @@
 
 .grid_layout{
   display: grid;
-  grid-gap: 5px;
+  grid-gap: 3px;
   grid-template-columns: repeat(6, 1fr);
 }
 
 .grid_cell {
-  width: 100px;
-  height: 50px;
-  padding: 10px;
+  width: 150px;
+  height: 80px;
+  padding: 5px;
   background-color: lightblue;
   border-radius: 2px;
 }
 
-.grid_cell:hover {
+
+.highlight{
   background-color: #e0e0e0;
 }
