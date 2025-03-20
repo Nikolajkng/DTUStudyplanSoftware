@@ -1,186 +1,157 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-    DndContext,
-    DragEndEvent,
-    closestCenter,
-    useDraggable,
-    useDroppable,
-} from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import "../styles/grid.css";
-import "../styles/courses.css";
+import { useState } from "react";
+import Head from "next/head";
+import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 
-export default function MyStudyPlan() {
-    type Course = {
-        id: number;
-        name: string;
-        ects: number;
-        gridIndex?: number;
-    };
+type Course = {
+    name: string;
+    ects: number;
+    sem?: number;
+};
 
+const courses: Course[] = [
+    { name: "Mat1", ects: 2, sem: 2 },
+    { name: "Mat2", ects: 1 },
+    { name: "Parallel", ects: 1 },
+];
 
-    const initialCourses: Course[] = [
-        { id: 1, name: "Machine Learning", ects: 5 },
-        { id: 2, name: "Matematik 1", ects: 20 },
-        { id: 3, name: "Parallel", ects: 5 },
-        { id: 4, name: "Funktions", ects: 5 },
-        { id: 5, name: "Softwareteknologi", ects: 10 },
-        { id: 6, name: "Datasikkerhed", ects: 7.5 },
-        { id: 7, name: "Systemudvikling", ects: 5 },
-        { id: 8, name: "Teknologi", ects: 5 },
-        { id: 9, name: "Programmering", ects: 5 },
-        { id: 10, name: "Fysik", ects: 5 },
-    ];
+type CoursePlacement = {
+    x: number;
+    y: number;
+    course: Course;
+};
 
-    const [courses, setCourses] = useState(initialCourses);
-    const [usedCourses, setUsedCourses] = useState<Course[]>([]);
+const DraggableCourse = ({ course }: { course: Course }) => {
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({
+        id: course.name,
+    });
 
-    function DraggableItem({ course }: { course: Course }) {
-        const { attributes, listeners, setNodeRef, transform } = useDraggable({
-            id: course.id.toString(),
-        });
-
-        const dragStyle = {
-            transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
-        };
-
-        return (
-            <div
-                className="course"
-                ref={setNodeRef}
-                {...attributes}
-                {...listeners}
-                style={dragStyle}
-            >
-                {course.name}
-            </div>
-        );
-    }
-    // Calculate scale factor based on ECTS
-    const getScaleFromEcts = (ects: number) => {
-        const scaleMapping = {
-            5: 1,
-            10: 1.2,
-            15: 1,
-            20: 1.5,
-        };
-        return scaleMapping[ects as keyof typeof scaleMapping] || 1; 
-    };
-    function GridCellDropZone({ id }: { id: number }) {
-        const { setNodeRef, isOver } = useDroppable({ id: id.toString() });
-
-        const courseInCell = usedCourses.find((course) => course.gridIndex === id);
-
-        // If the course is dropped, apply a scaling transformation
-
-        const dropStyle = courseInCell
-            ? {
-                transform: `scale(${getScaleFromEcts(courseInCell.ects)})`,
-                transition: "transform 0.3s"
-            }
-            : {};
-
-        return (
-            <div
-                ref={setNodeRef}
-                className={`grid_cell ${isOver ? "highlight" : ""}`}
-            >
-                {courseInCell && (
-                    <div style={dropStyle}>
-                        <DraggableItem course={courseInCell} />
-                    </div>
-                )}
-            </div>
-        );
-    }
-    function AvailableCoursesDropZone() {
-        const { setNodeRef, isOver } = useDroppable({ id: "available-courses" });
-
-        return (
-            <div ref={setNodeRef} className={`courses_window ${isOver ? "highlight" : ""}`}>
-                <div className="courses_layout">
-                    {courses.map((course) => (
-                        <DraggableItem key={course.id} course={course} />
-                    ))}
-                </div>
-            </div>
-        );
-    }
-
-    function handleDragEnd(event: DragEndEvent) {
-        const { active, over } = event;
-        if (!over) return;
-
-        const courseID = Number(active.id);
-        const dropZoneID = over.id.toString();
-
-        // If dropped back into available courses
-        if (dropZoneID === "available-courses") {
-            setUsedCourses((prev) => prev.filter((course) => course.id !== courseID));
-            const returningCourse = usedCourses.find((course) => course.id === courseID);
-            if (returningCourse) {
-                setCourses((prev) => [...prev, returningCourse]);
-            }
-            return;
-        }
-
-        // Check if course is already in the grid
-        const movingCourse = usedCourses.find((course) => course.id === courseID);
-        const targetIndex = Number(dropZoneID);
-        const existingCourse = usedCourses.find((course) => course.gridIndex === targetIndex);
-
-        if (movingCourse) {
-            // Move within the grid (swap positions if needed)
-            setUsedCourses((prev) =>
-                prev.map((course) => {
-                    if (course.id === courseID) {
-                        return { ...course, gridIndex: targetIndex };
-                    }
-                    if (existingCourse && course.id === existingCourse.id) {
-                        return { ...course, gridIndex: movingCourse.gridIndex };
-                    }
-                    return course;
-                })
-            );
-        } else {
-            // Move from available courses to grid
-            const droppedCourse = courses.find((course) => course.id === courseID);
-            if (droppedCourse) {
-                setUsedCourses((prev) => [...prev, { ...droppedCourse, gridIndex: targetIndex }]);
-                setCourses((prev) => prev.filter((course) => course.id !== courseID));
-            }
-        }
-    }
+    const style = transform
+        ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
+        : undefined;
 
     return (
-        <div className="flex flex-col min-h-screen">
-            <div className="flex justify-center items-center h-screen gap-20">
-                <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                    <div>
-                        <h2>
-                            <strong>My Study Plan</strong>
-                        </h2>
-                        <SortableContext items={usedCourses.map((item) => item.id.toString())} strategy={verticalListSortingStrategy}>
-                            <div className="grid_window">
-                                <div className="grid_layout">
-                                    {Array.from({ length: 6 * 6 }).map((_, index) => (
-                                        <GridCellDropZone key={index} id={index} />
-                                    ))}
-                                </div>
-                            </div>
-                        </SortableContext>
-                    </div>
+        <div
+            className="w-32 h-16 bg-slate-600 m-1 text-white flex justify-center items-center cursor-pointer"
+            ref={setNodeRef}
+            style={style}
+            {...attributes}
+            {...listeners}
+        >
+            <p>{course.name}</p>
+        </div>
+    );
+};
 
-                    <div>
-                        <h1>
-                            <strong>Available courses</strong>
-                        </h1>
-                        <AvailableCoursesDropZone />
+const GridFiller = ({ x, y }: { x: number; y: number }) => {
+    const { setNodeRef } = useDroppable({ id: `${x}-${y}` });
+
+    return (
+        <div
+            className="bg-gray-300 w-32 h-16 m-1"
+            style={{ gridRowStart: y + 1, gridColumnStart: x + 1 }}
+            ref={setNodeRef}
+        />
+    );
+};
+
+const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({
+        id: placement.course.name,
+    });
+
+    const style = transform
+        ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
+        : undefined;
+
+    return (
+        <div
+            className="bg-blue-800 text-white flex justify-center items-center z-10"
+            style={{
+                gridColumnStart: placement.x,
+                gridColumnEnd: placement.x + placement.course.ects,
+                gridRowStart: placement.y,
+                gridRowEnd: placement.y + (placement.course.sem || 1),
+                ...style,
+            }}
+            ref={setNodeRef}
+            {...attributes}
+            {...listeners}
+        >
+            {placement.course.name}
+        </div>
+    );
+};
+
+export default function MyStudyPlan() {
+    const [placements, setPlacements] = useState<CoursePlacement[]>([]);
+    const notUsedCourses = courses.filter(
+        (c) => !placements.find((p) => p.course.name === c.name)
+    );
+
+    const baseCoords = Array.from({ length: 7 })
+        .map((_, x) =>
+            Array.from({ length: 6 }).map((_, y) => [x, y] as [number, number])
+        )
+        .flat();
+
+    return (
+        <>
+            <Head>
+                <title>DTU Software Technology</title>
+                <meta charSet="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <link rel="icon" type="image/png" href="/assets/icons/favicon-32x32.png" />
+            </Head>
+
+            <div className="flex flex-col min-h-screen items-center">
+                <h1 className="text-4xl font-bold mt-10">DTU Software Technology Study Plan</h1>
+
+                <DndContext
+                    onDragEnd={(e) => {
+                        if (!e.over) return;
+
+                        const [x, y] = e.over.id.toString().split("-").map(Number);
+                        const course = courses.find((c) => c.name === e.active.id);
+                        if (!course) return;
+
+                        if (x + course.ects > 7 || (course.sem && y + course.sem > 6)) {
+                            return;
+                        }
+
+                        setPlacements((prev) => [
+                            ...prev.filter((c) => c.course.name !== e.active.id),
+                            { x: x + 1, y: y + 1, course },
+                        ]);
+                    }}
+                >
+                    <div className="flex flex-wrap justify-center mt-10">
+                        
+                        <div className="m-10">
+                            <h2 className="text-2xl font-semibold mb-4">Placements</h2>
+                            <div className="grid grid-rows-6 grid-cols-7 gap-1 border border-gray-400 p-2">
+                                {baseCoords.map(([x, y]) => (
+                                    <GridFiller key={`${x}-${y}`} x={x} y={y} />
+                                ))}
+                                {placements.map((p) => (
+                                    <GridCourse key={p.course.name} placement={p} />
+                                ))}
+                            </div>
+                        </div>
+
+         
+                        <div className="m-10">
+                            <h2 className="text-2xl font-semibold mb-4">Available Courses</h2>
+                            <div className="flex flex-wrap">
+                                {notUsedCourses.map((c) => (
+                                    <DraggableCourse key={c.name} course={c} />
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </DndContext>
             </div>
-        </div>
+        </>
     );
 }
