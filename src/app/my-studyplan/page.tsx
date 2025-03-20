@@ -1,95 +1,187 @@
 "use client";
 
 import React, { useState } from "react";
-import { DndContext, DragEndEvent, DragOverEvent, closestCenter } from "@dnd-kit/core";
+import {
+    DndContext,
+    DragEndEvent,
+    closestCenter,
+    useDraggable,
+    useDroppable,
+} from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import "../styles/grid.css";
 import "../styles/courses.css";
 
-
 export default function MyStudyPlan() {
-    const [items, setItems] = useState([
-        { id: "1", name: "Matematik 1" },
-        { id: "2", name: "Parallel" },
-        { id: "3", name: "Funktions" },
-        { id: "4", name: "Matematik 1" },
-        { id: "5", name: "Parallel" },
-        { id: "6", name: "Funktions" },
-        { id: "7", name: "Matematik 1" },
-        { id: "8", name: "Parallel" },
-        { id: "9", name: "Funktions" },
-    ]);
-
-    const [droppedItems, setDroppedItems] = useState<any[]>([]);
+    type Course = {
+        id: number;
+        name: string;
+        ects: number;
+        gridIndex?: number;
+    };
 
 
-    function DraggableItem({ item, className }: { className: string; item: { id: string; name: string } }) {
-        const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id });
+    const initialCourses: Course[] = [
+        { id: 1, name: "Machine Learning", ects: 5 },
+        { id: 2, name: "Matematik 1", ects: 20 },
+        { id: 3, name: "Parallel", ects: 5 },
+        { id: 4, name: "Funktions", ects: 5 },
+        { id: 5, name: "Softwareteknologi", ects: 10 },
+        { id: 6, name: "Datasikkerhed", ects: 7.5 },
+        { id: 7, name: "Systemudvikling", ects: 5 },
+        { id: 8, name: "Teknologi", ects: 5 },
+        { id: 9, name: "Programmering", ects: 5 },
+        { id: 10, name: "Fysik", ects: 5 },
+    ];
+
+    const [courses, setCourses] = useState(initialCourses);
+    const [usedCourses, setUsedCourses] = useState<Course[]>([]);
+
+    function DraggableItem({ course }: { course: Course }) {
+        const { attributes, listeners, setNodeRef, transform } = useDraggable({
+            id: course.id.toString(),
+        });
 
         const dragStyle = {
-            transition: transition,
-            transform: CSS.Transform.toString(transform),
+            transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
         };
 
+        return (
+            <div
+                className="course"
+                ref={setNodeRef}
+                {...attributes}
+                {...listeners}
+                style={dragStyle}
+            >
+                {course.name}
+            </div>
+        );
+    }
+    // Calculate scale factor based on ECTS
+    const getScaleFromEcts = (ects: number) => {
+        const scaleMapping = {
+            5: 1,
+            10: 1.2,
+            15: 1,
+            20: 1.5,
+        };
+        return scaleMapping[ects as keyof typeof scaleMapping] || 1; 
+    };
+    function GridCellDropZone({ id }: { id: number }) {
+        const { setNodeRef, isOver } = useDroppable({ id: id.toString() });
+
+        const courseInCell = usedCourses.find((course) => course.gridIndex === id);
+
+        // If the course is dropped, apply a scaling transformation
+
+        const dropStyle = courseInCell
+            ? {
+                transform: `scale(${getScaleFromEcts(courseInCell.ects)})`,
+                transition: "transform 0.3s"
+            }
+            : {};
 
         return (
-            <div className={className} key={item.id} ref={setNodeRef} {...attributes} {...listeners} style={dragStyle}>
-                {item.name}
+            <div
+                ref={setNodeRef}
+                className={`grid_cell ${isOver ? "highlight" : ""}`}
+            >
+                {courseInCell && (
+                    <div style={dropStyle}>
+                        <DraggableItem course={courseInCell} />
+                    </div>
+                )}
+            </div>
+        );
+    }
+    function AvailableCoursesDropZone() {
+        const { setNodeRef, isOver } = useDroppable({ id: "available-courses" });
+
+        return (
+            <div ref={setNodeRef} className={`courses_window ${isOver ? "highlight" : ""}`}>
+                <div className="courses_layout">
+                    {courses.map((course) => (
+                        <DraggableItem key={course.id} course={course} />
+                    ))}
+                </div>
             </div>
         );
     }
 
+    function handleDragEnd(event: DragEndEvent) {
+        const { active, over } = event;
+        if (!over) return;
 
+        const courseID = Number(active.id);
+        const dropZoneID = over.id.toString();
 
-    function handleDragOver(event: DragOverEvent): void {
-        throw new Error("Function not implemented.");
-    }
+        // If dropped back into available courses
+        if (dropZoneID === "available-courses") {
+            setUsedCourses((prev) => prev.filter((course) => course.id !== courseID));
+            const returningCourse = usedCourses.find((course) => course.id === courseID);
+            if (returningCourse) {
+                setCourses((prev) => [...prev, returningCourse]);
+            }
+            return;
+        }
 
-    function handleDrop(event: DragEndEvent): void {
-        throw new Error("Function not implemented.");
+        // Check if course is already in the grid
+        const movingCourse = usedCourses.find((course) => course.id === courseID);
+        const targetIndex = Number(dropZoneID);
+        const existingCourse = usedCourses.find((course) => course.gridIndex === targetIndex);
+
+        if (movingCourse) {
+            // Move within the grid (swap positions if needed)
+            setUsedCourses((prev) =>
+                prev.map((course) => {
+                    if (course.id === courseID) {
+                        return { ...course, gridIndex: targetIndex };
+                    }
+                    if (existingCourse && course.id === existingCourse.id) {
+                        return { ...course, gridIndex: movingCourse.gridIndex };
+                    }
+                    return course;
+                })
+            );
+        } else {
+            // Move from available courses to grid
+            const droppedCourse = courses.find((course) => course.id === courseID);
+            if (droppedCourse) {
+                setUsedCourses((prev) => [...prev, { ...droppedCourse, gridIndex: targetIndex }]);
+                setCourses((prev) => prev.filter((course) => course.id !== courseID));
+            }
+        }
     }
 
     return (
         <div className="flex flex-col min-h-screen">
             <div className="flex justify-center items-center h-screen gap-20">
-
-                <div>
-                    <h2><strong>My Study Plan</strong></h2>
-                    <DndContext collisionDetection={closestCenter} onDragOver={handleDragOver} onDragEnd={handleDrop}>
-                        <SortableContext items={droppedItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
+                <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <div>
+                        <h2>
+                            <strong>My Study Plan</strong>
+                        </h2>
+                        <SortableContext items={usedCourses.map((item) => item.id.toString())} strategy={verticalListSortingStrategy}>
                             <div className="grid_window">
-
                                 <div className="grid_layout">
-                                    {Array.from({ length: 6*6 }).map((_, index) => (
-                                        <div key={index} className="grid_cell">
-                                            
-                                        </div>
-                                    ))}
-
-                                </div>
-                            </div>
-                        </SortableContext>
-                    </DndContext>
-                </div>
-
-                <div>
-                    <h1> <strong>Available courses</strong></h1>
-                    <DndContext collisionDetection={closestCenter}>
-                        <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
-                            <div className="courses_window">
-                                <div className="courses_layout">
-                                    {items.map((item) => (
-                                        <DraggableItem key={item.id} item={item} className={"course"} />
+                                    {Array.from({ length: 6 * 6 }).map((_, index) => (
+                                        <GridCellDropZone key={index} id={index} />
                                     ))}
                                 </div>
                             </div>
                         </SortableContext>
-                    </DndContext>
-                </div>
+                    </div>
 
+                    <div>
+                        <h1>
+                            <strong>Available courses</strong>
+                        </h1>
+                        <AvailableCoursesDropZone />
+                    </div>
+                </DndContext>
             </div>
-        </div >
+        </div>
     );
 }
