@@ -1,3 +1,4 @@
+import Image from 'next/image';
 
 export default function MyStudyPlan() {
     return (
@@ -6,9 +7,11 @@ export default function MyStudyPlan() {
 
                 {/* Main Body Content */}
                 <div className="max-w-3xl mx-auto bg-gray-50 shadow-lg rounded-lg p-6 flex space-x-6 mt-20">
-                    <img
+                    <Image
                         src="/assets/images/carstenwitt.png"
                         alt="Carsten Witt"
+                        width={128} // Specify width
+                        height={160} // Specify height
                         className="w-32 h-40 object-cover rounded-lg border border-gray-300"
                     />
 
