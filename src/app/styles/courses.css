@@ -1,0 +1,24 @@
+.courses_window{
+    text-align: center;
+    border: 2px solid lightslategray;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+  }
+  
+  .courses_layout{
+    display: flex;
+    flex-direction: column;
+    gap:5px;
+
+  }
+  
+  .course {
+    padding: 10px;
+        background-color: rgb(255, 127, 80);
+    border-radius: 5px;
+  }
+
+  .course:hover {
+    background-color: rgb(252, 170, 143);
+}
