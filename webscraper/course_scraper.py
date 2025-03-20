@@ -6,11 +6,11 @@ def save_content_txt():
     # Extract the main content of the page
     content = soup.find(id='mw-content-text').get_text()
 
-    # Save the content to a text file
-    with open('courses.txt', 'w') as file:
-        file.write(content)
+    TXT = "courses.txt"
 
-    print("Content saved to python_wiki.txt file")
+    # Save the content to a text file
+    with open(TXT, 'w') as file:
+        file.write(content)
 
 
 ######################################################## START ########################################################
