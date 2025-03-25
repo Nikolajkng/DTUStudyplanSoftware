@@ -223,7 +223,7 @@ export default function MyStudyPlan() {
                     onClick={deleteStudyPlan}
                     className="mt-6 px-4 py-2 bg-red-700 text-white rounded hover:bg-blue-700"
                 >
-                    Delete current Study Plan
+                    Delete currently selected Study Plan
                 </button>
             </div>
         </>
