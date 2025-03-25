@@ -117,7 +117,9 @@ export default function MyStudyPlan() {
     const deleteStudyPlan = () => {
         if (!selectedPlan) return;
 
-        const { [selectedPlan]: _, ...restPlans } = savedPlans;
+        const restPlans = Object.fromEntries(
+            Object.entries(savedPlans).filter(([key]) => key !== selectedPlan)
+        );
         setSavedPlans(restPlans);
         setPlacements([]);
         setSelectedPlan("");
