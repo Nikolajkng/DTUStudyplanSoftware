@@ -241,7 +241,7 @@ export default function MyStudyPlan() {
                     <div className="flex justify-center mt-10">
                         <div className="flex flex-wrap justify-center mt-10">
                             <div className="m-10">
-                                <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Studieplan"}</h2>
+                                <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Ny Studieplan"}</h2>
                                 <div
                                     className={`grid grid-rows-${semesters} grid-cols-7 gap-1 border border-gray-400 p-2`}
                                     style={{
