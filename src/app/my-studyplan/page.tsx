@@ -21,6 +21,7 @@ type CoursePlacement = {
     course: Course;
 };
 
+
 const DraggableCourse = ({ course }: { course: Course }) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: course.course_id,
@@ -94,9 +95,12 @@ const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
 
 export default function MyStudyPlan() {
     const [placements, setPlacements] = useState<CoursePlacement[]>([]);
-    const [savedPlans, setSavedPlans] = useState<{ [key: string]: CoursePlacement[] }>({});
+    const [savedPlans, setSavedPlans] = useState<{
+        [key: string]: { placements: CoursePlacement[]; semesters: number };
+    }>({});
     const [selectedPlan, setSelectedPlan] = useState<string>("");
     const [courses, setCourses] = useState<Course[]>([]);
+    const [semesters, setSemesters] = useState(6);
 
 
     useEffect(() => {
@@ -124,7 +128,7 @@ export default function MyStudyPlan() {
         }
     }, []);
 
-    // Save all study plans to cookies whenever they change
+
     useEffect(() => {
         Cookies.set("savedStudyPlans", JSON.stringify(savedPlans), { expires: 365 * 100 }); // Expires in 100 years
     }, [savedPlans]);
@@ -134,7 +138,7 @@ export default function MyStudyPlan() {
         if (planName) {
             setSavedPlans((prevPlans) => ({
                 ...prevPlans,
-                [planName]: placements,
+                [planName]: { placements, semesters, },
             }));
             alert(`Study plan "${planName}" saved!`);
         }
@@ -152,8 +156,24 @@ export default function MyStudyPlan() {
     };
 
     const loadStudyPlan = (planName: string) => {
-        setPlacements(savedPlans[planName] || []);
+        const plan = savedPlans[planName];
+        if (plan) {
+            setPlacements(plan.placements || []);
+            setSemesters(plan.semesters || 6);
+        }
         setSelectedPlan(planName);
+    };
+
+    const addAnotherSemester = () => {
+        if (semesters >= 10) return;
+        setSemesters((prev) => prev + 1);
+        console.log(semesters);
+    };
+
+    const removeOneSemester = () => {
+        if (semesters <= 6) return;
+        setSemesters((prev) => prev - 1);
+        console.log(semesters);
     };
 
     const notUsedCourses = courses.filter(
@@ -162,7 +182,7 @@ export default function MyStudyPlan() {
 
     const baseCoords = Array.from({ length: 7 })
         .map((_, x) =>
-            Array.from({ length: 6 }).map((_, y) => [x, y] as [number, number])
+            Array.from({ length: semesters }).map((_, y) => [x, y] as [number, number])
         )
         .flat();
 
@@ -204,12 +224,12 @@ export default function MyStudyPlan() {
                             <div className="m-10">
                                 <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Studieplan"}</h2>
                                 <div
-                                    className="grid grid-rows-6 grid-cols-7 gap-1 border border-gray-400 p-2"
+                                    className={`grid grid-rows-${semesters} grid-cols-7 gap-1 border border-gray-400 p-2`}
                                     style={{
                                         width: "1100px", // Fixed width for the grid
-                                        height: "600px", // Fixed height for the grid
+                                        height: `${semesters}00px`, // Fixed height for the grid
                                         gridTemplateColumns: "repeat(7, 1fr)", // 7 equal columns
-                                        gridTemplateRows: "repeat(6, 1fr)", // 6 equal rows
+                                        gridTemplateRows: `repeat(${semesters}, 1fr)`, // 6 equal rows
                                     }}
                                 >
                                     {baseCoords.map(([x, y]) => (
@@ -218,12 +238,24 @@ export default function MyStudyPlan() {
                                     {placements.map((p) => (
                                         <GridCourse key={p.course.course_id} placement={p} />
                                     ))}
+                                    <button
+                                        onClick={addAnotherSemester}
+                                        className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
+                                    >
+                                        Tilføj semester
+                                    </button>
+                                    <button
+                                        onClick={removeOneSemester}
+                                        className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
+                                    >
+                                        Fjern semester
+                                    </button>
                                 </div>
                             </div>
 
 
                             <div className="m-10 courseList"
-                                >
+                            >
                                 <h2 className="text-2xl font-semibold mb-4">Tilgængelige kurser</h2>
                                 <div className="flex flex-wrap">
                                     {notUsedCourses.map((c) => (
@@ -259,15 +291,15 @@ export default function MyStudyPlan() {
                 < div className="flex space-x-4 mt-6" >
                     <button
                         onClick={saveStudyPlan}
-                        className="px-4 py-2 bg-red-700 text-white rounded hover:bg-blue-700"
+                        className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
                     >
-                        Save Study Plan
+                        Gem nuværende studieplan
                     </button>
                     <button
                         onClick={deleteStudyPlan}
-                        className="px-4 py-2 bg-red-700 text-white rounded hover:bg-blue-700"
+                        className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
                     >
-                        Delete currently selected Study Plan
+                        Slet nuværende studieplan
                     </button>
                 </div >
 
