@@ -244,6 +244,7 @@ export default function MyStudyPlan() {
                                     >
                                         Tilføj semester
                                     </button>
+                                    
                                     <button
                                         onClick={removeOneSemester}
                                         className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
