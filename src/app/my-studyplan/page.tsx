@@ -21,6 +21,20 @@ type CoursePlacement = {
     course: Course;
 };
 
+const courseColor = ({ course_type }: { course_type: string }) => {
+    switch (course_type) {
+        case "Naturvidenskabelig grundfag":
+            return "bg-green-500";
+        case "Projekter og almene fag":
+            return "bg-red-700";
+        case "Teknologisk linjefag":
+            return "bg-blue-700";
+        case "Valgfri fag":
+            return "bg-yellow-600";
+        default:
+            return "bg-slate-600";
+    }
+};
 
 const DraggableCourse = ({ course }: { course: Course }) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
@@ -33,7 +47,7 @@ const DraggableCourse = ({ course }: { course: Course }) => {
 
     return (
         <div
-            className="w-32 h-16 bg-slate-600 m-1 text-white flex justify-center items-center cursor-pointer white-space: normal"
+            className={`w-32 h-16 ${courseColor({ course_type: course.course_type })} m-1 text-white flex justify-center items-center cursor-pointer white-space: normal`}
             ref={setNodeRef}
             style={style}
             {...attributes}
@@ -74,7 +88,7 @@ const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
 
     return (
         <div
-            className="bg-blue-800 text-white flex justify-center items-center z-10"
+            className={`${courseColor({course_type : placement.course.course_type})} text-white flex justify-center items-center z-10`}
             style={{
                 width: "100%", // Fill the grid cell
                 height: "100%", // Fill the grid cell
@@ -101,6 +115,7 @@ export default function MyStudyPlan() {
     const [selectedPlan, setSelectedPlan] = useState<string>("");
     const [courses, setCourses] = useState<Course[]>([]);
     const [semesters, setSemesters] = useState(6);
+    const [selectedCourseType, setSelectedCourseType] = useState<string>("");
 
 
     useEffect(() => {
@@ -186,6 +201,10 @@ export default function MyStudyPlan() {
         )
         .flat();
 
+    const filteredCourses = notUsedCourses.filter(
+        (c) => !selectedCourseType || c.course_type === selectedCourseType
+    );
+
     return (
         <>
             <Head>
@@ -244,7 +263,7 @@ export default function MyStudyPlan() {
                                     >
                                         Tilføj semester
                                     </button>
-                                    
+
                                     <button
                                         onClick={removeOneSemester}
                                         className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
@@ -254,12 +273,30 @@ export default function MyStudyPlan() {
                                 </div>
                             </div>
 
-
-                            <div className="m-10 courseList"
+                            <div className="m-10 "
                             >
                                 <h2 className="text-2xl font-semibold mb-4">Tilgængelige kurser</h2>
-                                <div className="flex flex-wrap">
-                                    {notUsedCourses.map((c) => (
+                                <div className="mb-4">
+                                    <label htmlFor="courseType" className="mr-2 font-semibold">
+                                        Vælg kursustype:
+                                    </label>
+                                    <select
+                                        id="courseType"
+                                        value={selectedCourseType}
+                                        onChange={(e) => setSelectedCourseType(e.target.value)}
+                                        className="px-4 py-4 border rounded"
+                                    >
+                                        <option value=""> Alle Kurser </option>
+                                        {[...new Set(courses.map((c) => c.course_type))].map((type) =>
+                                            <option key={type} value={type}>
+                                                {type}
+                                            </option>)}
+                                    </select>
+                                </div>
+
+
+                                <div className="flex flex-wrap courseList">
+                                    {filteredCourses.map((c) => (
                                         <DraggableCourse key={c.course_id} course={c} />
                                     ))}
                                 </div>
