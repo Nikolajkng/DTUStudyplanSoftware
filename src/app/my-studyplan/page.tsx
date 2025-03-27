@@ -4,18 +4,16 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import Cookies from "js-cookie";
+import "./style.css";
 
-type Course = {
-    name: string;
+interface Course {
+    course_id: string;
+    course_name: string;
     ects: number;
-    sem?: number;
+    course_type: string;
+    sem: 1;
 };
 
-const courses: Course[] = [
-    { name: "Mat1", ects: 2, sem: 2 },
-    { name: "Mat2", ects: 1 },
-    { name: "Parallel", ects: 1 },
-];
 
 type CoursePlacement = {
     x: number;
@@ -25,7 +23,7 @@ type CoursePlacement = {
 
 const DraggableCourse = ({ course }: { course: Course }) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
-        id: course.name,
+        id: course.course_id,
     });
 
     const style = transform
@@ -34,13 +32,13 @@ const DraggableCourse = ({ course }: { course: Course }) => {
 
     return (
         <div
-            className="w-32 h-16 bg-slate-600 m-1 text-white flex justify-center items-center cursor-pointer"
+            className="w-32 h-16 bg-slate-600 m-1 text-white flex justify-center items-center cursor-pointer white-space: normal"
             ref={setNodeRef}
             style={style}
             {...attributes}
             {...listeners}
         >
-            <p>{course.name}</p>
+            <p>{course.course_name}</p>
         </div>
     );
 };
@@ -50,8 +48,13 @@ const GridFiller = ({ x, y }: { x: number; y: number }) => {
 
     return (
         <div
-            className="bg-gray-300 w-32 h-16 m-1"
-            style={{ gridRowStart: y + 1, gridColumnStart: x + 1 }}
+            className="bg-gray-300"
+            style={{
+                width: "100%", // Fill the grid cell
+                height: "100%", // Fill the grid cell
+                gridRowStart: y + 1,
+                gridColumnStart: x + 1,
+            }}
             ref={setNodeRef}
         />
     );
@@ -59,8 +62,10 @@ const GridFiller = ({ x, y }: { x: number; y: number }) => {
 
 const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
-        id: placement.course.name,
+        id: placement.course.course_id,
     });
+
+    const scaledEcts = placement.course.ects / 5;
 
     const style = transform
         ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
@@ -70,8 +75,10 @@ const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
         <div
             className="bg-blue-800 text-white flex justify-center items-center z-10"
             style={{
+                width: "100%", // Fill the grid cell
+                height: "100%", // Fill the grid cell
                 gridColumnStart: placement.x,
-                gridColumnEnd: placement.x + placement.course.ects,
+                gridColumnEnd: placement.x + scaledEcts,
                 gridRowStart: placement.y,
                 gridRowEnd: placement.y + (placement.course.sem || 1),
                 ...style,
@@ -80,7 +87,7 @@ const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
             {...attributes}
             {...listeners}
         >
-            {placement.course.name}
+            {placement.course.course_name}
         </div>
     );
 };
@@ -89,6 +96,25 @@ export default function MyStudyPlan() {
     const [placements, setPlacements] = useState<CoursePlacement[]>([]);
     const [savedPlans, setSavedPlans] = useState<{ [key: string]: CoursePlacement[] }>({});
     const [selectedPlan, setSelectedPlan] = useState<string>("");
+    const [courses, setCourses] = useState<Course[]>([]);
+
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await fetch("/api/courses");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch courses");
+                }
+                const data: Course[] = await response.json();
+                setCourses(data);
+            } catch (err) {
+                console.error("Error fetching courses:", err);
+            }
+        };
+
+        fetchCourses();
+    }, []);
 
     // Load saved plans from cookies when the component mounts
     useEffect(() => {
@@ -131,7 +157,7 @@ export default function MyStudyPlan() {
     };
 
     const notUsedCourses = courses.filter(
-        (c) => !placements.find((p) => p.course.name === c.name)
+        (c) => !placements.some((p) => p.course.course_id === c.course_id)
     );
 
     const baseCoords = Array.from({ length: 7 })
@@ -157,47 +183,62 @@ export default function MyStudyPlan() {
                         if (!e.over) return;
 
                         const [x, y] = e.over.id.toString().split("-").map(Number);
-                        const course = courses.find((c) => c.name === e.active.id);
+                        const course = courses.find((c) => c.course_id === e.active.id);
                         if (!course) return;
 
-                        if (x + course.ects > 7 || (course.sem && y + course.sem > 6)) {
+                        const scaledEcts = course.ects / 5;
+
+                        if (x + scaledEcts > 7 || (course.sem && y + course.sem > 6)) {
                             return;
                         }
 
+
                         setPlacements((prev) => [
-                            ...prev.filter((c) => c.course.name !== e.active.id),
+                            ...prev.filter((c) => c.course.course_id !== course.course_id),
                             { x: x + 1, y: y + 1, course },
                         ]);
                     }}
                 >
-                    <div className="flex flex-wrap justify-center mt-10">
-                        <div className="m-10">
-                            <h2 className="text-2xl font-semibold mb-4">Placements</h2>
-                            <div className="grid grid-rows-6 grid-cols-7 gap-1 border border-gray-400 p-2">
-                                {baseCoords.map(([x, y]) => (
-                                    <GridFiller key={`${x}-${y}`} x={x} y={y} />
-                                ))}
-                                {placements.map((p) => (
-                                    <GridCourse key={p.course.name} placement={p} />
-                                ))}
+                    <div className="flex justify-center mt-10">
+                        <div className="flex flex-wrap justify-center mt-10">
+                            <div className="m-10">
+                                <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Studieplan"}</h2>
+                                <div
+                                    className="grid grid-rows-6 grid-cols-7 gap-1 border border-gray-400 p-2"
+                                    style={{
+                                        width: "1100px", // Fixed width for the grid
+                                        height: "600px", // Fixed height for the grid
+                                        gridTemplateColumns: "repeat(7, 1fr)", // 7 equal columns
+                                        gridTemplateRows: "repeat(6, 1fr)", // 6 equal rows
+                                    }}
+                                >
+                                    {baseCoords.map(([x, y]) => (
+                                        <GridFiller key={`${x}-${y}`} x={x} y={y} />
+                                    ))}
+                                    {placements.map((p) => (
+                                        <GridCourse key={p.course.course_id} placement={p} />
+                                    ))}
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="m-10">
-                            <h2 className="text-2xl font-semibold mb-4">Available Courses</h2>
-                            <div className="flex flex-wrap">
-                                {notUsedCourses.map((c) => (
-                                    <DraggableCourse key={c.name} course={c} />
-                                ))}
+
+                            <div className="m-10 courseList"
+                                >
+                                <h2 className="text-2xl font-semibold mb-4">Tilgængelige kurser</h2>
+                                <div className="flex flex-wrap">
+                                    {notUsedCourses.map((c) => (
+                                        <DraggableCourse key={c.course_id} course={c} />
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </DndContext>
+                </DndContext >
 
                 {/* Dropdown Menu for Saved Plans */}
-                <div className="mt-6">
+                < div className="mt-6" >
                     <label htmlFor="savedPlans" className="mr-2 font-semibold">
-                        Load Study Plan:
+                        Vælg studieplan:
                     </label>
                     <select
                         id="savedPlans"
@@ -205,17 +246,17 @@ export default function MyStudyPlan() {
                         onChange={(e) => loadStudyPlan(e.target.value)}
                         className="px-4 py-2 border rounded"
                     >
-                        <option value="">Select a plan</option>
+                        <option value="">Vælg en plan</option>
                         {Object.keys(savedPlans).map((planName) => (
                             <option key={planName} value={planName}>
                                 {planName}
                             </option>
                         ))}
                     </select>
-                </div>
+                </div >
 
                 {/* Save Button */}
-                <div className="flex space-x-4 mt-6">
+                < div className="flex space-x-4 mt-6" >
                     <button
                         onClick={saveStudyPlan}
                         className="px-4 py-2 bg-red-700 text-white rounded hover:bg-blue-700"
@@ -228,9 +269,9 @@ export default function MyStudyPlan() {
                     >
                         Delete currently selected Study Plan
                     </button>
-                </div>
+                </div >
 
-            </div>
+            </div >
         </>
     );
 }
