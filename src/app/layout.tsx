@@ -106,7 +106,7 @@ export default function RootLayout({
               <nav className="flex flex-wrap justify-center -mx-5 -my-2">
               </nav>
               <p className="mt-8 text-base leading-6 text-center text-white">
-                <strong>Sidst opdateret: Mar 2025 <br /> Lavet af: Nikolaj & Frederik</strong>
+                <strong>Sidst opdateret: Apr 2025 <br /> Lavet af: Nikolaj & Frederik</strong>
               </p>
             </div>
           </footer>
