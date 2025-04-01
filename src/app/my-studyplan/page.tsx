@@ -44,21 +44,23 @@ const DraggableCourse = ({ course }: { course: Course }) => {
         ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
         : undefined;
 
+    // controls the "course-box"
     return (
         <div
-            className={`w-140 h-16 ${courseColor({ course_type: course.course_type })} m-1 text-white flex justify-center items-center cursor-pointer white-space: normal overflow-visible z-50 text-`}
+            className={`w-100 h-16 ${courseColor({ course_type: course.course_type })} m-1 text-white flex items-center cursor-pointer white-space: normal overflow-visible z-50 justify-between p-2`}
             ref={setNodeRef}
             style={style}
             {...attributes}
             {...listeners}
         >
-            <p className="mr-10">{course.course_name}</p>
-            <p>{course.ects} ects</p>
+            <p >{course.course_id}</p>
+            <p>{course.course_name}</p>
+            <p >{course.ects} ects</p>
         </div>
     );
 };
 
-// fill the grid with grey boxes
+// fill the course grid (study plan) with grey boxes
 const GridFiller = ({ x, y }: { x: number; y: number }) => {
     const { setNodeRef } = useDroppable({ id: `${x}-${y}` });
 
@@ -116,7 +118,7 @@ export default function MyStudyPlan() {
     }>({});
     const [selectedPlan, setSelectedPlan] = useState<string>("");
     const [courses, setCourses] = useState<Course[]>([]);
-    const [semesters, setSemesters] = useState(6);
+    const [semesters, setSemesters] = useState(7);
     const [selectedCourseType, setSelectedCourseType] = useState<string>("");
 
     // Fetch the courses from the database 
@@ -191,7 +193,7 @@ export default function MyStudyPlan() {
 
     // removes a row from the course grid
     const removeOneSemester = () => {
-        if (semesters <= 6) return;
+        if (semesters <= 7) return;
         setSemesters((prev) => prev - 1);
         console.log(semesters);
     };
@@ -245,7 +247,7 @@ export default function MyStudyPlan() {
                         ]);
                     }}
                 >
-                    <div className="flex justify-center mt-10 h-screen">
+                    <div className="flex justify-center mt-10 ">
                         <div className="flex justify-center mt-10">
                             <div className="m-10">
                                 <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Ny Studieplan"}</h2>
@@ -259,25 +261,69 @@ export default function MyStudyPlan() {
                                     }}
                                 >
                                     {baseCoords.map(([x, y]) => (
-                                        <GridFiller key={`${x}-${y}`} x={x} y={y} />
+                                        <GridFiller key={`${x}-${y}`} x={x + 1} y={y+1} />
                                     ))}
                                     {placements.map((p) => (
                                         <GridCourse key={p.course.course_id} placement={p} />
                                     ))}
-                                    <button
-                                        onClick={addAnotherSemester}
-                                        className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
-                                    >
-                                        Tilføj semester
-                                    </button>
 
-                                    <button
-                                        onClick={removeOneSemester}
-                                        className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
+                                    <div
+                                        className="bg-gray-200"
+                                        style={{
+                                            gridRowStart: 1,
+                                            gridColumnStart: 1,
+                                        }}
+                                    ></div>
+
+                                    <div
+                                        className="flex items-center justify-center bg-gray-200 text-black font-semibold"
+                                        style={{
+                                            gridRowStart: 1,
+                                            gridColumnStart: 2,
+                                            gridColumnEnd: 7,
+                                        }}
                                     >
-                                        Fjern semester
-                                    </button>
+                                        13-ugers periode (25 ects)
+                                    </div>
+                                    <div
+                                        className="flex items-center p-2 justify-center bg-gray-200 text-black font-semibold"
+                                        style={{
+                                            gridRowStart: 1,
+                                            gridColumnStart: 7,
+                                            gridColumnEnd: 8,
+                                        }}
+                                    >
+                                        3-ugers periode (5 ects)
+                                    </div>
+
+                                    {Array.from({ length: semesters -1  }).map((_, y) => (
+                                        <div
+                                            key={`row-label-${y}`}
+                                            className="flex items-center justify-center bg-gray-200 text-black font-semibold"
+                                            style={{
+                                                gridRowStart: y + 2,
+                                                gridColumnStart: 1,
+                                                gridColumnEnd: 2,
+                                            }}
+                                        >
+                                            Semester {y+1}
+                                        </div>
+                                    ))}
+
                                 </div>
+                                <button
+                                    onClick={addAnotherSemester}
+                                    className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
+                                >
+                                    Tilføj semester
+                                </button>
+
+                                <button
+                                    onClick={removeOneSemester}
+                                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
+                                >
+                                    Fjern semester
+                                </button>
                             </div>
 
                             <div className="m-10 flex flex-col">
@@ -301,7 +347,7 @@ export default function MyStudyPlan() {
                                 </div>
 
 
-                                <div className="overflow-y-scroll overflow-x-visible mb-20 p-3">
+                                <div className="overflow-y-scroll overflow-x-visible mb-20 p-3 h-170">
                                     {filteredCourses.map((c) => (
                                         <DraggableCourse key={c.course_id} course={c} />
                                     ))}
