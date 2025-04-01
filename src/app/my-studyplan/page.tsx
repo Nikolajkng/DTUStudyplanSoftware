@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import Cookies from "js-cookie";
-import "./style.css";
 
 interface Course {
     course_id: string;
@@ -49,14 +48,14 @@ const DraggableCourse = ({ course }: { course: Course }) => {
 
     return (
         <div
-            className={`w-140 h-16 ${courseColor({ course_type: course.course_type })} m-1 text-white flex justify-center items-center cursor-pointer white-space: normal overflow-visible z-50`}
+            className={`w-140 h-16 ${courseColor({ course_type: course.course_type })} m-1 text-white flex justify-center items-center cursor-pointer white-space: normal overflow-visible z-50 text-`}
             ref={setNodeRef}
             style={style}
             {...attributes}
             {...listeners}
         >
-            <p>{course.course_name}</p>
-            <p>: {course.ects}</p>
+            <p className="mr-10">{course.course_name}</p>
+            <p>{course.ects} ects</p>
         </div>
     );
 };

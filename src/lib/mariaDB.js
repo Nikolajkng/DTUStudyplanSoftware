@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// Connecto to mariaDB using environment variables
 const pool = mariadb.createPool({
   host: process.env.DB_HOST, // Usually 'localhost' or an IP address
   user: process.env.DB_USER, // Your MariaDB username

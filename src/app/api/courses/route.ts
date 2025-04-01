@@ -2,6 +2,7 @@
 import pool from '../../../lib/mariaDB';
 import { unstable_cache } from 'next/cache';
 
+// tries to fetch data from the database
 const fetchCoursesFromDB = async () => {
   console.log('Fetching data from the database...');
   const connection = await pool.getConnection();
@@ -13,6 +14,7 @@ const fetchCoursesFromDB = async () => {
   }
 };
 
+// Caches the fetched data for 10 minutes
 const cachedFetchCourses = unstable_cache(async () => {
   console.log('Using cached data or fetching fresh data...');
   return fetchCoursesFromDB();

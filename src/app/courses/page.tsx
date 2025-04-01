@@ -14,6 +14,8 @@ export default function Courses() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch courses from the API
+  // This function will be called when the component mounts
   useEffect(() => {
     const fetchCourses = async () => {
       try {
