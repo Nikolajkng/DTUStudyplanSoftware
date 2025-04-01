@@ -20,21 +20,19 @@ type CoursePlacement = {
     course: Course;
 };
 
+const courseTypeColors = new Map<string, string>([
+    ["Naturvidenskabelig grundfag", "bg-green-500"],
+    ["Projekter og almene fag", "bg-red-700"],
+    ["Teknologisk linjefag", "bg-blue-700"],
+    ["Valgfri fag", "bg-yellow-600"],
+]);
+
+
 // Function to determine the color based on course type
+// Used in the course grid and the course list
 const courseColor = ({ course_type }: { course_type: string }) => {
-    switch (course_type) {
-        case "Naturvidenskabelig grundfag":
-            return "bg-green-500";
-        case "Projekter og almene fag":
-            return "bg-red-700";
-        case "Teknologisk linjefag":
-            return "bg-blue-700";
-        case "Valgfri fag":
-            return "bg-yellow-600";
-        default:
-            return "bg-slate-600";
-    }
-};
+    return courseTypeColors.get(course_type) || "bg-slate-600";
+}
 
 // Controls the look of the "dragable" courses in the course list
 const DraggableCourse = ({ course }: { course: Course }) => {
