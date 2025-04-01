@@ -1,5 +1,7 @@
-.courseList {
+/* .courseList {
     width: 500px;
     max-height: 600px;
     overflow-y: auto;
-  }
+    z-index: 50;
+    overflow-x: visible;
+  } */

@@ -21,6 +21,7 @@ type CoursePlacement = {
     course: Course;
 };
 
+// Function to determine the color based on course type
 const courseColor = ({ course_type }: { course_type: string }) => {
     switch (course_type) {
         case "Naturvidenskabelig grundfag":
@@ -36,6 +37,7 @@ const courseColor = ({ course_type }: { course_type: string }) => {
     }
 };
 
+// Controls the look of the "dragable" courses in the course list
 const DraggableCourse = ({ course }: { course: Course }) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: course.course_id,
@@ -47,17 +49,19 @@ const DraggableCourse = ({ course }: { course: Course }) => {
 
     return (
         <div
-            className={`w-32 h-16 ${courseColor({ course_type: course.course_type })} m-1 text-white flex justify-center items-center cursor-pointer white-space: normal`}
+            className={`w-140 h-16 ${courseColor({ course_type: course.course_type })} m-1 text-white flex justify-center items-center cursor-pointer white-space: normal overflow-visible z-50`}
             ref={setNodeRef}
             style={style}
             {...attributes}
             {...listeners}
         >
             <p>{course.course_name}</p>
+            <p>: {course.ects}</p>
         </div>
     );
 };
 
+// fill the grid with grey boxes
 const GridFiller = ({ x, y }: { x: number; y: number }) => {
     const { setNodeRef } = useDroppable({ id: `${x}-${y}` });
 
@@ -75,6 +79,7 @@ const GridFiller = ({ x, y }: { x: number; y: number }) => {
     );
 };
 
+// The grid showing the studyplan
 const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: placement.course.course_id,
@@ -88,7 +93,7 @@ const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
 
     return (
         <div
-            className={`${courseColor({course_type : placement.course.course_type})} text-white flex justify-center items-center z-10`}
+            className={`${courseColor({ course_type: placement.course.course_type })} text-white flex justify-center items-center z-10`}
             style={{
                 width: "100%", // Fill the grid cell
                 height: "100%", // Fill the grid cell
@@ -117,7 +122,7 @@ export default function MyStudyPlan() {
     const [semesters, setSemesters] = useState(6);
     const [selectedCourseType, setSelectedCourseType] = useState<string>("");
 
-
+    // Fetch the courses from the database 
     useEffect(() => {
         const fetchCourses = async () => {
             try {
@@ -143,7 +148,7 @@ export default function MyStudyPlan() {
         }
     }, []);
 
-
+    // save the studyplan in cookies
     useEffect(() => {
         Cookies.set("savedStudyPlans", JSON.stringify(savedPlans), { expires: 365 * 100 }); // Expires in 100 years
     }, [savedPlans]);
@@ -159,6 +164,7 @@ export default function MyStudyPlan() {
         }
     };
 
+    // Delete selected studyplan from the cookies and returns to "default" selected study plan
     const deleteStudyPlan = () => {
         if (!selectedPlan) return;
 
@@ -179,18 +185,22 @@ export default function MyStudyPlan() {
         setSelectedPlan(planName);
     };
 
+    // Adds another row in the course grid, representing a semester
     const addAnotherSemester = () => {
         if (semesters >= 10) return;
         setSemesters((prev) => prev + 1);
         console.log(semesters);
     };
 
+    // removes a row from the course grid
     const removeOneSemester = () => {
         if (semesters <= 6) return;
         setSemesters((prev) => prev - 1);
         console.log(semesters);
     };
 
+    // Function for determining the courses not currently in the course grid (study plan)
+    // Used by the "tilgængelige kurser"
     const notUsedCourses = courses.filter(
         (c) => !placements.some((p) => p.course.course_id === c.course_id)
     );
@@ -238,8 +248,8 @@ export default function MyStudyPlan() {
                         ]);
                     }}
                 >
-                    <div className="flex justify-center mt-10">
-                        <div className="flex flex-wrap justify-center mt-10">
+                    <div className="flex justify-center mt-10 h-screen">
+                        <div className="flex justify-center mt-10">
                             <div className="m-10">
                                 <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Ny Studieplan"}</h2>
                                 <div
@@ -273,8 +283,7 @@ export default function MyStudyPlan() {
                                 </div>
                             </div>
 
-                            <div className="m-10 "
-                            >
+                            <div className="m-10 flex flex-col">
                                 <h2 className="text-2xl font-semibold mb-4">Tilgængelige kurser</h2>
                                 <div className="mb-4">
                                     <label htmlFor="courseType" className="mr-2 font-semibold">
@@ -295,7 +304,7 @@ export default function MyStudyPlan() {
                                 </div>
 
 
-                                <div className="flex flex-wrap courseList">
+                                <div className="overflow-y-scroll overflow-x-visible mb-20 p-3">
                                     {filteredCourses.map((c) => (
                                         <DraggableCourse key={c.course_id} course={c} />
                                     ))}
