@@ -23,7 +23,7 @@ type CoursePlacement = {
 };
 
 const courseTypeColors = new Map<string, string>([
-    ["Naturvidenskabelig grundfag", "bg-green-500"],
+    ["Polyteknisk Grundlag", "bg-green-500"],
     ["Projekter og almene fag", "bg-red-500"],
     ["Teknologisk linjefag", "bg-blue-400"],
     ["Valgfri fag", "bg-yellow-500"],
