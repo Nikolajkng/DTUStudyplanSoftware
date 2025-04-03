@@ -188,10 +188,16 @@ export default function MyStudyPlan() {
     };
 
     // Function to export the current study plan as a JSON file
-    const exportStudyPlan = () => {
+    const exportStudyPlanAsJSON = () => {
         const planName = prompt("Enter a name for your study plan:");
         if (planName) {
-            const blob = new Blob([JSON.stringify(placements)], { type: "application/json" });
+            // Include both placements and semesters in the exported JSON
+            const studyPlanData = {
+                placements,
+                semesters,
+            };
+
+            const blob = new Blob([JSON.stringify(studyPlanData)], { type: "application/json" });
             const url = URL.createObjectURL(blob);
             console.log("created temporary download url: " + url);
             const a = document.createElement("a");
@@ -202,12 +208,12 @@ export default function MyStudyPlan() {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
-    }
+    };
 
     // Function to upload a study plan from a JSON file
     // The file should contain an array of course placements
     // The function parses the file and updates the state with the new placements
-    const uploadStudyPlan = async (file: File) => {
+    const uploadStudyPlanAsJSON = async (file: File) => {
         const reader = new FileReader();
         reader.onload = async (event) => {
             const fileContent = event.target?.result;
@@ -215,13 +221,12 @@ export default function MyStudyPlan() {
                 try {
                     const parsedData = JSON.parse(fileContent);
 
-                    // Ensure the parsed data is an array of placements
-                    if (!Array.isArray(parsedData)) {
-                        throw new Error("Invalid file format. Expected an array of placements.");
+                    // Ensure the parsed data contains placements and semesters
+                    if (!Array.isArray(parsedData.placements) || typeof parsedData.semesters !== "number") {
+                        throw new Error("Invalid file format. Expected an object with placements and semesters.");
                     }
 
-                    const placements = parsedData; // Use the parsed array directly
-                    const semesters = Math.max(...placements.map((p) => p.y)) + 1 || 7; // Calculate semesters dynamically
+                    const { placements, semesters } = parsedData;
 
                     // Prompt the user for a name for the uploaded plan
                     const planName = prompt("Enter a name for the uploaded study plan:");
@@ -255,7 +260,7 @@ export default function MyStudyPlan() {
         reader.readAsText(file);
     };
 
-    const exportGridAsPDF = async () => {
+    const exportSutdyPlanAsPDF = async () => {
         const gridElement = document.querySelector(".grid"); // Select the grid element
         if (!gridElement) {
             alert("Grid element not found!");
@@ -505,7 +510,7 @@ export default function MyStudyPlan() {
                         Slet nuværende studieplan
                     </button>
                     <button
-                        onClick={exportStudyPlan}
+                        onClick={exportStudyPlanAsJSON}
                         className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
                     >
                         Del Studieplan (exportér JSON fil)
@@ -519,7 +524,7 @@ export default function MyStudyPlan() {
                         onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
-                                uploadStudyPlan(file);
+                                uploadStudyPlanAsJSON(file);
                             }
                         }}
                     />
@@ -530,7 +535,7 @@ export default function MyStudyPlan() {
                         Upload Studieplan (importér JSON fil)
                     </button>
                     <button
-                        onClick={exportGridAsPDF}
+                        onClick={exportSutdyPlanAsPDF}
                         className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
                     >
                         Eksportér Studieplan som PDF
