@@ -27,6 +27,21 @@ const courseTypeColors = new Map<string, string>([
     ["Valgfri fag", "bg-yellow-600"],
 ]);
 
+// Subheader showing saved study plans
+const Subheader = ({ savedPlans, loadStudyPlan }: { savedPlans: { [key: string]: any }; loadStudyPlan: (planName: string) => void }) => {
+    return (
+        <div className="w-full bg-red-700 text-white py-4 px-6">
+            <div className="justify-items-start space-x-4"></div>
+            {Object.keys(savedPlans).map((planName) => (
+                <button key={planName} className=" text-white px-4 py-2 rounded"
+                    onClick={() => loadStudyPlan(planName)}
+                >
+                    {planName}
+                </button>
+            ))}
+        </div>
+    );
+}
 
 // Function to determine the color based on course type
 // Used in the course grid and the course list
@@ -214,6 +229,7 @@ export default function MyStudyPlan() {
         (c) => !selectedCourseType || c.course_type === selectedCourseType
     );
 
+    // page content
     return (
         <>
             <Head>
@@ -223,8 +239,10 @@ export default function MyStudyPlan() {
                 <link rel="icon" type="image/png" href="/assets/icons/favicon-32x32.png" />
             </Head>
 
+            <Subheader savedPlans={savedPlans} loadStudyPlan={loadStudyPlan} />
+
             <div className="flex flex-col min-h-screen items-center">
-                <h1 className="text-4xl font-bold mt-10">DTU Software Technology Study Plan</h1>
+                <h1 className="text-4xl font-bold mt-10">DTU Software Teknologi Studie Plan</h1>
 
                 <DndContext
                     onDragEnd={(e) => {
@@ -261,7 +279,7 @@ export default function MyStudyPlan() {
                                     }}
                                 >
                                     {baseCoords.map(([x, y]) => (
-                                        <GridFiller key={`${x}-${y}`} x={x + 1} y={y+1} />
+                                        <GridFiller key={`${x}-${y}`} x={x + 1} y={y + 1} />
                                     ))}
                                     {placements.map((p) => (
                                         <GridCourse key={p.course.course_id} placement={p} />
@@ -296,7 +314,7 @@ export default function MyStudyPlan() {
                                         3-ugers periode (5 ects)
                                     </div>
 
-                                    {Array.from({ length: semesters -1  }).map((_, y) => (
+                                    {Array.from({ length: semesters - 1 }).map((_, y) => (
                                         <div
                                             key={`row-label-${y}`}
                                             className="flex items-center justify-center bg-gray-200 text-black font-semibold"
@@ -306,7 +324,7 @@ export default function MyStudyPlan() {
                                                 gridColumnEnd: 2,
                                             }}
                                         >
-                                            Semester {y+1}
+                                            Semester {y + 1}
                                         </div>
                                     ))}
 
@@ -360,7 +378,7 @@ export default function MyStudyPlan() {
                 {/* Dropdown Menu for Saved Plans */}
                 < div className="mt-6" >
                     <label htmlFor="savedPlans" className="mr-2 font-semibold">
-                        Vælg studieplan:
+                        Gemte studieplaner:
                     </label>
                     <select
                         id="savedPlans"
