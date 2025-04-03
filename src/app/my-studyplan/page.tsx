@@ -62,16 +62,17 @@ const DraggableCourse = ({ course }: { course: Course }) => {
 
 // fill the course grid (study plan) with grey boxes
 const GridFiller = ({ x, y }: { x: number; y: number }) => {
-    const { setNodeRef } = useDroppable({ id: `${x}-${y}` });
+    const { setNodeRef } = useDroppable({ id: `${x+1}-${y}` });
+    const borderStyling = x % 2 == 0 ? "border-r-4" : "";
 
     return (
         <div
-            className="bg-gray-300"
+            className={`bg-gray-300 border-white ${borderStyling}`}
             style={{
                 width: "100%", // Fill the grid cell
                 height: "100%", // Fill the grid cell
                 gridRowStart: y + 1,
-                gridColumnStart: x + 1,
+                gridColumnStart: x + 2,
             }}
             ref={setNodeRef}
         />
@@ -84,7 +85,7 @@ const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
         id: placement.course.course_id,
     });
 
-    const scaledEcts = placement.course.ects / 5;
+    const scaledEcts = placement.course.ects / 2.5; // Scale the ECTS to fit the grid
 
     const style = transform
         ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
@@ -204,7 +205,7 @@ export default function MyStudyPlan() {
         (c) => !placements.some((p) => p.course.course_id === c.course_id)
     );
 
-    const baseCoords = Array.from({ length: 7 })
+    const baseCoords = Array.from({ length: 14 })
         .map((_, x) =>
             Array.from({ length: semesters }).map((_, y) => [x, y] as [number, number])
         )
@@ -234,9 +235,10 @@ export default function MyStudyPlan() {
                         const course = courses.find((c) => c.course_id === e.active.id);
                         if (!course) return;
 
-                        const scaledEcts = course.ects / 5;
+                        const scaledEcts = course.ects / 2.5;
 
-                        if (x + scaledEcts > 7 || (course.sem && y + course.sem > 6)) {
+                        // Check border on right side (the end of semester)
+                        if (x + scaledEcts > 7*2 || (course.sem && y + course.sem > 6)) {
                             return;
                         }
 
@@ -252,35 +254,37 @@ export default function MyStudyPlan() {
                             <div className="m-10">
                                 <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Ny Studieplan"}</h2>
                                 <div
-                                    className={`grid grid-rows-${semesters} grid-cols-7 gap-1 border border-gray-400 p-2`}
+                                    className={`grid grid-rows-${semesters} grid-cols-14 gap-y-1 border border-gray-400 p-2`}
                                     style={{
-                                        width: "1100px", // Fixed width for the grid
-                                        height: `${semesters}00px`, // Fixed height for the grid
-                                        gridTemplateColumns: "repeat(7, 1fr)", // 7 equal columns
-                                        gridTemplateRows: `repeat(${semesters}, 1fr)`, // 6 equal rows
+                                        width: "1100px",
+                                        height: `${semesters}00px`,
+                                        gridTemplateColumns: "repeat(14, 1fr)",
+                                        gridTemplateRows: `repeat(${semesters}, 1fr)`,
                                     }}
                                 >
                                     {baseCoords.map(([x, y]) => (
-                                        <GridFiller key={`${x}-${y}`} x={x + 1} y={y+1} />
+                                        <GridFiller key={`${x}-${y}`} x={x + 1} y={y + 1} />
                                     ))}
                                     {placements.map((p) => (
                                         <GridCourse key={p.course.course_id} placement={p} />
                                     ))}
 
                                     <div
-                                        className="bg-gray-200"
+                                        className="flex items-center justify-center bg-gray-200 text-black font-semibold"
                                         style={{
                                             gridRowStart: 1,
                                             gridColumnStart: 1,
+                                            gridColumnEnd: 3,  
                                         }}
-                                    ></div>
+                                    ><strong>Semester</strong>
+                                    </div>
 
                                     <div
                                         className="flex items-center justify-center bg-gray-200 text-black font-semibold"
                                         style={{
                                             gridRowStart: 1,
-                                            gridColumnStart: 2,
-                                            gridColumnEnd: 7,
+                                            gridColumnStart: 3,
+                                            gridColumnEnd: 14,
                                         }}
                                     >
                                         13-ugers periode (25 ects)
@@ -289,24 +293,24 @@ export default function MyStudyPlan() {
                                         className="flex items-center p-2 justify-center bg-gray-200 text-black font-semibold"
                                         style={{
                                             gridRowStart: 1,
-                                            gridColumnStart: 7,
-                                            gridColumnEnd: 8,
+                                            gridColumnStart: 13,
+                                            gridColumnEnd: 15,
                                         }}
                                     >
                                         3-ugers periode (5 ects)
                                     </div>
 
-                                    {Array.from({ length: semesters -1  }).map((_, y) => (
+                                    {Array.from({ length: semesters - 1 }).map((_, y) => (
                                         <div
                                             key={`row-label-${y}`}
                                             className="flex items-center justify-center bg-gray-200 text-black font-semibold"
                                             style={{
                                                 gridRowStart: y + 2,
                                                 gridColumnStart: 1,
-                                                gridColumnEnd: 2,
+                                                gridColumnEnd: 3,
                                             }}
                                         >
-                                            Semester {y+1}
+                                            {y + 1}
                                         </div>
                                     ))}
 
