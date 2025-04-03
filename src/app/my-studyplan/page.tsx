@@ -179,9 +179,77 @@ export default function MyStudyPlan() {
         const plan = savedPlans[planName];
         if (plan) {
             setPlacements(plan.placements || []);
-            setSemesters(plan.semesters || 6);
+            setSemesters(plan.semesters || 7);
         }
         setSelectedPlan(planName);
+    };
+
+    // Function to export the current study plan as a JSON file
+    const exportStudyPlan = () => {
+        const planName = prompt("Enter a name for your study plan:");
+        if (planName) {
+            const blob = new Blob([JSON.stringify(placements)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            console.log("created temporary download url: " + url);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${planName}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    }
+
+    // Function to upload a study plan from a JSON file
+    // The file should contain an array of course placements
+    // The function parses the file and updates the state with the new placements
+    const uploadStudyPlan = async (file: File) => {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const fileContent = event.target?.result;
+            if (typeof fileContent === "string") {
+                try {
+                    const parsedData = JSON.parse(fileContent);
+
+                    // Ensure the parsed data is an array of placements
+                    if (!Array.isArray(parsedData)) {
+                        throw new Error("Invalid file format. Expected an array of placements.");
+                    }
+
+                    const placements = parsedData; // Use the parsed array directly
+                    const semesters = Math.max(...placements.map((p) => p.y)) + 1 || 7; // Calculate semesters dynamically
+
+                    // Prompt the user for a name for the uploaded plan
+                    const planName = prompt("Enter a name for the uploaded study plan:");
+                    if (!planName) {
+                        alert("Plan name is required to save the study plan.");
+                        return;
+                    }
+
+                    // Save the uploaded plan to the savedPlans state
+                    setSavedPlans((prevPlans) => {
+                        const updatedPlans = {
+                            ...prevPlans,
+                            [planName]: { placements, semesters },
+                        };
+                        Cookies.set("savedStudyPlans", JSON.stringify(updatedPlans), { expires: 365 * 100 }); // Save to cookies
+                        return updatedPlans;
+                    });
+
+                    // Set the uploaded plan as the currently selected plan
+                    setPlacements(placements);
+                    setSemesters(semesters);
+                    setSelectedPlan(planName);
+
+                    alert(`Study plan "${planName}" uploaded and selected successfully!`);
+                } catch (error) {
+                    console.error("Error parsing file:", error);
+                    alert("Error loading study plan. Please check the file format.");
+                }
+            }
+        };
+        reader.readAsText(file);
     };
 
     // Adds another row in the course grid, representing a semester
@@ -236,7 +304,7 @@ export default function MyStudyPlan() {
 
                         const scaledEcts = course.ects / 5;
 
-                        if (x + scaledEcts > 7 || (course.sem && y + course.sem > 6)) {
+                        if (x + scaledEcts > 7 || (course.sem && y + course.sem > 7)) {
                             return;
                         }
 
@@ -261,7 +329,7 @@ export default function MyStudyPlan() {
                                     }}
                                 >
                                     {baseCoords.map(([x, y]) => (
-                                        <GridFiller key={`${x}-${y}`} x={x + 1} y={y+1} />
+                                        <GridFiller key={`${x}-${y}`} x={x + 1} y={y + 1} />
                                     ))}
                                     {placements.map((p) => (
                                         <GridCourse key={p.course.course_id} placement={p} />
@@ -296,7 +364,7 @@ export default function MyStudyPlan() {
                                         3-ugers periode (5 ects)
                                     </div>
 
-                                    {Array.from({ length: semesters -1  }).map((_, y) => (
+                                    {Array.from({ length: semesters - 1 }).map((_, y) => (
                                         <div
                                             key={`row-label-${y}`}
                                             className="flex items-center justify-center bg-gray-200 text-black font-semibold"
@@ -306,7 +374,7 @@ export default function MyStudyPlan() {
                                                 gridColumnEnd: 2,
                                             }}
                                         >
-                                            Semester {y+1}
+                                            Semester {y + 1}
                                         </div>
                                     ))}
 
@@ -378,7 +446,7 @@ export default function MyStudyPlan() {
                 </div >
 
                 {/* Save Button */}
-                < div className="flex space-x-4 mt-6" >
+                < div className="flex space-x-3 mt-6" >
                     <button
                         onClick={saveStudyPlan}
                         className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
@@ -390,6 +458,31 @@ export default function MyStudyPlan() {
                         className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
                     >
                         Slet nuværende studieplan
+                    </button>
+                    <button
+                        onClick={exportStudyPlan}
+                        className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
+                    >
+                        Del Studieplan (exportér JSON fil)
+                    </button>
+                </div>
+                <div className="flex space-x-2 mt-6">
+                    <input
+                        type="file"
+                        id="fileInput"
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                                uploadStudyPlan(file);
+                            }
+                        }}
+                    />
+                    <button
+                        onClick={() => document.getElementById("fileInput")?.click()}
+                        className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
+                    >
+                        Upload Studieplan (importér JSON fil)
                     </button>
                 </div >
 
