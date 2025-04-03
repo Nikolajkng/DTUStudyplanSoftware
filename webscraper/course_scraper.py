@@ -14,40 +14,41 @@ soup = BeautifulSoup(response.text, "html.parser")
 
 if response.status_code == 200:
     # Find the table
-    table = soup.find("table")
-
+    tables = soup.find_all("table", class_ = "kursusblokclass")    
+        
     # Prepare CSV file
     csv_filename = "studieplan2023plus.csv"
     with open(csv_filename, "w", newline="", encoding="utf-8") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["Course Number", "Course Name", "ECTS Points", "Placement", "Course Type"])  # Header row
+        writer.writerow(["course_id", "course_name", "ects", "placement", "course_type"])  # Header row
 
         last_course = None  # Track the last valid course entry
 
         # Extract rows from table
-        for row in table.find_all("tr")[1:]:  # Skip header row
-            cols = row.find_all("td")
-            if len(cols) >= 5:  # Ensure row has enough columns
-                course_number_tag = cols[0].find("a")
-                course_number = course_number_tag.text.strip() if course_number_tag else ""
+        for table in tables:
+            for row in table.find_all("tr"): 
+                cols = row.find_all("td")
+                if len(cols) >= 5:  # Ensure row has enough columns
+                    course_number_tag = cols[0].find("a")
+                    course_number = course_number_tag.text.strip() if course_number_tag else ""
 
-                course_name = cols[1].text.strip().replace("(polyteknisk grundlag)", "").replace("(Polyteknisk grundlag)","")  # Second td
-                ects_points = cols[2].text.strip()  # First numeric td
-                placement = cols[-1].text.strip()  # Last td contains placement
+                    course_name = cols[1].text.strip().replace("(polyteknisk grundlag)", "").replace("(Polyteknisk grundlag)","")  # Second td
+                    ects_points = cols[2].text.strip()  # First numeric td
+                    placement = cols[-1].text.strip()  # Last td contains placement
 
-                # Skip 'eller' rows
-                if course_name.lower() == "eller":
-                    continue
+                    # Skip 'eller' rows
+                    if course_name.lower() == "eller":
+                        continue
 
-                # If it's a new course, store it
-                if course_number:
-                    last_course = [course_number, course_name, ects_points, placement, "Polyteknisk Grundlag"]
-                    writer.writerow(last_course)
-                else:
-                    # If no course number, update the last valid course with this placement
-                    if last_course:
-                        last_course[3] += f", {placement}".strip(", ")
+                    # If it's a new course, store it
+                    if course_number:
+                        last_course = [course_number, course_name, ects_points, placement, "Polyteknisk Grundlag"]
                         writer.writerow(last_course)
+                    else:
+                        # If no course number, update the last valid course with this placement
+                        if last_course:
+                            last_course[3] += f", {placement}".strip(", ")
+                            writer.writerow(last_course)
 
     print(f"Data successfully saved to {csv_filename}")
 

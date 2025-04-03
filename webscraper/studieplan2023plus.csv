@@ -1,0 +1,43 @@
+course_id,course_name,ects,placement,course_type
+01001,Matematik 1a ,10,Efterår,Polyteknisk Grundlag
+01002,Matematik 1b ,10,Forår,Polyteknisk Grundlag
+02402,Statistik ,5,"E3A (tirs 8-12), F4A (tirs 13-17)",Polyteknisk Grundlag
+02403,Introduktion til matematisk statistik,5,Juni,Polyteknisk Grundlag
+10060,Fysik ,10,Forår og Efterår,Polyteknisk Grundlag
+26020,Kemi ,5,E1A (man 8-12),Polyteknisk Grundlag
+26022,Kemi ,5,August,Polyteknisk Grundlag
+26021,Kemi ,5,F5A (ons 8-12),Polyteknisk Grundlag
+27020,Bioengineering ,5,E2A (man 13-17) og F2A (man 13-17),Polyteknisk Grundlag
+42620,"Videnskab, Teknologi og Samfund ",5,"Januar, Juni",Polyteknisk Grundlag
+42622,"Videnskab, Teknologi og Samfund ",5,August,Polyteknisk Grundlag
+01017,Diskret matematik,5,E2B (tors 8-12),Polyteknisk Grundlag
+02104,Indledende programmeringsprojekt på Softwareteknologi,5,Januar,Polyteknisk Grundlag
+02105,Algoritmer og datastrukturer 1,5,F2B (tors 8-12),Polyteknisk Grundlag
+02132,Computersystemer,10,E5 (ons 8-17),Polyteknisk Grundlag
+02141,Datalogisk modellering,10,F3A (tirs 8-12) og F4B (fre 8-12),Polyteknisk Grundlag
+02157,Funktionsprogrammering,5,E4B (fre 8-12),Polyteknisk Grundlag
+02161,Software Engineering 1,5,F2A (man 13-17),Polyteknisk Grundlag
+02155,Computerarkitektur,5,E2A (man 13-17),Polyteknisk Grundlag
+02156,Logiske Systemer og Logikprogrammering,5,E4A (tirs 13-17),Polyteknisk Grundlag
+02158,Parallelprogrammering,5,E1B (tors 13-17),Polyteknisk Grundlag
+02159,Operativsystemer,5,E2B (tors 8-12),Polyteknisk Grundlag
+02122,Fagprojekt - Bachelor i Softwareteknologi,10,F5B (ons 13-17) og Juni,Polyteknisk Grundlag
+02162,Software Engineering 2,10,"E3 (tirs 8-12, fre 13-17)",Polyteknisk Grundlag
+02180,Introduktion til kunstig intelligens,5,F3A (tirs 8-12),Polyteknisk Grundlag
+02233,Netværkssikkerhed,5,F4A (tirs 13-17),Polyteknisk Grundlag
+02239,Datasikkerhed,7.5,E5B (ons 13-17),Polyteknisk Grundlag
+02247,Oversætterkonstruktion,5,F2B (tors 8-12),Polyteknisk Grundlag
+02249,Beregningsmæssigt hårde problemer,7.5,E3A (tirs 8-12),Polyteknisk Grundlag
+02266,User Experience Engineering,5,Januar,Polyteknisk Grundlag
+02267,Software-udvikling af Webtjenester,5,Januar,Polyteknisk Grundlag
+02282,Algoritmer for store datamængder,7.5,F1A (man 8-12),Polyteknisk Grundlag
+02285,Kunstig intelligens og multiagent-systemer,7.5,F4A (tirs 13-17),Polyteknisk Grundlag
+02393,Programmering i C++,5,E7 (tirs 18-22),Polyteknisk Grundlag
+02504,Computer Vision,5,F3B (fre 13-17),Polyteknisk Grundlag
+02561,Computergrafik,5,E5A (ons 8-12),Polyteknisk Grundlag
+02562,Rendering - introduktion,5,E5B (ons 13-17),Polyteknisk Grundlag
+02805,Sociale grafer og interaktioner,10,E5 (ons 8-17),Polyteknisk Grundlag
+02807,Beregningsmæssige Værktøjer til Datavidenskab,5,E7 (tirs 18-22),Polyteknisk Grundlag
+02809,UX Design Prototypeudviking,5,E1A (man 8-12),Polyteknisk Grundlag
+30510,"GPS, GIS og afsætning",5,Juni,Polyteknisk Grundlag
+42137,Optimering ved hjælp af metaheuristikker,5,F2A (man 13-17),Polyteknisk Grundlag
