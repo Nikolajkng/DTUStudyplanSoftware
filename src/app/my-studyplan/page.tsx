@@ -24,9 +24,9 @@ type CoursePlacement = {
 
 const courseTypeColors = new Map<string, string>([
     ["Naturvidenskabelig grundfag", "bg-green-500"],
-    ["Projekter og almene fag", "bg-red-700"],
-    ["Teknologisk linjefag", "bg-blue-700"],
-    ["Valgfri fag", "bg-yellow-600"],
+    ["Projekter og almene fag", "bg-red-500"],
+    ["Teknologisk linjefag", "bg-blue-400"],
+    ["Valgfri fag", "bg-yellow-500"],
 ]);
 
 
@@ -55,9 +55,9 @@ const DraggableCourse = ({ course }: { course: Course }) => {
             {...attributes}
             {...listeners}
         >
-            <p >{course.course_id}</p>
-            <p>{course.course_name}</p>
-            <p >{course.ects} ects</p>
+            <p><strong>{course.course_id}</strong></p>
+            <p><strong>{course.course_name}</strong></p>
+            <p><strong>{course.ects} ects</strong></p>
         </div>
     );
 };
@@ -156,13 +156,13 @@ export default function MyStudyPlan() {
     }, [savedPlans]);
 
     const saveStudyPlan = () => {
-        const planName = prompt("Enter a name for your study plan:");
+        const planName = prompt("Angiv et navn til studieforløbet:");
         if (planName) {
             setSavedPlans((prevPlans) => ({
                 ...prevPlans,
                 [planName]: { placements, semesters, },
             }));
-            alert(`Study plan "${planName}" saved!`);
+            alert(`Studieforløb "${planName}" gemt!`);
         }
     };
 
@@ -189,7 +189,7 @@ export default function MyStudyPlan() {
 
     // Function to export the current study plan as a JSON file
     const exportStudyPlanAsJSON = () => {
-        const planName = prompt("Enter a name for your study plan:");
+        const planName = prompt("Angiv et navn til studieforløbet:");
         if (planName) {
             // Include both placements and semesters in the exported JSON
             const studyPlanData = {
@@ -229,9 +229,9 @@ export default function MyStudyPlan() {
                     const { placements, semesters } = parsedData;
 
                     // Prompt the user for a name for the uploaded plan
-                    const planName = prompt("Enter a name for the uploaded study plan:");
+                    const planName = prompt("Angiv et navn til studieforløbet:");
                     if (!planName) {
-                        alert("Plan name is required to save the study plan.");
+                        alert("Angiv venligst et navn for at uploade studieforløb.");
                         return;
                     }
 
@@ -250,10 +250,10 @@ export default function MyStudyPlan() {
                     setSemesters(semesters);
                     setSelectedPlan(planName);
 
-                    alert(`Study plan "${planName}" uploaded and selected successfully!`);
+                    alert(`Studieforløb "${planName}" uploaded og valgt succesfuldt!`);
                 } catch (error) {
                     console.error("Error parsing file:", error);
-                    alert("Error loading study plan. Please check the file format.");
+                    alert("Fejl ved indhentning af studieforløb, venligst sørg for at filen er JSON.");
                 }
             }
         };
@@ -287,9 +287,9 @@ export default function MyStudyPlan() {
             // Add the image to the PDF
             pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
 
-            const planName = prompt("Enter a name for the uploaded study plan:");
+            const planName = prompt("Angiv et navn til studieforløbet:");
             if (!planName) {
-                alert("Plan name is required to save the study plan.");
+                alert("Angiv venligst et navn for at gemme studieforløb.");
                 return;
             }
 
@@ -297,7 +297,7 @@ export default function MyStudyPlan() {
             pdf.save(planName + ".pdf");
         } catch (error) {
             console.error("Error exporting grid as PDF:", error);
-            alert("Der opstod en fejl under eksporten af studieplanen.");
+            alert("Der opstod en fejl under eksporten af studieforløbet.");
         }
     };
 
@@ -341,7 +341,7 @@ export default function MyStudyPlan() {
             </Head>
 
             <div className="flex flex-col min-h-screen items-center">
-                <h1 className="text-4xl font-bold mt-10">DTU Software Technology Study Plan</h1>
+                <h1 className="text-4xl font-bold mt-10">DTU Software Teknologi Studieforløb</h1>
 
                 <DndContext
                     onDragEnd={(e) => {
@@ -373,7 +373,7 @@ export default function MyStudyPlan() {
                     <div className="flex justify-center mt-10 ">
                         <div className="flex justify-center mt-10">
                             <div className="m-10">
-                                <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Ny Studieplan"}</h2>
+                                <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Nyt studieforløb"}</h2>
                                 <div
                                     className={`grid grid-rows-${semesters} grid-cols-14 gap-y-1 border border-gray-400 p-2`}
                                     style={{
@@ -452,13 +452,13 @@ export default function MyStudyPlan() {
                                     </button>
                                     <button
                                         onClick={() => {
-                                            if (confirm("Er du sikker på, at du vil rydde studieplanen?")) {
+                                            if (confirm("Er du sikker på, at du vil rydde studieforløbet? (Dette vil fjerne alle kurser fra deres placeringer og placere dem tilbage i listen)")) {
                                                 setPlacements([]);
                                             }
                                         }}
                                         className=" px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
                                     >
-                                        Ryd studieplan
+                                        Ryd studieforløb
                                     </button>
                                 </div>
                             </div>
@@ -497,7 +497,7 @@ export default function MyStudyPlan() {
                 {/* Dropdown Menu for Saved Plans */}
                 < div className="mt-6" >
                     <label htmlFor="savedPlans" className="mr-2 font-semibold">
-                        Vælg studieplan:
+                        Vælg studieforløb:
                     </label>
                     <select
                         id="savedPlans"
@@ -505,7 +505,7 @@ export default function MyStudyPlan() {
                         onChange={(e) => loadStudyPlan(e.target.value)}
                         className="px-4 py-2 border rounded"
                     >
-                        <option value="">Vælg en plan</option>
+                        <option value="">Vælg et forløb</option>
                         {Object.keys(savedPlans).map((planName) => (
                             <option key={planName} value={planName}>
                                 {planName}
@@ -520,19 +520,19 @@ export default function MyStudyPlan() {
                         onClick={saveStudyPlan}
                         className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
                     >
-                        Gem nuværende studieplan
+                        Gem nuværende studieforløb
                     </button>
                     <button
                         onClick={deleteStudyPlan}
                         className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
                     >
-                        Slet nuværende studieplan
+                        Slet nuværende studieforløb
                     </button>
                     <button
                         onClick={exportStudyPlanAsJSON}
                         className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
                     >
-                        Del Studieplan (exportér JSON fil)
+                        Del Studieforløb (exportér JSON fil)
                     </button>
                 </div>
                 <div className="flex space-x-3 mt-6">
@@ -551,13 +551,13 @@ export default function MyStudyPlan() {
                         onClick={() => document.getElementById("fileInput")?.click()}
                         className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
                     >
-                        Upload Studieplan (importér JSON fil)
+                        Upload Studieforløb (importér JSON fil)
                     </button>
                     <button
                         onClick={exportSutdyPlanAsPDF}
                         className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
                     >
-                        Eksportér Studieplan som PDF
+                        Eksportér Studieforløb som PDF
                     </button>
                 </div >
 
