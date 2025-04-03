@@ -49,7 +49,7 @@ const DraggableCourse = ({ course }: { course: Course }) => {
     // controls the "course-box"
     return (
         <div
-            className={`w-100 h-16 ${courseColor({ course_type: course.course_type })} m-1 text-white flex items-center cursor-pointer white-space: normal overflow-visible z-50 justify-between p-2`}
+            className={`w-100 h-16 ${courseColor({ course_type: course.course_type })} m-1 text-white flex items-center cursor-pointer white-space: normal overflow-visible z-50 justify-between p-2 rounded-2xl`}
             ref={setNodeRef}
             style={style}
             {...attributes}
@@ -64,7 +64,7 @@ const DraggableCourse = ({ course }: { course: Course }) => {
 
 // fill the course grid (study plan) with grey boxes
 const GridFiller = ({ x, y }: { x: number; y: number }) => {
-    const { setNodeRef } = useDroppable({ id: `${x+1}-${y}` });
+    const { setNodeRef } = useDroppable({ id: `${x + 1}-${y}` });
     const borderStyling = x % 2 == 0 ? "border-r-4" : "";
 
     return (
@@ -260,6 +260,8 @@ export default function MyStudyPlan() {
         reader.readAsText(file);
     };
 
+    // Function to export the current study plan as a PDF
+    // The function captures the grid as a canvas and converts it to a PDF
     const exportSutdyPlanAsPDF = async () => {
         const gridElement = document.querySelector(".grid"); // Select the grid element
         if (!gridElement) {
@@ -286,10 +288,10 @@ export default function MyStudyPlan() {
             pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
 
             const planName = prompt("Enter a name for the uploaded study plan:");
-                    if (!planName) {
-                        alert("Plan name is required to save the study plan.");
-                        return;
-                    }
+            if (!planName) {
+                alert("Plan name is required to save the study plan.");
+                return;
+            }
 
             // Save the PDF
             pdf.save(planName + ".pdf");
@@ -343,7 +345,12 @@ export default function MyStudyPlan() {
 
                 <DndContext
                     onDragEnd={(e) => {
-                        if (!e.over) return;
+                        if (!e.over) {
+                            setPlacements((prev) =>
+                                prev.filter((placement) => placement.course.course_id !== e.active.id));
+                            return;
+                        }
+
 
                         const [x, y] = e.over.id.toString().split("-").map(Number);
                         const course = courses.find((c) => c.course_id === e.active.id);
@@ -352,7 +359,7 @@ export default function MyStudyPlan() {
                         const scaledEcts = course.ects / 2.5;
 
                         // Check border on right side (the end of semester)
-                        if (x + scaledEcts > 7*2 || (course.sem && y + course.sem > 6)) {
+                        if (x + scaledEcts > 7 * 2 || (course.sem && y + course.sem > 6)) {
                             return;
                         }
 
@@ -388,7 +395,7 @@ export default function MyStudyPlan() {
                                         style={{
                                             gridRowStart: 1,
                                             gridColumnStart: 1,
-                                            gridColumnEnd: 3,  
+                                            gridColumnEnd: 3,
                                         }}
                                     ><strong>Semester</strong>
                                     </div>
@@ -429,19 +436,31 @@ export default function MyStudyPlan() {
                                     ))}
 
                                 </div>
-                                <button
-                                    onClick={addAnotherSemester}
-                                    className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
-                                >
-                                    Tilføj semester
-                                </button>
+                                <div className=" justify-between border border-gray-400 p-2" >
+                                    <button
+                                        onClick={addAnotherSemester}
+                                        className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800 mr-2"
+                                    >
+                                        Tilføj semester
+                                    </button>
 
-                                <button
-                                    onClick={removeOneSemester}
-                                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
-                                >
-                                    Fjern semester
-                                </button>
+                                    <button
+                                        onClick={removeOneSemester}
+                                        className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800 mr-2"
+                                    >
+                                        Fjern semester
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            if (confirm("Er du sikker på, at du vil rydde studieplanen?")) {
+                                                setPlacements([]);
+                                            }
+                                        }}
+                                        className=" px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
+                                    >
+                                        Ryd studieplan
+                                    </button>
+                                </div>
                             </div>
 
                             <div className="m-10 flex flex-col">
