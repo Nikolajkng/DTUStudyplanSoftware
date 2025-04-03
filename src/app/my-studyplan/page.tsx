@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import Cookies from "js-cookie";
+import html2canvas from "html2canvas-pro";
+import jsPDF from "jspdf";
 
 interface Course {
     course_id: string;
@@ -180,9 +182,121 @@ export default function MyStudyPlan() {
         const plan = savedPlans[planName];
         if (plan) {
             setPlacements(plan.placements || []);
-            setSemesters(plan.semesters || 6);
+            setSemesters(plan.semesters || 7);
         }
         setSelectedPlan(planName);
+    };
+
+    // Function to export the current study plan as a JSON file
+    const exportStudyPlanAsJSON = () => {
+        const planName = prompt("Enter a name for your study plan:");
+        if (planName) {
+            // Include both placements and semesters in the exported JSON
+            const studyPlanData = {
+                placements,
+                semesters,
+            };
+
+            const blob = new Blob([JSON.stringify(studyPlanData)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            console.log("created temporary download url: " + url);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${planName}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    };
+
+    // Function to upload a study plan from a JSON file
+    // The file should contain an array of course placements
+    // The function parses the file and updates the state with the new placements
+    const uploadStudyPlanAsJSON = async (file: File) => {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const fileContent = event.target?.result;
+            if (typeof fileContent === "string") {
+                try {
+                    const parsedData = JSON.parse(fileContent);
+
+                    // Ensure the parsed data contains placements and semesters
+                    if (!Array.isArray(parsedData.placements) || typeof parsedData.semesters !== "number") {
+                        throw new Error("Invalid file format. Expected an object with placements and semesters.");
+                    }
+
+                    const { placements, semesters } = parsedData;
+
+                    // Prompt the user for a name for the uploaded plan
+                    const planName = prompt("Enter a name for the uploaded study plan:");
+                    if (!planName) {
+                        alert("Plan name is required to save the study plan.");
+                        return;
+                    }
+
+                    // Save the uploaded plan to the savedPlans state
+                    setSavedPlans((prevPlans) => {
+                        const updatedPlans = {
+                            ...prevPlans,
+                            [planName]: { placements, semesters },
+                        };
+                        Cookies.set("savedStudyPlans", JSON.stringify(updatedPlans), { expires: 365 * 100 }); // Save to cookies
+                        return updatedPlans;
+                    });
+
+                    // Set the uploaded plan as the currently selected plan
+                    setPlacements(placements);
+                    setSemesters(semesters);
+                    setSelectedPlan(planName);
+
+                    alert(`Study plan "${planName}" uploaded and selected successfully!`);
+                } catch (error) {
+                    console.error("Error parsing file:", error);
+                    alert("Error loading study plan. Please check the file format.");
+                }
+            }
+        };
+        reader.readAsText(file);
+    };
+
+    const exportSutdyPlanAsPDF = async () => {
+        const gridElement = document.querySelector(".grid"); // Select the grid element
+        if (!gridElement) {
+            alert("Grid element not found!");
+            return;
+        }
+
+        try {
+            // Capture the grid as a canvas
+            const canvas = await html2canvas(gridElement as HTMLElement, {
+                scale: 2, // Increase resolution
+                useCORS: true, // Handle cross-origin images
+            });
+
+            // Convert the canvas to an image
+            const imgData = canvas.toDataURL("image/png");
+
+            // Create a PDF document
+            const pdf = new jsPDF("landscape", "mm", "a4");
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            // Add the image to the PDF
+            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+            const planName = prompt("Enter a name for the uploaded study plan:");
+                    if (!planName) {
+                        alert("Plan name is required to save the study plan.");
+                        return;
+                    }
+
+            // Save the PDF
+            pdf.save(planName + ".pdf");
+        } catch (error) {
+            console.error("Error exporting grid as PDF:", error);
+            alert("Der opstod en fejl under eksporten af studieplanen.");
+        }
     };
 
     // Adds another row in the course grid, representing a semester
@@ -382,7 +496,7 @@ export default function MyStudyPlan() {
                 </div >
 
                 {/* Save Button */}
-                < div className="flex space-x-4 mt-6" >
+                < div className="flex space-x-3 mt-6" >
                     <button
                         onClick={saveStudyPlan}
                         className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
@@ -394,6 +508,37 @@ export default function MyStudyPlan() {
                         className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
                     >
                         Slet nuværende studieplan
+                    </button>
+                    <button
+                        onClick={exportStudyPlanAsJSON}
+                        className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
+                    >
+                        Del Studieplan (exportér JSON fil)
+                    </button>
+                </div>
+                <div className="flex space-x-3 mt-6">
+                    <input
+                        type="file"
+                        id="fileInput"
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                                uploadStudyPlanAsJSON(file);
+                            }
+                        }}
+                    />
+                    <button
+                        onClick={() => document.getElementById("fileInput")?.click()}
+                        className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
+                    >
+                        Upload Studieplan (importér JSON fil)
+                    </button>
+                    <button
+                        onClick={exportSutdyPlanAsPDF}
+                        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                    >
+                        Eksportér Studieplan som PDF
                     </button>
                 </div >
 
