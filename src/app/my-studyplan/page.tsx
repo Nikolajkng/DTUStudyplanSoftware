@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import Cookies from "js-cookie";
+import html2canvas from "html2canvas-pro";
+import jsPDF from "jspdf";
 
 interface Course {
     course_id: string;
@@ -22,9 +24,9 @@ type CoursePlacement = {
 
 const courseTypeColors = new Map<string, string>([
     ["Naturvidenskabelig grundfag", "bg-green-500"],
-    ["Projekter og almene fag", "bg-red-700"],
-    ["Teknologisk linjefag", "bg-blue-700"],
-    ["Valgfri fag", "bg-yellow-600"],
+    ["Projekter og almene fag", "bg-red-500"],
+    ["Teknologisk linjefag", "bg-blue-400"],
+    ["Valgfri fag", "bg-yellow-500"],
 ]);
 
 
@@ -47,22 +49,22 @@ const DraggableCourse = ({ course }: { course: Course }) => {
     // controls the "course-box"
     return (
         <div
-            className={`w-100 h-16 ${courseColor({ course_type: course.course_type })} m-1 text-white flex items-center cursor-pointer white-space: normal overflow-visible z-50 justify-between p-2`}
+            className={`w-100 h-16 ${courseColor({ course_type: course.course_type })} m-1 text-white flex items-center cursor-pointer white-space: normal overflow-visible z-50 justify-between p-2 rounded-2xl`}
             ref={setNodeRef}
             style={style}
             {...attributes}
             {...listeners}
         >
-            <p >{course.course_id}</p>
-            <p>{course.course_name}</p>
-            <p >{course.ects} ects</p>
+            <p><strong>{course.course_id}</strong></p>
+            <p><strong>{course.course_name}</strong></p>
+            <p><strong>{course.ects} ects</strong></p>
         </div>
     );
 };
 
 // fill the course grid (study plan) with grey boxes
 const GridFiller = ({ x, y }: { x: number; y: number }) => {
-    const { setNodeRef } = useDroppable({ id: `${x+1}-${y}` });
+    const { setNodeRef } = useDroppable({ id: `${x + 1}-${y}` });
     const borderStyling = x % 2 == 0 ? "border-r-4" : "";
 
     return (
@@ -154,13 +156,13 @@ export default function MyStudyPlan() {
     }, [savedPlans]);
 
     const saveStudyPlan = () => {
-        const planName = prompt("Enter a name for your study plan:");
+        const planName = prompt("Angiv et navn til studieforløbet:");
         if (planName) {
             setSavedPlans((prevPlans) => ({
                 ...prevPlans,
                 [planName]: { placements, semesters, },
             }));
-            alert(`Study plan "${planName}" saved!`);
+            alert(`Studieforløb "${planName}" gemt!`);
         }
     };
 
@@ -180,9 +182,123 @@ export default function MyStudyPlan() {
         const plan = savedPlans[planName];
         if (plan) {
             setPlacements(plan.placements || []);
-            setSemesters(plan.semesters || 6);
+            setSemesters(plan.semesters || 7);
         }
         setSelectedPlan(planName);
+    };
+
+    // Function to export the current study plan as a JSON file
+    const exportStudyPlanAsJSON = () => {
+        const planName = prompt("Angiv et navn til studieforløbet:");
+        if (planName) {
+            // Include both placements and semesters in the exported JSON
+            const studyPlanData = {
+                placements,
+                semesters,
+            };
+
+            const blob = new Blob([JSON.stringify(studyPlanData)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            console.log("created temporary download url: " + url);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${planName}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    };
+
+    // Function to upload a study plan from a JSON file
+    // The file should contain an array of course placements
+    // The function parses the file and updates the state with the new placements
+    const uploadStudyPlanAsJSON = async (file: File) => {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const fileContent = event.target?.result;
+            if (typeof fileContent === "string") {
+                try {
+                    const parsedData = JSON.parse(fileContent);
+
+                    // Ensure the parsed data contains placements and semesters
+                    if (!Array.isArray(parsedData.placements) || typeof parsedData.semesters !== "number") {
+                        throw new Error("Invalid file format. Expected an object with placements and semesters.");
+                    }
+
+                    const { placements, semesters } = parsedData;
+
+                    // Prompt the user for a name for the uploaded plan
+                    const planName = prompt("Angiv et navn til studieforløbet:");
+                    if (!planName) {
+                        alert("Angiv venligst et navn for at uploade studieforløb.");
+                        return;
+                    }
+
+                    // Save the uploaded plan to the savedPlans state
+                    setSavedPlans((prevPlans) => {
+                        const updatedPlans = {
+                            ...prevPlans,
+                            [planName]: { placements, semesters },
+                        };
+                        Cookies.set("savedStudyPlans", JSON.stringify(updatedPlans), { expires: 365 * 100 }); // Save to cookies
+                        return updatedPlans;
+                    });
+
+                    // Set the uploaded plan as the currently selected plan
+                    setPlacements(placements);
+                    setSemesters(semesters);
+                    setSelectedPlan(planName);
+
+                    alert(`Studieforløb "${planName}" uploaded og valgt succesfuldt!`);
+                } catch (error) {
+                    console.error("Error parsing file:", error);
+                    alert("Fejl ved indhentning af studieforløb, venligst sørg for at filen er JSON.");
+                }
+            }
+        };
+        reader.readAsText(file);
+    };
+
+    // Function to export the current study plan as a PDF
+    // The function captures the grid as a canvas and converts it to a PDF
+    const exportSutdyPlanAsPDF = async () => {
+        const gridElement = document.querySelector(".grid"); // Select the grid element
+        if (!gridElement) {
+            alert("Grid element not found!");
+            return;
+        }
+
+        try {
+            // Capture the grid as a canvas
+            const canvas = await html2canvas(gridElement as HTMLElement, {
+                scale: 2, // Increase resolution
+                useCORS: true, // Handle cross-origin images
+            });
+
+            // Convert the canvas to an image
+            const imgData = canvas.toDataURL("image/png");
+
+            // Create a PDF document
+            const pdf = new jsPDF("landscape", "mm", "a4");
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            // Add the image to the PDF
+            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+            const planName = prompt("Angiv et navn til studieforløbet:");
+            if (!planName) {
+                alert("Angiv venligst et navn for at gemme studieforløb.");
+                return;
+            }
+
+            // Save the PDF
+            pdf.save(planName + ".pdf");
+        } catch (error) {
+            console.error("Error exporting grid as PDF:", error);
+            alert("Der opstod en fejl under eksporten af studieforløbet.");
+        }
     };
 
     // Adds another row in the course grid, representing a semester
@@ -225,11 +341,16 @@ export default function MyStudyPlan() {
             </Head>
 
             <div className="flex flex-col min-h-screen items-center">
-                <h1 className="text-4xl font-bold mt-10">DTU Software Technology Study Plan</h1>
+                <h1 className="text-4xl font-bold mt-10">DTU Software Teknologi Studieforløb</h1>
 
                 <DndContext
                     onDragEnd={(e) => {
-                        if (!e.over) return;
+                        if (!e.over) {
+                            setPlacements((prev) =>
+                                prev.filter((placement) => placement.course.course_id !== e.active.id));
+                            return;
+                        }
+
 
                         const [x, y] = e.over.id.toString().split("-").map(Number);
                         const course = courses.find((c) => c.course_id === e.active.id);
@@ -238,7 +359,7 @@ export default function MyStudyPlan() {
                         const scaledEcts = course.ects / 2.5;
 
                         // Check border on right side (the end of semester)
-                        if (x + scaledEcts > 7*2 || (course.sem && y + course.sem > 6)) {
+                        if (x + scaledEcts > 7 * 2 || (course.sem && y + course.sem > 6)) {
                             return;
                         }
 
@@ -252,7 +373,7 @@ export default function MyStudyPlan() {
                     <div className="flex justify-center mt-10 ">
                         <div className="flex justify-center mt-10">
                             <div className="m-10">
-                                <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Ny Studieplan"}</h2>
+                                <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Nyt studieforløb"}</h2>
                                 <div
                                     className={`grid grid-rows-${semesters} grid-cols-14 gap-y-1 border border-gray-400 p-2`}
                                     style={{
@@ -274,7 +395,7 @@ export default function MyStudyPlan() {
                                         style={{
                                             gridRowStart: 1,
                                             gridColumnStart: 1,
-                                            gridColumnEnd: 3,  
+                                            gridColumnEnd: 3,
                                         }}
                                     ><strong>Semester</strong>
                                     </div>
@@ -315,19 +436,31 @@ export default function MyStudyPlan() {
                                     ))}
 
                                 </div>
-                                <button
-                                    onClick={addAnotherSemester}
-                                    className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
-                                >
-                                    Tilføj semester
-                                </button>
+                                <div className=" justify-between border border-gray-400 p-2" >
+                                    <button
+                                        onClick={addAnotherSemester}
+                                        className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800 mr-2"
+                                    >
+                                        Tilføj semester
+                                    </button>
 
-                                <button
-                                    onClick={removeOneSemester}
-                                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
-                                >
-                                    Fjern semester
-                                </button>
+                                    <button
+                                        onClick={removeOneSemester}
+                                        className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800 mr-2"
+                                    >
+                                        Fjern semester
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            if (confirm("Er du sikker på, at du vil rydde studieforløbet? (Dette vil fjerne alle kurser fra deres placeringer og placere dem tilbage i listen)")) {
+                                                setPlacements([]);
+                                            }
+                                        }}
+                                        className=" px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
+                                    >
+                                        Ryd studieforløb
+                                    </button>
+                                </div>
                             </div>
 
                             <div className="m-10 flex flex-col">
@@ -364,7 +497,7 @@ export default function MyStudyPlan() {
                 {/* Dropdown Menu for Saved Plans */}
                 < div className="mt-6" >
                     <label htmlFor="savedPlans" className="mr-2 font-semibold">
-                        Vælg studieplan:
+                        Vælg studieforløb:
                     </label>
                     <select
                         id="savedPlans"
@@ -372,7 +505,7 @@ export default function MyStudyPlan() {
                         onChange={(e) => loadStudyPlan(e.target.value)}
                         className="px-4 py-2 border rounded"
                     >
-                        <option value="">Vælg en plan</option>
+                        <option value="">Vælg et forløb</option>
                         {Object.keys(savedPlans).map((planName) => (
                             <option key={planName} value={planName}>
                                 {planName}
@@ -382,18 +515,49 @@ export default function MyStudyPlan() {
                 </div >
 
                 {/* Save Button */}
-                < div className="flex space-x-4 mt-6" >
+                < div className="flex space-x-3 mt-6" >
                     <button
                         onClick={saveStudyPlan}
                         className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
                     >
-                        Gem nuværende studieplan
+                        Gem nuværende studieforløb
                     </button>
                     <button
                         onClick={deleteStudyPlan}
                         className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
                     >
-                        Slet nuværende studieplan
+                        Slet nuværende studieforløb
+                    </button>
+                    <button
+                        onClick={exportStudyPlanAsJSON}
+                        className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
+                    >
+                        Del Studieforløb (exportér JSON fil)
+                    </button>
+                </div>
+                <div className="flex space-x-3 mt-6">
+                    <input
+                        type="file"
+                        id="fileInput"
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                                uploadStudyPlanAsJSON(file);
+                            }
+                        }}
+                    />
+                    <button
+                        onClick={() => document.getElementById("fileInput")?.click()}
+                        className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
+                    >
+                        Upload Studieforløb (importér JSON fil)
+                    </button>
+                    <button
+                        onClick={exportSutdyPlanAsPDF}
+                        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                    >
+                        Eksportér Studieforløb som PDF
                     </button>
                 </div >
 
