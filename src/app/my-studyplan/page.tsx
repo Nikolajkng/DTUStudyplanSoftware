@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import Cookies from "js-cookie";
+import html2canvas from "html2canvas-pro";
+import jsPDF from "jspdf";
 
 interface Course {
     course_id: string;
@@ -252,6 +254,45 @@ export default function MyStudyPlan() {
         reader.readAsText(file);
     };
 
+    const exportGridAsPDF = async () => {
+        const gridElement = document.querySelector(".grid"); // Select the grid element
+        if (!gridElement) {
+            alert("Grid element not found!");
+            return;
+        }
+
+        try {
+            // Capture the grid as a canvas
+            const canvas = await html2canvas(gridElement as HTMLElement, {
+                scale: 2, // Increase resolution
+                useCORS: true, // Handle cross-origin images
+            });
+
+            // Convert the canvas to an image
+            const imgData = canvas.toDataURL("image/png");
+
+            // Create a PDF document
+            const pdf = new jsPDF("landscape", "mm", "a4");
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            // Add the image to the PDF
+            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+            const planName = prompt("Enter a name for the uploaded study plan:");
+                    if (!planName) {
+                        alert("Plan name is required to save the study plan.");
+                        return;
+                    }
+
+            // Save the PDF
+            pdf.save(planName + ".pdf");
+        } catch (error) {
+            console.error("Error exporting grid as PDF:", error);
+            alert("Der opstod en fejl under eksporten af studieplanen.");
+        }
+    };
+
     // Adds another row in the course grid, representing a semester
     const addAnotherSemester = () => {
         if (semesters >= 10) return;
@@ -466,7 +507,7 @@ export default function MyStudyPlan() {
                         Del Studieplan (exportér JSON fil)
                     </button>
                 </div>
-                <div className="flex space-x-2 mt-6">
+                <div className="flex space-x-3 mt-6">
                     <input
                         type="file"
                         id="fileInput"
@@ -483,6 +524,12 @@ export default function MyStudyPlan() {
                         className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
                     >
                         Upload Studieplan (importér JSON fil)
+                    </button>
+                    <button
+                        onClick={exportGridAsPDF}
+                        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                    >
+                        Eksportér Studieplan som PDF
                     </button>
                 </div >
 
