@@ -2,73 +2,54 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 
-def save_as_csv(courses: list) -> None:
-    """Saves course data to a CSV file."""
-
-    # Define the CSV filename
-    filename = "courses.csv"
-
-    
-    # Write data to CSV file
-    with open(filename, mode="w", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        
-        # Write header row
-        writer.writerow(["Course Number", "Course Name", "ECTS", "Placement"])
-        
-        # Write course data
-        writer.writerows(courses)
-
-    print(f"CSV file '{filename}' created successfully!")
-
-def save_content_txt(content_list):
-    """Saves extracted text content to a file."""
-    with open("courses.txt", 'w', encoding="utf-8") as file:
-        for content in content_list:
-            file.write(content + "\n")  # Write each extracted table content on a new line
-
-######################################################## START ########################################################
-
+# URL of the webpage
 URL = "https://student.dtu.dk/studieordninger/bachelor/softwareteknologi/studieplan"
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 }
 
+# Fetch the page
 response = requests.get(URL, headers=headers)
+soup = BeautifulSoup(response.text, "html.parser")
 
 if response.status_code == 200:
-    # Parse the HTML content using BeautifulSoup
-    soup = BeautifulSoup(response.text, 'html.parser')
+    # Find the table
+    table = soup.find("table")
 
-    # Find all tables with the class "kursusblokclass"
-    courses_table = [table.get_text(strip=True) for table in soup.find_all('table', class_="kursusblokclass")]
-    
-    for row in courses_table:
-        
-        
-        print(row)
-        
+    # Prepare CSV file
+    csv_filename = "studieplan2023plus.csv"
+    with open(csv_filename, "w", newline="", encoding="utf-8") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["Course Number", "Course Name", "ECTS Points", "Placement", "Course Type"])  # Header row
 
-    # Print extracted text
-    for content in all_courses_table:
-        print(content)
+        last_course = None  # Track the last valid course entry
 
-    # Save extracted tables to a file
+        # Extract rows from table
+        for row in table.find_all("tr")[1:]:  # Skip header row
+            cols = row.find_all("td")
+            if len(cols) >= 5:  # Ensure row has enough columns
+                course_number_tag = cols[0].find("a")
+                course_number = course_number_tag.text.strip() if course_number_tag else ""
 
+                course_name = cols[1].text.strip().replace("(polyteknisk grundlag)", "").replace("(Polyteknisk grundlag)","")  # Second td
+                ects_points = cols[2].text.strip()  # First numeric td
+                placement = cols[-1].text.strip()  # Last td contains placement
 
-    courses = [
-            ["12345", "Introduction to Programming", "5", "Spring"],
-            ["23456", "Data Structures", "7.5", "Fall"],
-            ["34567", "Machine Learning", "10", "Spring"],
-            ["45678", "Cybersecurity Basics", "5", "Fall"],
-            ["56789", "Software Engineering", "7.5", "Spring"]
-        ]
+                # Skip 'eller' rows
+                if course_name.lower() == "eller":
+                    continue
 
-    # Save the extracted content to a csv file:
-    save_as_csv(courses)
+                # If it's a new course, store it
+                if course_number:
+                    last_course = [course_number, course_name, ects_points, placement, "Polyteknisk Grundlag"]
+                    writer.writerow(last_course)
+                else:
+                    # If no course number, update the last valid course with this placement
+                    if last_course:
+                        last_course[3] += f", {placement}".strip(", ")
+                        writer.writerow(last_course)
 
-
-    print("Courses saved successfully!")
+    print(f"Data successfully saved to {csv_filename}")
 
 else:
     print("Failed to fetch the page")
