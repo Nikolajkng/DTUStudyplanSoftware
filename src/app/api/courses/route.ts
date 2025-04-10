@@ -1,5 +1,5 @@
 // src/app/api/courses/route.ts
-import pool from '../../../lib/mariaDB';
+import pool from '../../../db/mariaDB';
 import { unstable_cache } from 'next/cache';
 
 // tries to fetch data from the database

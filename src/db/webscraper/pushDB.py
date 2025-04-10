@@ -31,12 +31,11 @@ except mysql.connector.Error as err:
 
 
 cursor.execute("USE " + database_name)
-cursor.execute("DROP TABLE IF EXISTS Courses")
-cursor.execute("CREATE TABLE Courses (course_id VARCHAR(5) PRIMARY KEY, course_name VARCHAR(150), course_type VARCHAR(150), ects int(3), placement VARCHAR(150))")
+cursor.execute("CREATE OR REPLACE TABLE Courses (course_id VARCHAR(5) PRIMARY KEY, course_name VARCHAR(150), course_type VARCHAR(150), ects int(3), placement VARCHAR(150))")
 
 
 for index, row in df.iterrows():
-    course_id = row['course_id']
+    course_id = str(row['course_id'])
     course_name = row['course_name']
     course_type = row['course_type']
     ects = row['ects']
