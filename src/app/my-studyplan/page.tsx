@@ -115,7 +115,17 @@ export default function MyStudyPlan() {
     const [placements, setPlacements] = useState<CoursePlacement[]>([]);
     const [savedPlans, setSavedPlans] = useState<{
         [key: string]: { placements: CoursePlacement[]; semesters: number };
-    }>({});
+    }>(() => {
+        const savedPlansCookie = Cookies.get("savedStudyPlans");
+        if (savedPlansCookie) {
+            try {
+                return JSON.parse(savedPlansCookie);
+            } catch (error) {
+                console.error("Error parsing saved plans from cookies during initialization:", error);
+            }
+        }
+        return {}; // Default to an empty object if no cookie is found
+    });
     const [selectedPlan, setSelectedPlan] = useState<string>("");
     const [courses, setCourses] = useState<CourseWithSem[]>([]);
     const [semesters, setSemesters] = useState(7);
@@ -129,16 +139,24 @@ export default function MyStudyPlan() {
     }, []);
 
     // Load saved plans from cookies when the component mounts
-    useEffect(() => {
-        const savedPlansCookie = Cookies.get("savedStudyPlans");
-        if (savedPlansCookie) {
-            setSavedPlans(JSON.parse(savedPlansCookie));
-        }
-    }, []);
+    // useEffect(() => {
+    //     const savedPlansCookie = Cookies.get("savedStudyPlans");
+    //     if (savedPlansCookie) {
+    //         try {
+    //             const parsedPlans = JSON.parse(savedPlansCookie);
+    //             setSavedPlans(parsedPlans);
+    //         } catch (error) {
+    //             console.error("Error parsing saved plans from cookies:", error);
+    //         }
+    //     }
+    // }, []);
 
     // save the studyplan in cookies
     useEffect(() => {
-        Cookies.set("savedStudyPlans", JSON.stringify(savedPlans), { expires: 365 * 100 }); // Expires in 100 years
+        Cookies.set("savedStudyPlans", JSON.stringify(savedPlans), {
+            expires: 365 * 100, // Expires in 100 years
+            path: "/", // Make the cookie accessible across all pages
+        });
     }, [savedPlans]);
 
     const saveStudyPlan = () => {
@@ -345,7 +363,7 @@ export default function MyStudyPlan() {
                         const scaledEcts = course.ects / 2.5;
 
                         // Check border on right side (the end of semester)
-                        if (x + scaledEcts > 7 * 2 || (course.sem || 1 && y + (course.sem || 1) > 6)) {
+                        if (x + scaledEcts > 7 * 2 || (course.sem || 1 && y + (course.sem || 1) > semesters)) {
                             return;
                         }
 
