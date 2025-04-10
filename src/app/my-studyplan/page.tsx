@@ -6,7 +6,7 @@ import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import Cookies from "js-cookie";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
-import { cachedFetchCourses,Course } from "../api/courses/route";
+import { cachedFetchCourses,Course } from "../../db/fetchCourses";
 
 type CourseWithSem = Course & {
     sem?: number;
@@ -19,7 +19,7 @@ type CoursePlacement = {
     course: CourseWithSem;
 };
 
-export const courseTypeColors = new Map<string, string>([
+const courseTypeColors = new Map<string, string>([
     ["Polyteknisk grundlag", "bg-green-500"],
     ["Projekter", "bg-red-500"],
     ["Retningsspecifikke kurser", "bg-blue-400"],

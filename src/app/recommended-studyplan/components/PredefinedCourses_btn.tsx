@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { CoursePlacement } from '../page';
+import React from 'react'
 
 
 const predefinedCourses = ["Generalitet", "Algoritmitik", "Billedanalyse", "Datasikkerhed", "Kunstig intelligens", "Softwareudvikling"]

@@ -2,7 +2,7 @@
 
 import Head from "next/head";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-import { Course } from "../api/courses/route";
+import { Course } from "../../db/fetchCourses";
 import { useState } from "react";
 
 const predefinedCourses = [" 🔥 Generalitet", " 💩 Algoritmik", " 🩻 Billedanalyse", " 🔒 Datasikkerhed", " 🤖 Kunstig intelligens", " 🥵 Softwareudvikling"]
@@ -73,12 +73,7 @@ const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
 export default function RecommendedStudyPlan() {
 
     const [placements, setPlacements] = useState<CoursePlacement[]>([]);
-    const [savedPlans, setSavedPlans] = useState<{
-        [key: string]: { placements: CoursePlacement[]; semesters: number };
-    }>({});
     const [semesters, setSemesters] = useState(7);
-    const [courses, setCourses] = useState<CourseWithSem[]>([]);
-    const [selectedCourseType, setSelectedCourseType] = useState<string>("");
     const [selectedPlan, setSelectedPlan] = useState<string>("");
 
     const loadStudyPlan = (planName: string) => {
@@ -143,9 +138,6 @@ export default function RecommendedStudyPlan() {
         }
     };
 
-    const notUsedCourses = courses.filter(
-        (c) => !placements.some((p) => p.course.course_id === c.course_id)
-    );
 
     const baseCoords = Array.from({ length: 14 })
         .map((_, x) =>
@@ -153,9 +145,6 @@ export default function RecommendedStudyPlan() {
         )
         .flat();
 
-    const filteredCourses = notUsedCourses.filter(
-        (c) => !selectedCourseType || c.course_type === selectedCourseType
-    );
 
 
     return (
@@ -242,7 +231,7 @@ export default function RecommendedStudyPlan() {
                                 </div>
                                 <div className=" justify-between border border-gray-400 p-2" >
                                     <button
-                                    onClick={exportStudyPlanAsJSON}
+                                        onClick={exportStudyPlanAsJSON}
                                         className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800 mr-2"
                                     >
                                         Kopiér studieforløb

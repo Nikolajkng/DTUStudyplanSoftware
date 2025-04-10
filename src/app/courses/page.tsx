@@ -2,7 +2,7 @@
 
 // src/app/courses/page.tsx
 import { useEffect, useState } from 'react';
-import { cachedFetchCourses, Course } from '../api/courses/route';
+import { cachedFetchCourses, Course } from "../../db/fetchCourses";
 import CourseID from './components/CourseID';
 import CourseName from './components/CourseName';
 import ECTS from './components/ECTS';
@@ -20,14 +20,13 @@ const threadColor = (courseType: string) => {
       return 'bg-blue-400'
     case 'Valgfrie kurser':
       return 'bg-yellow-400'
-    default: 'bg-grey-500'
+    default: return 'bg-grey-500'
   }
 }
 
 export default function Courses() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   // Fetch courses from the API
   // This function will be called when the component mounts
@@ -43,9 +42,6 @@ export default function Courses() {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   // Group courses by course_type
   const groupedCourses = courses.reduce((acc, course) => {
@@ -66,7 +62,7 @@ export default function Courses() {
 
             <thead className={`${threadColor(courseType)} text-white`}>
               <tr>
-                <th className="border border-gray-300 px-4 py-2">'Kursusnummer'</th>
+                <th className="border border-gray-300 px-4 py-2">Kursusnummer</th>
                 <th className="border border-gray-300 px-4 py-2">Kursusnavn</th>
                 <th className="border border-gray-300 px-4 py-2">ECTS</th>
                 <th className="border border-gray-300 px-4 py-2">Placering</th>
