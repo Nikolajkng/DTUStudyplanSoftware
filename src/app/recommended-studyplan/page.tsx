@@ -5,7 +5,7 @@ import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { Course } from "../api/courses/route";
 import { useState } from "react";
 
-const predefinedCourses = ["Generalitet", "Algoritmik", "Billedanalyse", "Datasikkerhed", "Kunstig intelligens", "Softwareudvikling"]
+const predefinedCourses = [" 🔥 Generalitet", " 💩 Algoritmik", " 🩻 Billedanalyse", " 🔒 Datasikkerhed", " 🤖 Kunstig intelligens", " 🥵 Softwareudvikling"]
 
 
 
