@@ -6,27 +6,24 @@ import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import Cookies from "js-cookie";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
+import { cachedFetchCourses,Course } from "../api/courses/route";
 
-interface Course {
-    course_id: string;
-    course_name: string;
-    ects: number;
-    course_type: string;
-    sem: 1;
+type CourseWithSem = Course & {
+    sem?: number;
 };
 
 
 type CoursePlacement = {
     x: number;
     y: number;
-    course: Course;
+    course: CourseWithSem;
 };
 
 const courseTypeColors = new Map<string, string>([
-    ["Polyteknisk Grundlag", "bg-green-500"],
-    ["Projekter og almene fag", "bg-red-500"],
-    ["Teknologisk linjefag", "bg-blue-400"],
-    ["Valgfri fag", "bg-yellow-500"],
+    ["Polyteknisk grundlag", "bg-green-500"],
+    ["Projekter", "bg-red-500"],
+    ["Retningsspecifikke kurser", "bg-blue-400"],
+    ["Valgfrie kurser", "bg-yellow-500"],
 ]);
 
 
@@ -37,7 +34,7 @@ const courseColor = ({ course_type }: { course_type: string }) => {
 }
 
 // Controls the look of the "dragable" courses in the course list
-const DraggableCourse = ({ course }: { course: Course }) => {
+const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: course.course_id,
     });
@@ -120,26 +117,15 @@ export default function MyStudyPlan() {
         [key: string]: { placements: CoursePlacement[]; semesters: number };
     }>({});
     const [selectedPlan, setSelectedPlan] = useState<string>("");
-    const [courses, setCourses] = useState<Course[]>([]);
+    const [courses, setCourses] = useState<CourseWithSem[]>([]);
     const [semesters, setSemesters] = useState(7);
     const [selectedCourseType, setSelectedCourseType] = useState<string>("");
 
     // Fetch the courses from the database 
     useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const response = await fetch("/api/courses");
-                if (!response.ok) {
-                    throw new Error("Failed to fetch courses");
-                }
-                const data: Course[] = await response.json();
-                setCourses(data);
-            } catch (err) {
-                console.error("Error fetching courses:", err);
-            }
-        };
-
-        fetchCourses();
+        cachedFetchCourses().then((data) => {
+            setCourses(data);
+        })
     }, []);
 
     // Load saved plans from cookies when the component mounts
@@ -359,7 +345,7 @@ export default function MyStudyPlan() {
                         const scaledEcts = course.ects / 2.5;
 
                         // Check border on right side (the end of semester)
-                        if (x + scaledEcts > 7 * 2 || (course.sem && y + course.sem > 6)) {
+                        if (x + scaledEcts > 7 * 2 || (course.sem || 1 && y + (course.sem || 1) > 6)) {
                             return;
                         }
 
@@ -367,6 +353,7 @@ export default function MyStudyPlan() {
                         setPlacements((prev) => [
                             ...prev.filter((c) => c.course.course_id !== course.course_id),
                             { x: x + 1, y: y + 1, course },
+                            
                         ]);
                     }}
                 >
