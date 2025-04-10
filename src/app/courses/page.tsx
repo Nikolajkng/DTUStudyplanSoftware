@@ -62,14 +62,14 @@ export default function Courses() {
       {Object.entries(groupedCourses).map(([courseType, courses]) => (
         <div key={courseType} className="mb-8">
           <h2 className="text-xl font-bold mb-4">{courseType}</h2>
-          <table className="min-w-full border-collapse border border-gray-300">
+          <table className="min-w-full border-collapse border border-gray-300 ">
 
             <thead className={`${threadColor(courseType)} text-white`}>
               <tr>
-                <th className="border border-gray-300 px-4 py-2">Kursusnummer</th>
-                <th className="border border-gray-300 px-4 py-2">Kursusnavn</th>
-                <th className="border border-gray-300 px-4 py-2">ECTS</th>
-                <th className="border border-gray-300 px-4 py-2">Placering</th>
+                <th className="border border-gray-300 py-2 w-0">Kursusnummer</th> 
+                <th className="border border-gray-300 py-2 w-40">Kursusnavn</th> 
+                <th className="border border-gray-300 py-2 w-10">ECTS</th> 
+                <th className="border border-gray-300 py-2 w-40">Placering</th> 
               </tr>
             </thead>
             <tbody>

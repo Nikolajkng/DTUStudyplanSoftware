@@ -78,7 +78,7 @@ export default function RecommendedStudyPlan() {
 
     const loadStudyPlan = (planName: string) => {
         const fetchPlan = async (planName: string) => {
-            const response = await fetch(`/courses/${planName}.json`);
+            const response = await fetch(`/predefined_courses/${planName}.json`);
             if (!response.ok) {
                 throw new Error(`Failed to fetch plan: ${planName}`);
             }
