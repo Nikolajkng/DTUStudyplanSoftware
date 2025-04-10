@@ -18,7 +18,7 @@ if response.status_code == 200:
 
     # Write everything to a CSV file
     base_dir = os.path.dirname(__file__)
-    csv_filename = os.path.join(base_dir, "..", "data", "studieplan2023plus.csv")
+    csv_filename = os.path.join(base_dir, "..", "csv", "studieplan2023plus.csv")
     csv_filename = os.path.abspath(csv_filename)
     os.makedirs(os.path.dirname(csv_filename), exist_ok=True)
 
@@ -57,7 +57,7 @@ if response.status_code == 200:
                             last_course[3] += f", {placement}".strip(", ")
                             writer.writerow(last_course)
 
-    print(f"Data successfully saved to {csv_filename} to /db")
+    print(f"Data successfully saved to {csv_filename}")
 
 else:
     print("Failed to fetch the page")

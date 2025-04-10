@@ -13,7 +13,7 @@ password = os.getenv('DB_PASSWORD')
 database_name = os.getenv('DB_NAME')
 
 # Path to your CSV file
-df  = pd.read_csv("webscraper/studieplan2023plus.csv")
+df  = pd.read_csv("src/db/csv/studieplan2023plus.csv")
 
 
 # Connect to the MariaDB server

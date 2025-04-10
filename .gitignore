@@ -46,3 +46,6 @@ next-env.d.ts
 
 # DB ENV file
 .env
+
+# python
+/src/db/webscraper/tempCodeRunnerFile.py
