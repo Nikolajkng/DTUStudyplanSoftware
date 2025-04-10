@@ -1,16 +1,19 @@
 'use client';
 
 import Head from "next/head";
-import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
-import Cookies from "js-cookie";
-import { cachedFetchCourses, Course } from "../api/courses/route";
-import { useState, useEffect } from "react";
+import { useDraggable, useDroppable } from "@dnd-kit/core";
+import { Course } from "../api/courses/route";
+import { useState } from "react";
+
+const predefinedCourses = ["Generalitet", "Algoritmik", "Billedanalyse", "Datasikkerhed", "Kunstig intelligens", "Softwareudvikling"]
+
+
 
 type CourseWithSem = Course & {
     sem?: number;
 };
 
-type CoursePlacement = {
+export type CoursePlacement = {
     x: number;
     y: number;
     course: CourseWithSem;
@@ -25,11 +28,14 @@ const courseTypeColors = new Map<string, string>([
 ]);
 
 
+
 // Function to determine the color based on course type
 // Used in the course grid and the course list
 const courseColor = ({ course_type }: { course_type: string }) => {
     return courseTypeColors.get(course_type) || "bg-slate-600";
 }
+
+
 
 const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
@@ -65,6 +71,7 @@ const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
 
 
 export default function RecommendedStudyPlan() {
+
     const [placements, setPlacements] = useState<CoursePlacement[]>([]);
     const [savedPlans, setSavedPlans] = useState<{
         [key: string]: { placements: CoursePlacement[]; semesters: number };
@@ -72,9 +79,27 @@ export default function RecommendedStudyPlan() {
     const [semesters, setSemesters] = useState(7);
     const [courses, setCourses] = useState<CourseWithSem[]>([]);
     const [selectedCourseType, setSelectedCourseType] = useState<string>("");
+    const [selectedPlan, setSelectedPlan] = useState<string>("");
 
+    const loadStudyPlan = (planName: string) => {
+        const fetchPlan = async (planName: string) => {
+            const response = await fetch(`/courses/${planName}.json`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch plan: ${planName}`);
+            }
+            return response.json();
+        };
 
-
+        fetchPlan(planName)
+            .then((plan) => {
+                setPlacements(plan.placements || []);
+                setSemesters(plan.semesters || 7);
+            })
+            .catch((error) => {
+                console.error("Error loading plan:", error);
+            });
+        setSelectedPlan(planName);
+    };
 
     const GridFiller = ({ x, y }: { x: number; y: number }) => {
         const { setNodeRef } = useDroppable({ id: `${x + 1}-${y}` });
@@ -92,6 +117,30 @@ export default function RecommendedStudyPlan() {
                 ref={setNodeRef}
             />
         );
+    };
+
+    const exportStudyPlanAsJSON = () => {
+        const planName = selectedPlan
+        if (planName) {
+            // Include both placements and semesters in the exported JSON
+            const studyPlanData = {
+                placements,
+                semesters,
+            };
+
+            const blob = new Blob([JSON.stringify(studyPlanData)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            console.log("created temporary download url: " + url);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${planName}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } else {
+            alert("Du kan ikke kopiere et tomt studieforløb");
+        }
     };
 
     const notUsedCourses = courses.filter(
@@ -128,7 +177,7 @@ export default function RecommendedStudyPlan() {
                     <div className="flex justify-center mt-10 ">
                         <div className="flex justify-center mt-10">
                             <div className="m-10">
-                                <h2 className="text-2xl font-semibold mb-4">{"Anbefaldede studieforløb"}</h2>
+                                <h2 className="text-2xl font-semibold mb-4">{selectedPlan || ""}</h2>
                                 <div
                                     className={`grid grid-rows-${semesters} grid-cols-14 gap-y-1 border border-gray-400 p-2`}
                                     style={{
@@ -191,9 +240,28 @@ export default function RecommendedStudyPlan() {
                                     ))}
 
                                 </div>
+                                <div className=" justify-between border border-gray-400 p-2" >
+                                    <button
+                                    onClick={exportStudyPlanAsJSON}
+                                        className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800 mr-2"
+                                    >
+                                        Kopiér studieforløb
+                                    </button>
+                                </div>
 
                             </div>
-
+                            <div className="m-10 flex flex-col">
+                                <h2 className="text-2xl font-semibold mb-4">Anbefalede studieforløb</h2>
+                                {predefinedCourses.map((course, index) => (
+                                    <button
+                                        key={index}
+                                        className="bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-slate-500"
+                                        onClick={() => loadStudyPlan(course)}
+                                    >
+                                        {course}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
