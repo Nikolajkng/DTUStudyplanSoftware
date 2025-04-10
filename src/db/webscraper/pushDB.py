@@ -36,6 +36,7 @@ cursor.execute("CREATE OR REPLACE TABLE Courses (course_id VARCHAR(5) PRIMARY KE
 
 for index, row in df.iterrows():
     course_id = str(row['course_id'])
+    if len(course_id) == 4: course_id = "0" + course_id
     course_name = row['course_name']
     course_type = row['course_type']
     ects = row['ects']
