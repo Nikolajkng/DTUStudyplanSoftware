@@ -3,7 +3,7 @@
 import Head from "next/head";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { Course } from "../api/courses/route";
-import { useState} from "react";
+import { useState } from "react";
 
 const predefinedCourses = ["Generalitet", "Algoritmik", "Billedanalyse", "Datasikkerhed", "Kunstig intelligens", "Softwareudvikling"]
 
@@ -119,6 +119,30 @@ export default function RecommendedStudyPlan() {
         );
     };
 
+    const exportStudyPlanAsJSON = () => {
+        const planName = selectedPlan
+        if (planName) {
+            // Include both placements and semesters in the exported JSON
+            const studyPlanData = {
+                placements,
+                semesters,
+            };
+
+            const blob = new Blob([JSON.stringify(studyPlanData)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            console.log("created temporary download url: " + url);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${planName}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } else {
+            alert("Du kan ikke kopiere et tomt studieforløb");
+        }
+    };
+
     const notUsedCourses = courses.filter(
         (c) => !placements.some((p) => p.course.course_id === c.course_id)
     );
@@ -215,6 +239,14 @@ export default function RecommendedStudyPlan() {
                                         </div>
                                     ))}
 
+                                </div>
+                                <div className=" justify-between border border-gray-400 p-2" >
+                                    <button
+                                    onClick={exportStudyPlanAsJSON}
+                                        className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800 mr-2"
+                                    >
+                                        Kopiér studieforløb
+                                    </button>
                                 </div>
 
                             </div>
