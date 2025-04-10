@@ -1,13 +1,10 @@
 'use client';
+
 // src/app/courses/page.tsx
 import { useEffect, useState } from 'react';
+import { cachedFetchCourses, Course } from '../api/courses/route';
 
-interface Course {
-  course_id: string;
-  course_name: string;
-  ects: number;
-  course_type: string;
-}
+
 
 export default function Courses() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -17,23 +14,11 @@ export default function Courses() {
   // Fetch courses from the API
   // This function will be called when the component mounts
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await fetch('/api/courses');
-        if (!response.ok) {
-          throw new Error('Failed to fetch courses');
-        }
-        const data: Course[] = await response.json();
-        setCourses(data);
-      } catch (err) {
-        console.error('Error fetching courses:', err);
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchCourses();
+    cachedFetchCourses().then((fetchedCourses) => {
+      setCourses(fetchedCourses);
+      setLoading(false);
+    })
   }, []);
 
   if (loading) {
@@ -62,9 +47,11 @@ export default function Courses() {
           <table className="min-w-full border-collapse border border-gray-300">
             <thead>
               <tr>
-                <th className="border border-gray-300 px-4 py-2">Course ID</th>
-                <th className="border border-gray-300 px-4 py-2">Course Name</th>
+                <th className="border border-gray-300 px-4 py-2">KursusID</th>
+                <th className="border border-gray-300 px-4 py-2">Kursusnavn</th>
+                <th className="border border-gray-300 px-4 py-2">Kursustype</th>
                 <th className="border border-gray-300 px-4 py-2">ECTS</th>
+                <th className="border border-gray-300 px-4 py-2">Placering</th>
               </tr>
             </thead>
             <tbody>
@@ -72,7 +59,9 @@ export default function Courses() {
                 <tr key={course.course_id}>
                   <td className="border border-gray-300 px-4 py-2">{course.course_id}</td>
                   <td className="border border-gray-300 px-4 py-2">{course.course_name}</td>
+                  <td className="border border-gray-300 px-4 py-2">{course.course_type}</td>
                   <td className="border border-gray-300 px-4 py-2">{course.ects}</td>
+                  <td className="border border-gray-300 px-4 py-2">{course.placement}</td>
                 </tr>
               ))}
             </tbody>
