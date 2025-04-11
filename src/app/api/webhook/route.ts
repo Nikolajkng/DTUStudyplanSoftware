@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export function POST() {
     console.log("webhook triggered");
     try {
-        exec('git pull', (err) => {
+        exec('git stash && git pull', (err) => {
             if (err) {
                 console.log("git pull err", err)
                 return

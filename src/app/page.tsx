@@ -9,7 +9,7 @@ export default function HomePage() {
 
         {/* About Section */}
         <section className="max-w-4xl mx-auto mt-20">
-          <h2 className="text-2xl font-semibold mb-4">Om Softwareteknologi Studieplanlægger</h2>
+          <h2 className="text-2xl font-semibold mb-4">Om Softwareteknologi Studieforløbs planlægger</h2>
           <p className="text-gray-700">
             Velkommen til hjemmesiden for studerende på DTUs bacheloruddannelse i softwareteknologi.
             På hjemmesiden kan du finde konkrete oplysninger om studiet som er særligt relevant for software-studerende.
