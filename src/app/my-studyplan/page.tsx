@@ -1,53 +1,28 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Head from "next/head";
-import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
+import { DndContext } from "@dnd-kit/core";
 import Cookies from "js-cookie";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
-import { cachedFetchCourses, Course } from "../../db/fetchCourses";
-import { CourseWithSem, CoursePlacement } from "./components/CourseTypes";
 import DraggableCourse from "./components/DraggableCourse";
 import GridCourse from "./components/grid/GridCourse";
 import GridFiller from "./components/grid/GridFiller";
 import { ExportStudyPlanAsJSON } from "./components/buttons/ExportStudyPlanAsJSON";
-
+import { useStudyPlan } from "./components/hooks/useStudyPlan";
 
 export default function MyStudyPlan() {
-    const [placements, setPlacements] = useState<CoursePlacement[]>([]);
-    const [savedPlans, setSavedPlans] = useState<{
-        [key: string]: { placements: CoursePlacement[]; semesters: number };
-    }>(() => {
-        const savedPlansCookie = Cookies.get("savedStudyPlans");
-        if (savedPlansCookie) {
-            try {
-                return JSON.parse(savedPlansCookie);
-            } catch (error) {
-                console.error("Error parsing saved plans from cookies during initialization:", error);
-            }
-        }
-        return {}; // Default to an empty object if no cookie is found
-    });
-    const [selectedPlan, setSelectedPlan] = useState<string>("");
-    const [courses, setCourses] = useState<CourseWithSem[]>([]);
-    const [semesters, setSemesters] = useState(7);
-    const [selectedCourseType, setSelectedCourseType] = useState<string>("");
+    
+    // Load all hooks and states from hooks/useStudyPlan
+    const { 
+        placements, setPlacements, 
+        savedPlans, setSavedPlans, 
+        selectedPlan, setSelectedPlan, 
+        courses, setCourses,
+        semesters, setSemesters,
+        selectedCourseType, setSelectedCourseType,} 
+        = useStudyPlan();
 
-    // Fetch the courses from the database 
-    useEffect(() => {
-        cachedFetchCourses().then((data) => {
-            setCourses(data);
-        })
-    }, []);
-
-    // save the studyplan in cookies
-    useEffect(() => {
-        Cookies.set("savedStudyPlans", JSON.stringify(savedPlans), {
-            expires: 365 * 100, // Expires in 100 years
-            path: "/", // Make the cookie accessible across all pages
-        });
-    }, [savedPlans]);
 
     const saveStudyPlan = () => {
         const planName = prompt("Angiv et navn til studieforløbet:");
@@ -81,7 +56,7 @@ export default function MyStudyPlan() {
         setSelectedPlan(planName);
     };
 
-  
+
 
     // Function to upload a study plan from a JSON file
     // The file should contain an array of course placements
@@ -399,7 +374,7 @@ export default function MyStudyPlan() {
                     >
                         Slet nuværende studieforløb
                     </button>
-                    <ExportStudyPlanAsJSON/>
+                    <ExportStudyPlanAsJSON />
                 </div>
                 <div className="flex space-x-3 mt-6">
                     <input
