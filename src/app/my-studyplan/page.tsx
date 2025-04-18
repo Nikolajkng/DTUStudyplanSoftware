@@ -8,13 +8,17 @@ import GridFiller from "./components/grid/GridFiller";
 import { useStudyPlan } from "./components/hooks/useStudyPlan";
 
 // Button & Eventhandlers
-import { ExportAsJsonBtn } from "./components/handlers/ExportAsJsonBtn";
-import { UploadAsJsonBtn } from "./components/handlers/UploadJsonBtn";
-import ExportAsPdf from "./components/handlers/ExportAsPdfBtn";
-import SaveBtn from "./components/handlers/SaveBtn";
-import DeleteBtn from "./components/handlers/DeleteBtn";
+import { ExportAsJsonBtn } from "./components/btn_handlers/ExportAsJsonBtn";
+import { UploadAsJsonBtn } from "./components/btn_handlers/UploadJsonBtn";
+import ExportAsPdf from "./components/btn_handlers/ExportAsPdfBtn";
+import SaveBtn from "./components/btn_handlers/SaveBtn";
+import DeleteBtn from "./components/btn_handlers/DeleteBtn";
+import AddSemesterBtn from "./components/btn_handlers/AddSemesterBtn";
+import RemoveSemesterBtn from "./components/btn_handlers/RemoveSemesterBtn";
+import ClearBtn from "./components/btn_handlers/ClearBtn";
+import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
 
-export default function MyStudyPlan() {
+function StudyPlanContent() {
 
     // Load all hooks and states from hooks/useStudyPlan
     const {
@@ -38,19 +42,6 @@ export default function MyStudyPlan() {
     };
 
 
-    // Adds another row in the course grid, representing a semester
-    const addAnotherSemester = () => {
-        if (semesters >= 10) return;
-        setSemesters((prev) => prev + 1);
-        console.log(semesters);
-    };
-
-    // removes a row from the course grid
-    const removeOneSemester = () => {
-        if (semesters <= 7) return;
-        setSemesters((prev) => prev - 1);
-        console.log(semesters);
-    };
 
     // Function for determining the courses not currently in the course grid (study plan)
     // Used by the "tilgængelige kurser"
@@ -69,6 +60,7 @@ export default function MyStudyPlan() {
     );
 
     return (<>
+
         <Head>
             <title>DTU Software Technology</title>
             <meta charSet="UTF-8" />
@@ -168,29 +160,11 @@ export default function MyStudyPlan() {
 
                             </div>
                             <div className=" justify-between border border-gray-400 p-2" >
-                                <button
-                                    onClick={addAnotherSemester}
-                                    className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800 mr-2"
-                                >
-                                    Tilføj semester
-                                </button>
+                                <AddSemesterBtn />
+                                <RemoveSemesterBtn />
+                                <ClearBtn />
 
-                                <button
-                                    onClick={removeOneSemester}
-                                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800 mr-2"
-                                >
-                                    Fjern semester
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        if (confirm("Er du sikker på, at du vil rydde studieforløbet? (Dette vil fjerne alle kurser fra deres placeringer og placere dem tilbage i listen)")) {
-                                            setPlacements([]);
-                                        }
-                                    }}
-                                    className=" px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
-                                >
-                                    Ryd studieforløb
-                                </button>
+
                             </div>
                         </div>
 
@@ -258,5 +232,13 @@ export default function MyStudyPlan() {
 
         </div >
     </>
+    );
+}
+
+export default function MyStudyPlan() {
+    return (
+        <StudyPlanProvider>
+            <StudyPlanContent />
+        </StudyPlanProvider>
     );
 }
