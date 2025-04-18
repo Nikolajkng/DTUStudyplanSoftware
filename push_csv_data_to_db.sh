@@ -11,5 +11,5 @@ echo "Web scraping #2 completed. CSV file created."
 sleep 1
 
 # 2) Connect to DB and push CSV data to MariaDB database.
-python3 src/db/webscraper/pushDB.py
+python3 src/db/webscraper/write_to_DB.py
 

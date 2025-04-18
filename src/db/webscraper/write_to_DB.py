@@ -34,7 +34,14 @@ except mysql.connector.Error as err:
 
 
 cursor.execute("USE " + database_name)
-cursor.execute("CREATE OR REPLACE TABLE Courses (course_id VARCHAR(5) PRIMARY KEY, course_name VARCHAR(150), course_type VARCHAR(150), ects int(3), placement VARCHAR(150))")
+cursor.execute("""
+               CREATE OR REPLACE TABLE Courses 
+               (course_id VARCHAR(5) PRIMARY KEY, 
+               course_name VARCHAR(150), 
+               course_type VARCHAR(150), 
+               ects DECIMAL(3,1), 
+               placement VARCHAR(150))
+               """)
 
 for df in df:
     # Check if the DataFrame is empty

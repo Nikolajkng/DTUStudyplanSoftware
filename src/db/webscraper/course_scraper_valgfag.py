@@ -45,7 +45,7 @@ if response.status_code == 200:
                         course_name = cols[1].get_text(strip=True)
                         ects = cols[2].get_text(strip=True).replace(",", ".").replace(" \" ", "")
                         group = cols[3].get_text(strip=True)
-                        type = "Valgfri kurser"
+                        type = "Valgfrie kurser"
 
                         # Write the extracted data to the CSV
                         writer.writerow([course_code, course_name, ects, group, type])
