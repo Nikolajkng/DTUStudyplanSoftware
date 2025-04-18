@@ -2,12 +2,13 @@ import React from 'react'
 import Cookies from "js-cookie";
 import { useStudyPlan } from "../hooks/useStudyPlan";
 
+export function UploadStudyPlanAsJSON() {
+    const { setPlacements, setSemesters, setSavedPlans, setSelectedPlan } = useStudyPlan();
 
     // Function to upload a study plan from a JSON file
     // The file should contain an array of course placements
     // The function parses the file and updates the state with the new placements
     const handleUploadStudyPlanAsJSON = async (file: File) => {
-        const { setPlacements, setSemesters, setSavedPlans, setSelectedPlan } = useStudyPlan();
 
         const reader = new FileReader();
         reader.onload = async (event) => {
@@ -55,8 +56,6 @@ import { useStudyPlan } from "../hooks/useStudyPlan";
         reader.readAsText(file);
     };
 
-export function UploadStudyPlanAsJSON() {
-    
     return (
         <><input
             type="file"

@@ -11,32 +11,22 @@ import GridFiller from "./components/grid/GridFiller";
 import { ExportStudyPlanAsJSON } from "./components/buttons/ExportStudyPlanAsJSON";
 import { useStudyPlan } from "./components/hooks/useStudyPlan";
 import SaveStudyPlanBtn from "./components/buttons/SaveStudyPlanBtn";
+import DeleteStudyPlanBtn from "./components/buttons/DeleteStudyPlanBtn";
 
 export default function MyStudyPlan() {
-    
+
     // Load all hooks and states from hooks/useStudyPlan
-    const { 
-        placements, setPlacements, 
-        savedPlans, setSavedPlans, 
-        selectedPlan, setSelectedPlan, 
+    const {
+        placements, setPlacements,
+        savedPlans, setSavedPlans,
+        selectedPlan, setSelectedPlan,
         courses, setCourses,
         semesters, setSemesters,
-        selectedCourseType, setSelectedCourseType,} 
+        selectedCourseType, setSelectedCourseType, }
         = useStudyPlan();
 
 
-    // Delete selected studyplan from the cookies and returns to "default" selected study plan
-    const deleteStudyPlan = () => {
-        if (!selectedPlan) return;
-
-        const restPlans = Object.fromEntries(
-            Object.entries(savedPlans).filter(([key]) => key !== selectedPlan)
-        );
-        setSavedPlans(restPlans);
-        setPlacements([]);
-        setSelectedPlan("");
-    };
-
+    
     const loadStudyPlan = (planName: string) => {
         const plan = savedPlans[planName];
         if (plan) {
@@ -350,15 +340,10 @@ export default function MyStudyPlan() {
                     </select>
                 </div >
 
-                {/* Save Button */}
+                {/* Buttons for saving, deleting, and exporting study plans */}
                 < div className="flex space-x-3 mt-6" >
-                   <SaveStudyPlanBtn/>
-                    <button
-                        onClick={deleteStudyPlan}
-                        className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
-                    >
-                        Slet nuværende studieforløb
-                    </button>
+                    <SaveStudyPlanBtn />
+                    <DeleteStudyPlanBtn/>
                     <ExportStudyPlanAsJSON />
                 </div>
                 <div className="flex space-x-3 mt-6">

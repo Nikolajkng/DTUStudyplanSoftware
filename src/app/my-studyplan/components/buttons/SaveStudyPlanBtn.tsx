@@ -1,21 +1,20 @@
 import { useState } from "react";
 import { useStudyPlan } from "../hooks/useStudyPlan";
 
-
-const saveStudyPlan = () => {
-    const { placements, semesters, setSavedPlans } = useStudyPlan();
-    const planName = prompt("Angiv et navn til studieforløbet:");
-    if (planName) {
-        setSavedPlans((prevPlans) => ({
-            ...prevPlans,
-            [planName]: { placements, semesters, },
-        }));
-        alert(`Studieforløb "${planName}" gemt!`);
-    }
-};
-
-
 export default function SaveStudyPlanBtn() {
+    const { placements, semesters, setSavedPlans } = useStudyPlan();
+    const saveStudyPlan = () => {
+        const planName = prompt("Angiv et navn til studieforløbet:");
+        if (planName) {
+            setSavedPlans((prevPlans) => ({
+                ...prevPlans,
+                [planName]: { placements, semesters, },
+            }));
+            alert(`Studieforløb "${planName}" gemt!`);
+        }
+    };
+
+
     return (
         <button
             onClick={saveStudyPlan}
