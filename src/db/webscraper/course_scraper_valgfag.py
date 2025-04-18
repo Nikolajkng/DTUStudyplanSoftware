@@ -25,6 +25,10 @@ if response.status_code == 200:
     with open(csv_filename, mode="w", newline="", encoding="utf-8") as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(["course_id", "course_name", "ects", "placement"])  # Write header
+        
+        # Edge case - bachelor projektet
+        writer.writerow(["00000", "Bachelorprojekt", "15", "Forår+juni eller efterår+januar"])  # Write header
+
 
         for idx, table in enumerate(tables):
             if idx < 5:
