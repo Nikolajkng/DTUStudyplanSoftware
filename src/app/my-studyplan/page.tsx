@@ -6,110 +6,11 @@ import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import Cookies from "js-cookie";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
-import { cachedFetchCourses,Course } from "../../db/fetchCourses";
-
-type CourseWithSem = Course & {
-    sem?: number;
-};
-
-
-type CoursePlacement = {
-    x: number;
-    y: number;
-    course: CourseWithSem;
-};
-
-const courseTypeColors = new Map<string, string>([
-    ["Polyteknisk grundlag", "bg-green-500"],
-    ["Projekter", "bg-red-500"],
-    ["Retningsspecifikke kurser", "bg-blue-400"],
-    ["Valgfrie kurser", "bg-yellow-500"],
-]);
-
-
-// Function to determine the color based on course type
-// Used in the course grid and the course list
-const courseColor = ({ course_type }: { course_type: string }) => {
-    return courseTypeColors.get(course_type) || "bg-slate-600";
-}
-
-// Controls the look of the "dragable" courses in the course list
-const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
-    const { attributes, listeners, setNodeRef, transform } = useDraggable({
-        id: course.course_id,
-    });
-
-    const style = transform
-        ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
-        : undefined;
-
-    // controls the "course-box"
-    return (
-        <div
-            className={`w-100 h-16 ${courseColor({ course_type: course.course_type })} m-1 text-white flex items-center cursor-pointer white-space: normal overflow-visible z-50 justify-between p-2 rounded-2xl`}
-            ref={setNodeRef}
-            style={style}
-            {...attributes}
-            {...listeners}
-        >
-            <p><strong>{course.course_id}</strong></p>
-            <p><strong>{course.course_name}</strong></p>
-            <p><strong>{course.ects} ects</strong></p>
-        </div>
-    );
-};
-
-// fill the course grid (study plan) with grey boxes
-const GridFiller = ({ x, y }: { x: number; y: number }) => {
-    const { setNodeRef } = useDroppable({ id: `${x + 1}-${y}` });
-    const borderStyling = x % 2 == 0 ? "border-r-4" : "";
-
-    return (
-        <div
-            className={`bg-gray-300 border-white ${borderStyling}`}
-            style={{
-                width: "100%", // Fill the grid cell
-                height: "100%", // Fill the grid cell
-                gridRowStart: y + 1,
-                gridColumnStart: x + 2,
-            }}
-            ref={setNodeRef}
-        />
-    );
-};
-
-// The grid showing the studyplan
-const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
-    const { attributes, listeners, setNodeRef, transform } = useDraggable({
-        id: placement.course.course_id,
-    });
-
-    const scaledEcts = placement.course.ects / 2.5; // Scale the ECTS to fit the grid
-
-    const style = transform
-        ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
-        : undefined;
-
-    return (
-        <div
-            className={`${courseColor({ course_type: placement.course.course_type })} text-white flex justify-center items-center z-10`}
-            style={{
-                width: "100%", // Fill the grid cell
-                height: "100%", // Fill the grid cell
-                gridColumnStart: placement.x,
-                gridColumnEnd: placement.x + scaledEcts,
-                gridRowStart: placement.y,
-                gridRowEnd: placement.y + (placement.course.sem || 1),
-                ...style,
-            }}
-            ref={setNodeRef}
-            {...attributes}
-            {...listeners}
-        >
-            {placement.course.course_name}
-        </div>
-    );
-};
+import { cachedFetchCourses, Course } from "../../db/fetchCourses";
+import { CourseWithSem, CoursePlacement } from "./components/CourseTypes";
+import DraggableCourse from "./components/DraggableCourse";
+import GridCourse from "./components/Grid/GridCourse";
+import GridFiller from "./components/Grid/GridFiller";
 
 export default function MyStudyPlan() {
     const [placements, setPlacements] = useState<CoursePlacement[]>([]);
@@ -137,19 +38,6 @@ export default function MyStudyPlan() {
             setCourses(data);
         })
     }, []);
-
-    // Load saved plans from cookies when the component mounts
-    // useEffect(() => {
-    //     const savedPlansCookie = Cookies.get("savedStudyPlans");
-    //     if (savedPlansCookie) {
-    //         try {
-    //             const parsedPlans = JSON.parse(savedPlansCookie);
-    //             setSavedPlans(parsedPlans);
-    //         } catch (error) {
-    //             console.error("Error parsing saved plans from cookies:", error);
-    //         }
-    //     }
-    // }, []);
 
     // save the studyplan in cookies
     useEffect(() => {
@@ -354,12 +242,9 @@ export default function MyStudyPlan() {
                                 prev.filter((placement) => placement.course.course_id !== e.active.id));
                             return;
                         }
-
-
                         const [x, y] = e.over.id.toString().split("-").map(Number);
                         const course = courses.find((c) => c.course_id === e.active.id);
                         if (!course) return;
-
                         const scaledEcts = course.ects / 2.5;
 
                         // Check border on right side (the end of semester)
@@ -371,7 +256,7 @@ export default function MyStudyPlan() {
                         setPlacements((prev) => [
                             ...prev.filter((c) => c.course.course_id !== course.course_id),
                             { x: x + 1, y: y + 1, course },
-                            
+
                         ]);
                     }}
                 >
