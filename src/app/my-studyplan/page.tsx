@@ -9,8 +9,10 @@ import jsPDF from "jspdf";
 import { cachedFetchCourses, Course } from "../../db/fetchCourses";
 import { CourseWithSem, CoursePlacement } from "./components/CourseTypes";
 import DraggableCourse from "./components/DraggableCourse";
-import GridCourse from "./components/Grid/GridCourse";
-import GridFiller from "./components/Grid/GridFiller";
+import GridCourse from "./components/grid/GridCourse";
+import GridFiller from "./components/grid/GridFiller";
+import { ExportStudyPlanAsJSON } from "./components/buttons/ExportStudyPlanAsJSON";
+
 
 export default function MyStudyPlan() {
     const [placements, setPlacements] = useState<CoursePlacement[]>([]);
@@ -79,28 +81,7 @@ export default function MyStudyPlan() {
         setSelectedPlan(planName);
     };
 
-    // Function to export the current study plan as a JSON file
-    const exportStudyPlanAsJSON = () => {
-        const planName = prompt("Angiv et navn til studieforløbet:");
-        if (planName) {
-            // Include both placements and semesters in the exported JSON
-            const studyPlanData = {
-                placements,
-                semesters,
-            };
-
-            const blob = new Blob([JSON.stringify(studyPlanData)], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            console.log("created temporary download url: " + url);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `${planName}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-    };
+  
 
     // Function to upload a study plan from a JSON file
     // The file should contain an array of course placements
@@ -418,12 +399,7 @@ export default function MyStudyPlan() {
                     >
                         Slet nuværende studieforløb
                     </button>
-                    <button
-                        onClick={exportStudyPlanAsJSON}
-                        className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
-                    >
-                        Del Studieforløb (exportér JSON fil)
-                    </button>
+                    <ExportStudyPlanAsJSON/>
                 </div>
                 <div className="flex space-x-3 mt-6">
                     <input
