@@ -10,6 +10,7 @@ import GridCourse from "./components/grid/GridCourse";
 import GridFiller from "./components/grid/GridFiller";
 import { ExportStudyPlanAsJSON } from "./components/buttons/ExportStudyPlanAsJSON";
 import { useStudyPlan } from "./components/hooks/useStudyPlan";
+import SaveStudyPlanBtn from "./components/buttons/SaveStudyPlanBtn";
 
 export default function MyStudyPlan() {
     
@@ -23,17 +24,6 @@ export default function MyStudyPlan() {
         selectedCourseType, setSelectedCourseType,} 
         = useStudyPlan();
 
-
-    const saveStudyPlan = () => {
-        const planName = prompt("Angiv et navn til studieforløbet:");
-        if (planName) {
-            setSavedPlans((prevPlans) => ({
-                ...prevPlans,
-                [planName]: { placements, semesters, },
-            }));
-            alert(`Studieforløb "${planName}" gemt!`);
-        }
-    };
 
     // Delete selected studyplan from the cookies and returns to "default" selected study plan
     const deleteStudyPlan = () => {
@@ -362,12 +352,7 @@ export default function MyStudyPlan() {
 
                 {/* Save Button */}
                 < div className="flex space-x-3 mt-6" >
-                    <button
-                        onClick={saveStudyPlan}
-                        className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
-                    >
-                        Gem nuværende studieforløb
-                    </button>
+                   <SaveStudyPlanBtn/>
                     <button
                         onClick={deleteStudyPlan}
                         className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-800"
