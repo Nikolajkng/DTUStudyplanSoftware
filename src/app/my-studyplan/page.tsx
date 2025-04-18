@@ -2,16 +2,17 @@
 
 import Head from "next/head";
 import { DndContext } from "@dnd-kit/core";
-import Cookies from "js-cookie";
-import html2canvas from "html2canvas-pro";
-import jsPDF from "jspdf";
 import DraggableCourse from "./components/DraggableCourse";
 import GridCourse from "./components/grid/GridCourse";
 import GridFiller from "./components/grid/GridFiller";
-import { ExportStudyPlanAsJSON } from "./components/buttons/ExportStudyPlanAsJSON";
 import { useStudyPlan } from "./components/hooks/useStudyPlan";
-import SaveStudyPlanBtn from "./components/buttons/SaveStudyPlanBtn";
-import DeleteStudyPlanBtn from "./components/buttons/DeleteStudyPlanBtn";
+
+// Button & Eventhandlers
+import { ExportAsJsonBtn } from "./components/handlers/ExportAsJsonBtn";
+import { UploadAsJsonBtn } from "./components/handlers/UploadJsonBtn";
+import ExportAsPdf from "./components/handlers/ExportAsPdfBtn";
+import SaveBtn from "./components/handlers/SaveBtn";
+import DeleteBtn from "./components/handlers/DeleteBtn";
 
 export default function MyStudyPlan() {
 
@@ -26,7 +27,7 @@ export default function MyStudyPlan() {
         = useStudyPlan();
 
 
-    
+
     const loadStudyPlan = (planName: string) => {
         const plan = savedPlans[planName];
         if (plan) {
@@ -36,98 +37,6 @@ export default function MyStudyPlan() {
         setSelectedPlan(planName);
     };
 
-
-
-    // Function to upload a study plan from a JSON file
-    // The file should contain an array of course placements
-    // The function parses the file and updates the state with the new placements
-    const uploadStudyPlanAsJSON = async (file: File) => {
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-            const fileContent = event.target?.result;
-            if (typeof fileContent === "string") {
-                try {
-                    const parsedData = JSON.parse(fileContent);
-
-                    // Ensure the parsed data contains placements and semesters
-                    if (!Array.isArray(parsedData.placements) || typeof parsedData.semesters !== "number") {
-                        throw new Error("Invalid file format. Expected an object with placements and semesters.");
-                    }
-
-                    const { placements, semesters } = parsedData;
-
-                    // Prompt the user for a name for the uploaded plan
-                    const planName = prompt("Angiv et navn til studieforløbet:");
-                    if (!planName) {
-                        alert("Angiv venligst et navn for at uploade studieforløb.");
-                        return;
-                    }
-
-                    // Save the uploaded plan to the savedPlans state
-                    setSavedPlans((prevPlans) => {
-                        const updatedPlans = {
-                            ...prevPlans,
-                            [planName]: { placements, semesters },
-                        };
-                        Cookies.set("savedStudyPlans", JSON.stringify(updatedPlans), { expires: 365 * 100 }); // Save to cookies
-                        return updatedPlans;
-                    });
-
-                    // Set the uploaded plan as the currently selected plan
-                    setPlacements(placements);
-                    setSemesters(semesters);
-                    setSelectedPlan(planName);
-
-                    alert(`Studieforløb "${planName}" uploaded og valgt succesfuldt!`);
-                } catch (error) {
-                    console.error("Error parsing file:", error);
-                    alert("Fejl ved indhentning af studieforløb, venligst sørg for at filen er JSON.");
-                }
-            }
-        };
-        reader.readAsText(file);
-    };
-
-    // Function to export the current study plan as a PDF
-    // The function captures the grid as a canvas and converts it to a PDF
-    const exportSutdyPlanAsPDF = async () => {
-        const gridElement = document.querySelector(".grid"); // Select the grid element
-        if (!gridElement) {
-            alert("Grid element not found!");
-            return;
-        }
-
-        try {
-            // Capture the grid as a canvas
-            const canvas = await html2canvas(gridElement as HTMLElement, {
-                scale: 2, // Increase resolution
-                useCORS: true, // Handle cross-origin images
-            });
-
-            // Convert the canvas to an image
-            const imgData = canvas.toDataURL("image/png");
-
-            // Create a PDF document
-            const pdf = new jsPDF("landscape", "mm", "a4");
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-            // Add the image to the PDF
-            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-
-            const planName = prompt("Angiv et navn til studieforløbet:");
-            if (!planName) {
-                alert("Angiv venligst et navn for at gemme studieforløb.");
-                return;
-            }
-
-            // Save the PDF
-            pdf.save(planName + ".pdf");
-        } catch (error) {
-            console.error("Error exporting grid as PDF:", error);
-            alert("Der opstod en fejl under eksporten af studieforløbet.");
-        }
-    };
 
     // Adds another row in the course grid, representing a semester
     const addAnotherSemester = () => {
@@ -342,34 +251,13 @@ export default function MyStudyPlan() {
 
                 {/* Buttons for saving, deleting, and exporting study plans */}
                 < div className="flex space-x-3 mt-6" >
-                    <SaveStudyPlanBtn />
-                    <DeleteStudyPlanBtn/>
-                    <ExportStudyPlanAsJSON />
+                    <SaveBtn />
+                    <DeleteBtn />
+                    <ExportAsJsonBtn />
                 </div>
                 <div className="flex space-x-3 mt-6">
-                    <input
-                        type="file"
-                        id="fileInput"
-                        style={{ display: "none" }}
-                        onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                                uploadStudyPlanAsJSON(file);
-                            }
-                        }}
-                    />
-                    <button
-                        onClick={() => document.getElementById("fileInput")?.click()}
-                        className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
-                    >
-                        Upload Studieforløb (importér JSON fil)
-                    </button>
-                    <button
-                        onClick={exportSutdyPlanAsPDF}
-                        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
-                    >
-                        Eksportér Studieforløb som PDF
-                    </button>
+                    <UploadAsJsonBtn />
+                    <ExportAsPdf />
                 </div >
 
             </div >

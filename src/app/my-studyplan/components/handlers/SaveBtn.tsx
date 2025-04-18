@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useStudyPlan } from "../hooks/useStudyPlan";
 
-export default function SaveStudyPlanBtn() {
+export default function SaveBtn() {
     const { placements, semesters, setSavedPlans } = useStudyPlan();
-    const saveStudyPlan = () => {
+    const handleSave = () => {
         const planName = prompt("Angiv et navn til studieforløbet:");
         if (planName) {
             setSavedPlans((prevPlans) => ({
@@ -17,7 +17,7 @@ export default function SaveStudyPlanBtn() {
 
     return (
         <button
-            onClick={saveStudyPlan}
+            onClick={handleSave}
             className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
         >
             Gem nuværende studieforløb
