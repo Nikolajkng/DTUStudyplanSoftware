@@ -1,41 +1,41 @@
-course_id,course_name,ects,placement
-00000,Bachelorprojekt,15,Forår+juni eller efterår+januar
-02110,Algoritmer og Datastrukturer 2,5,E2B
-01227,Grafteori,5,F1B
-01018,Diskret matematik 2: algebra,5,E3B
-02249,Beregningsmæssigt hårde problemer,"7,5",E3A
-02282,Algoritmer for store datamængder,"7,5",F1A
-02162,Software Engineering 2,10,E3
-02170,Databasesystemer,5,F2B
-02266,User Experience Engineering,5,januar
-02247,Oversætterkonstruktion,5,F2B
-02805,Sociale grafer og interakt.,10,E5
-02809,UX Design Prototypeudvikling,5,E1A
-02148,Introduktion til koordinering af fordelte applikationer,5,januar
-01410,Kryptologi 1,5,F2A
-02239,Datasikkerhed,"7,5",E5B
-02233,Netværkssikkerhed,5,F4A
-02180,Introduktion til kunstig intelligens,5,F3A
-02285,Kunstig intelligens & multi-agentsystemer,"7,5",F4A
-02450,Intro. til machine learning & data mining,5,"E4A, F4A"
-02502,Billedanalyse,5,"E3A, F3A"
-02504,Billedanalyse,5,F3B
-02561,Computer-grafik,5,E5A
-02562,Rendering - introduktion,5,E5B
-30510,"GPS, GIS og afsætning",5,juni
-30530,Geograf.inf.syst.(GIS),5,F4A
-42101,Intro. til operationsanalyse,5,"E2A, F2A"
-42112,Matematisk programmering,5,januar
-42114,Heltalsprogrammering,5,E4A
-42115,Netværksoptimering,5,E4B
-02601,Introduktion til numeriske algoritmer,5,"E3B, F4B"
-02526,Matematisk Modellering,5,F3A
-42009,Indledende økonomi,5,E5A
-63852,Projektledelse,5,januar og august
-34313,Introduktion til Datanet,5,E4B
-34322,Kommunikationsnetværk til styring og dataopsamling,5,F1B (fra F23)
-34315,IoT - applikation og infrastrukturudvikling,5,F2B
-34341,Videregående datakommunikation,5,F1B
-30010,Programmeringsprojekt,5,juni
-31070,Hands-on mikrodatamat programmering,5,juni
-34754,Autonome robotsystemer,5,januar
+course_id,course_name,ects,placement,course_type
+00000,Bachelorprojekt,15,Forår+juni eller efterår+januar,Projekter
+02110,Algoritmer og Datastrukturer 2,5,E2B,Valgfri kurser
+01227,Grafteori,5,F1B,Valgfri kurser
+01018,Diskret matematik 2: algebra,5,E3B,Valgfri kurser
+02249,Beregningsmæssigt hårde problemer,7.5,E3A,Valgfri kurser
+02282,Algoritmer for store datamængder,7.5,F1A,Valgfri kurser
+02162,Software Engineering 2,10,E3,Valgfri kurser
+02170,Databasesystemer,5,F2B,Valgfri kurser
+02266,User Experience Engineering,5,januar,Valgfri kurser
+02247,Oversætterkonstruktion,5,F2B,Valgfri kurser
+02805,Sociale grafer og interakt.,10,E5,Valgfri kurser
+02809,UX Design Prototypeudvikling,5,E1A,Valgfri kurser
+02148,Introduktion til koordinering af fordelte applikationer,5,januar,Valgfri kurser
+01410,Kryptologi 1,5,F2A,Valgfri kurser
+02239,Datasikkerhed,7.5,E5B,Valgfri kurser
+02233,Netværkssikkerhed,5,F4A,Valgfri kurser
+02180,Introduktion til kunstig intelligens,5,F3A,Valgfri kurser
+02285,Kunstig intelligens & multi-agentsystemer,7.5,F4A,Valgfri kurser
+02450,Intro. til machine learning & data mining,5,"E4A, F4A",Valgfri kurser
+02502,Billedanalyse,5,"E3A, F3A",Valgfri kurser
+02504,Billedanalyse,5,F3B,Valgfri kurser
+02561,Computer-grafik,5,E5A,Valgfri kurser
+02562,Rendering - introduktion,5,E5B,Valgfri kurser
+30510,"GPS, GIS og afsætning",5,juni,Valgfri kurser
+30530,Geograf.inf.syst.(GIS),5,F4A,Valgfri kurser
+42101,Intro. til operationsanalyse,5,"E2A, F2A",Valgfri kurser
+42112,Matematisk programmering,5,januar,Valgfri kurser
+42114,Heltalsprogrammering,5,E4A,Valgfri kurser
+42115,Netværksoptimering,5,E4B,Valgfri kurser
+02601,Introduktion til numeriske algoritmer,5,"E3B, F4B",Valgfri kurser
+02526,Matematisk Modellering,5,F3A,Valgfri kurser
+42009,Indledende økonomi,5,E5A,Valgfri kurser
+63852,Projektledelse,5,januar og august,Valgfri kurser
+34313,Introduktion til Datanet,5,E4B,Valgfri kurser
+34322,Kommunikationsnetværk til styring og dataopsamling,5,F1B (fra F23),Valgfri kurser
+34315,IoT - applikation og infrastrukturudvikling,5,F2B,Valgfri kurser
+34341,Videregående datakommunikation,5,F1B,Valgfri kurser
+30010,Programmeringsprojekt,5,juni,Valgfri kurser
+31070,Hands-on mikrodatamat programmering,5,juni,Valgfri kurser
+34754,Autonome robotsystemer,5,januar,Valgfri kurser

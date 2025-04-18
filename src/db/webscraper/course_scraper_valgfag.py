@@ -24,42 +24,32 @@ if response.status_code == 200:
 
     with open(csv_filename, mode="w", newline="", encoding="utf-8") as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(["course_id", "course_name", "ects", "placement"])  # Write header
+        
+        # Attributes:
+        writer.writerow(["course_id", "course_name", "ects", "placement", "course_type"])
         
         # Edge case - bachelor projektet
-        writer.writerow(["00000", "Bachelorprojekt", "15", "Forår+juni eller efterår+januar"])  # Write header
+        writer.writerow(["00000", "Bachelorprojekt", "15", "Forår+juni eller efterår+januar", "Projekter"])  
 
-
+        # Skip de 3 første tabeller, kun inkludere de 5 sidste (valgfag)
         for idx, table in enumerate(tables):
             if idx < 5:
                 continue
 
-            # Check if the table contains the relevant header row
             if "Kursusnr." in table.get_text(separator=' ', strip=True):
-                print(f"Processing table {idx}...")
-
-                # Loop through all rows in the table except the header row
-                for row in table.find_all("tr")[1:]:  # Skip the header row
+                for row in table.find_all("tr")[1:]: 
                     cols = row.find_all("td")
                     
-                    if len(cols) >= 4:  # Ensure the row has at least 4 columns
-                        # Extract course code from the <a> tag in the first <td>
+                    if len(cols) >= 4:  
                         course_code = cols[0].find("a").get_text(strip=True)
-                        
-                        # Extract course name from the second <td>
                         course_name = cols[1].get_text(strip=True)
-                        
-                        # Extract ECTS from the third <td>
-                        ects = cols[2].get_text(strip=True)
-                        
-                        # Extract group from the fourth <td>
+                        ects = cols[2].get_text(strip=True).replace(",", ".").replace(" \" ", "")
                         group = cols[3].get_text(strip=True)
+                        type = "Valgfri kurser"
 
                         # Write the extracted data to the CSV
-                        writer.writerow([course_code, course_name, ects, group])
+                        writer.writerow([course_code, course_name, ects, group, type])
                         rows_written += 1
-
-                print(f"✅ Table {idx} processed. {rows_written} rows written.")
-
+    print(f"Data successfully saved with {rows_written} rows added to CSV.")
 else:
-    print("❌ Failed to fetch the page")
+    print("Failed to fetch the page")

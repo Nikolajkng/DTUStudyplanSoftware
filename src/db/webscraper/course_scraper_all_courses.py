@@ -15,6 +15,7 @@ soup = BeautifulSoup(response.text, "html.parser")
 
 if response.status_code == 200:
     tables = soup.find_all("table", class_="kursusblokclass")
+    count = 0
 
     # Write everything to a CSV file
     base_dir = os.path.dirname(__file__)
@@ -56,8 +57,8 @@ if response.status_code == 200:
                         if last_course:
                             last_course[3] += f", {placement}".strip(", ")
                             writer.writerow(last_course)
-
-    print(f"Data successfully saved to {csv_filename}")
+                    count += 1
+    print(f"Data successfully saved with {count} rows added to CSV.")
 
 else:
     print("Failed to fetch the page")

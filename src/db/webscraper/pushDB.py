@@ -45,6 +45,11 @@ for df in df:
     # Iterate over the rows of the DataFrame
     for index, row in df.iterrows():
         course_id = str(row['course_id'])
+        
+        # Edgecase for Bachelorprojektets id:
+        if len(course_id) == 1 and course_id == '0': course_id = '00000'
+        
+        #Edgecase for course_id hvor 0 bliver fjernet, tilføj igen:
         if len(course_id) == 4: course_id = "0" + course_id
         course_name = row['course_name']
         course_type = row['course_type']
@@ -56,6 +61,14 @@ for df in df:
             INSERT INTO Courses (course_id, course_name, course_type, ects, placement)
             VALUES (%s, %s, %s, %s, %s)
         """
+        
+        # Check if the course_id already exists in the table
+        cursor.execute("SELECT COUNT(*) FROM Courses WHERE course_id = %s", (course_id,))
+        result = cursor.fetchone()
+        if result[0] > 0:
+            print(f"Course {course_id} already exists in the database. Skipping insertion.")
+            continue 
+        
         cursor.execute(insert_query, (course_id, course_name, course_type, ects, placement))
         print(f"Inserted course {course_id} into the database.")
     conn.commit()
