@@ -1,5 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import { courseTypeColors, CourseWithSem } from "./CourseTypes";
+import { getCourseDragId } from "../page";
 
 
 // Function to determine the color based on course type
@@ -9,7 +10,7 @@ const courseColor = ({ course_type }: { course_type: string }) => {
 
 // The draggable course component
 const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
-    const draggableId = `${course.course_id}-${course.course_name}`; // composite key id
+    const draggableId = getCourseDragId(course); // composite key id
     
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: draggableId,
@@ -42,7 +43,7 @@ const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
                 <strong>{course.course_name}</strong>
             </div>
             <div className="font-medium whitespace-nowrap">
-                {isWholeNumber ? ectsNum : ectsNum.toFixed(1)} ects
+            <strong> {isWholeNumber ? ectsNum : ectsNum.toFixed(1)} ects</strong>
             </div>
         </div>
     );

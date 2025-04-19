@@ -17,6 +17,11 @@ import AddSemesterBtn from "./components/btn_handlers/AddSemesterBtn";
 import RemoveSemesterBtn from "./components/btn_handlers/RemoveSemesterBtn";
 import ClearBtn from "./components/btn_handlers/ClearBtn";
 import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
+import { Course } from "@/db/fetchCourses";
+
+export const getCourseDragId = (course: Course) =>
+    `${course.course_id}-${course.course_name}`;
+
 
 function StudyPlanContent() {
 
@@ -29,8 +34,6 @@ function StudyPlanContent() {
         semesters, setSemesters,
         selectedCourseType, setSelectedCourseType, }
         = useStudyPlan();
-
-
 
     const loadStudyPlan = (planName: string) => {
         const plan = savedPlans[planName];
@@ -79,8 +82,7 @@ function StudyPlanContent() {
                         return;
                     }
                     const [x, y] = e.over.id.toString().split("-").map(Number);
-                    const course = courses.find(
-                        (c) => `${c.course_id}-${c.course_name}` === e.active.id); if (!course) return;
+                    const course = courses.find( (c) => getCourseDragId(c) === e.active.id); if (!course) return;
                     const scaledEcts = course.ects / 2.5;
 
                     // Check border on right side (the end of semester)

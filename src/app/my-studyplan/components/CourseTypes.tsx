@@ -10,6 +10,7 @@ export type CoursePlacement = {
     course: CourseWithSem;
 };
 
+
 export const courseTypeColors = new Map<string, string>([
     ["Polyteknisk grundlag", "bg-green-500"],
     ["Projekter", "bg-red-500"],

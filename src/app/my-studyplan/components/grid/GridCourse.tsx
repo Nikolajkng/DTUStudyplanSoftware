@@ -1,5 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import { courseTypeColors, CoursePlacement } from "../CourseTypes";
+import { getCourseDragId } from "../../page";
 
 // Function to determine the color based on course type
 const courseColor = ({ course_type }: { course_type: string }) => {
@@ -9,7 +10,7 @@ const courseColor = ({ course_type }: { course_type: string }) => {
 // The grid showing the studyplan
 const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
-        id: placement.course.course_id,
+        id: getCourseDragId(placement.course),
     });
 
     const scaledEcts = placement.course.ects / 2.5; // Scale the ECTS to fit the grid
