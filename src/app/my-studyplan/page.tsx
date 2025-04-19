@@ -79,8 +79,8 @@ function StudyPlanContent() {
                         return;
                     }
                     const [x, y] = e.over.id.toString().split("-").map(Number);
-                    const course = courses.find((c) => c.course_id === e.active.id);
-                    if (!course) return;
+                    const course = courses.find(
+                        (c) => `${c.course_id}-${c.course_name}` === e.active.id); if (!course) return;
                     const scaledEcts = course.ects / 2.5;
 
                     // Check border on right side (the end of semester)
@@ -88,7 +88,8 @@ function StudyPlanContent() {
                         return;
                     }
                     setPlacements((prev) => [
-                        ...prev.filter((c) => c.course.course_id !== course.course_id),
+                        ...prev.filter(
+                            (p) => !(p.course.course_id === course.course_id && p.course.course_name === course.course_name)),
                         { x: x + 1, y: y + 1, course },
 
                     ]);
@@ -204,8 +205,7 @@ function StudyPlanContent() {
 
                             <div className="overflow-y-scroll overflow-x-visible mb-20 p-3 h-170">
                                 {filteredCourses.map((c) => (
-                                    <DraggableCourse key={c.course_id} course={c} />
-                                ))}
+                                    <DraggableCourse key={`${c.course_id}-${c.course_name}`} course={c} />))}
                             </div>
                         </div>
                     </div>

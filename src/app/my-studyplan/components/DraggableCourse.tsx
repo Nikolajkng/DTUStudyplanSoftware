@@ -7,9 +7,12 @@ const courseColor = ({ course_type }: { course_type: string }) => {
     return courseTypeColors.get(course_type) || "bg-slate-600";
 }
 
+// The draggable course component
 const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
+    const draggableId = `${course.course_id}-${course.course_name}`; // composite key id
+    
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
-        id: course.course_id,
+        id: draggableId,
     });
 
     const style = transform
