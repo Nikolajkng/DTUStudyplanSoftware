@@ -9,8 +9,8 @@ const GridFiller = ({ x, y }: { x: number; y: number }) => {
         <div
             className={`bg-gray-300 border-white ${borderStyling}`}
             style={{
-                width: "100%", // Fill the grid cell
-                height: "100%", // Fill the grid cell
+                width: "100%", 
+                height: "100%", 
                 gridRowStart: y + 1,
                 gridColumnStart: x + 2,
             }}

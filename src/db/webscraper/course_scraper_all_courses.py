@@ -60,6 +60,7 @@ if response.status_code == 200:
                 if len(cols) >= 5:
                     course_id_tag = cols[0].find("a")
                     course_id = course_id_tag.text.strip() if course_id_tag else ""
+                    
                     if course_id == "10060":
                        splitCourse()# Fysik skal opdeles i to Blokke x 5 ects
                        continue # Tilføj ikke 10060 som hel blok med 10 ects

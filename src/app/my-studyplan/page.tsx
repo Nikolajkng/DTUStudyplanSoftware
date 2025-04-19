@@ -18,6 +18,8 @@ import RemoveSemesterBtn from "./components/btn_handlers/RemoveSemesterBtn";
 import ClearBtn from "./components/btn_handlers/ClearBtn";
 import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
 import { Course } from "@/db/fetchCourses";
+import DroppableCourseList from "./components/DroppableCourseList";
+
 
 export const getCourseDragId = (course: Course) =>
     `${course.course_id}-${course.course_name}`;
@@ -76,26 +78,37 @@ function StudyPlanContent() {
 
             <DndContext
                 onDragEnd={(e) => {
-                    if (!e.over) {
+                    const course = courses.find((c) => getCourseDragId(c) === e.active.id);
+                    if (!course) return;
+
+                    // Case 1: Dropped in the course list
+                    if (e.over?.id === "course-list") {
                         setPlacements((prev) =>
-                            prev.filter((placement) => placement.course.course_id !== e.active.id));
+                            prev.filter((p) => p.course.course_id !== course.course_id)
+                        );
                         return;
                     }
+
+                    // Case 2: Dropped in the grid
+                    if (!e.over) return;
+
                     const [x, y] = e.over.id.toString().split("-").map(Number);
-                    const course = courses.find( (c) => getCourseDragId(c) === e.active.id); if (!course) return;
                     const scaledEcts = course.ects / 2.5;
 
-                    // Check border on right side (the end of semester)
-                    if (x + scaledEcts > 7 * 2 || (course.sem || 1 && y + (course.sem || 1) > semesters)) {
-                        return;
-                    }
+                    if (x + scaledEcts > 14 || y + (course.sem || 1) > semesters) return;
+
                     setPlacements((prev) => [
                         ...prev.filter(
-                            (p) => !(p.course.course_id === course.course_id && p.course.course_name === course.course_name)),
+                            (p) =>
+                                !(
+                                    p.course.course_id === course.course_id &&
+                                    p.course.course_name === course.course_name
+                                )
+                        ),
                         { x: x + 1, y: y + 1, course },
-
                     ]);
-                }}>
+                }}
+            >
                 <div className="flex justify-center mt-10 ">
                     <div className="flex justify-center mt-10">
                         <div className="m-10">
@@ -203,12 +216,11 @@ function StudyPlanContent() {
                                         </option>)}
                                 </select>
                             </div>
-
-
-                            <div className="overflow-y-scroll overflow-x-visible mb-20 p-3 h-170">
+                            <DroppableCourseList>
                                 {filteredCourses.map((c) => (
-                                    <DraggableCourse key={`${c.course_id}-${c.course_name}`} course={c} />))}
-                            </div>
+                                    <DraggableCourse key={`${c.course_id}-${c.course_name}`} course={c} />
+                                ))}
+                            </DroppableCourseList>
                         </div>
                     </div>
                 </div>
