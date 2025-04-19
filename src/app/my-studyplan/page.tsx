@@ -168,14 +168,15 @@ function StudyPlanContent() {
                                 <strong>*OBS: </strong>
                                 Værktøjet er tiltænkt som et <u>vejledende</u> værktøj, der kan hjælpe med at skabe overblik over din studieplan,
                                 som bachelorstuderende i Softwareteknologi.
-                                <br></br>
-                                Det er derfor vigtigt at få bekræftet din studieplan hos &nbsp;
+                                <br />
+                                Det er derfor vigtigt at få bekræftet din studieplan hos&nbsp;
                                 <a href="https://www.dtu.dk/uddannelse/vejledning/studievejledningen" className="text-blue-500 underline">DTU Studievejledning</a>
-                                &nbsp; eller hos studielederen for Software Bachelor, &nbsp;
+                                &nbsp; eller hos studielederen for Software Bachelor,&nbsp;
                                 <a href="/contact" className="text-blue-500 underline">Carsten Witt</a>.
-                                <br></br>
-                                For detaljeret og opdateret information om kurser og studieforløb henvises der til <a href="https://kurser.dtu.dk/search" className="text-blue-500 underline"> DTU's studieplanlægger</a>.
-                                <br></br>
+                                <br />
+                                For detaljeret og opdateret information om kurser og studieforløb henvises der til&nbsp;
+                                <a href="https://kurser.dtu.dk/search" className="text-blue-500 underline">DTU&apos;s studieplanlægger</a>.
+                                <br />
                             </p>
                         </div>
 
