@@ -23,9 +23,9 @@ function StudyPlanContent() {
     // Load all hooks and states from hooks/useStudyPlan
     const {
         placements, setPlacements,
-        savedPlans, 
+        savedPlans,
         selectedPlan, setSelectedPlan,
-        courses, 
+        courses,
         semesters, setSemesters,
         selectedCourseType, setSelectedCourseType, }
         = useStudyPlan();
@@ -100,7 +100,7 @@ function StudyPlanContent() {
                             <div
                                 className={`grid grid-rows-${semesters} grid-cols-14 gap-y-1 border border-gray-400 p-2`}
                                 style={{
-                                    width: "1100px",
+                                    width: "1200px",
                                     height: `${semesters}00px`,
                                     gridTemplateColumns: "repeat(14, 1fr)",
                                     gridTemplateRows: `repeat(${semesters}, 1fr)`,
@@ -131,7 +131,7 @@ function StudyPlanContent() {
                                         gridColumnEnd: 14,
                                     }}
                                 >
-                                    13-ugers periode (25 ects)
+                                    13-ugers periode <br></br> (25 ects)
                                 </div>
                                 <div
                                     className="flex items-center p-2 justify-center bg-gray-200 text-black font-semibold"
@@ -141,7 +141,7 @@ function StudyPlanContent() {
                                         gridColumnEnd: 15,
                                     }}
                                 >
-                                    3-ugers periode (5 ects)
+                                    jan/jun/aug <br></br> (5 ects)
                                 </div>
 
                                 {Array.from({ length: semesters - 1 }).map((_, y) => (
@@ -163,10 +163,22 @@ function StudyPlanContent() {
                                 <AddSemesterBtn />
                                 <RemoveSemesterBtn />
                                 <ClearBtn />
-
-
                             </div>
+                            <p>
+                                <strong>*OBS: </strong>
+                                Værktøjet er tiltænkt som et <u>vejledende</u> værktøj, der kan hjælpe med at skabe overblik over din studieplan,
+                                som bachelorstuderende i Softwareteknologi.
+                                <br></br>
+                                Det er derfor vigtigt at få bekræftet din studieplan hos &nbsp;
+                                <a href="https://www.dtu.dk/uddannelse/vejledning/studievejledningen" className="text-blue-500 underline">DTU Studievejledning</a>
+                                &nbsp; eller hos studielederen for Software Bachelor, &nbsp;
+                                <a href="/contact" className="text-blue-500 underline">Carsten Witt</a>.
+                                <br></br>
+                                For detaljeret og opdateret information om kurser og studieforløb henvises der til <a href="https://kurser.dtu.dk/search" className="text-blue-500 underline"> DTU's studieplanlægger</a>.
+                                <br></br>
+                            </p>
                         </div>
+
 
                         <div className="m-10 flex flex-col">
                             <h2 className="text-2xl font-semibold mb-4">Tilgængelige kurser</h2>
