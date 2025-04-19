@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useStudyPlan } from "../hooks/useStudyPlan";
 
 export default function SaveBtn() {

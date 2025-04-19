@@ -23,9 +23,9 @@ function StudyPlanContent() {
     // Load all hooks and states from hooks/useStudyPlan
     const {
         placements, setPlacements,
-        savedPlans, setSavedPlans,
+        savedPlans, 
         selectedPlan, setSelectedPlan,
-        courses, setCourses,
+        courses, 
         semesters, setSemesters,
         selectedCourseType, setSelectedCourseType, }
         = useStudyPlan();
