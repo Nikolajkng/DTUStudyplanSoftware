@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/core";
-import { courseTypeColors, CoursePlacement} from "../CourseTypes";
+import { courseTypeColors, CoursePlacement } from "../CourseTypes";
 
 // Function to determine the color based on course type
 const courseColor = ({ course_type }: { course_type: string }) => {
@@ -22,7 +22,7 @@ const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
         <div
             className={`${courseColor({ course_type: placement.course.course_type })} text-white flex justify-center items-center z-10`}
             style={{
-                width: "100%", // Fill the grid cell
+                width: "99%", // Fill the grid cell
                 height: "100%", // Fill the grid cell
                 gridColumnStart: placement.x,
                 gridColumnEnd: placement.x + scaledEcts,
@@ -34,7 +34,9 @@ const GridCourse = ({ placement }: { placement: CoursePlacement }) => {
             {...attributes}
             {...listeners}
         >
-            {placement.course.course_name}
+            <strong className="w-full h-full flex items-center justify-center text-sm leading-tight break-words text-center">{
+                placement.course.course_name}
+            </strong>
         </div>
     );
 };

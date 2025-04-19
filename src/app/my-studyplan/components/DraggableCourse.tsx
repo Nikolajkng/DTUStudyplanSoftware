@@ -35,10 +35,7 @@ const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
                     <div className="font-bold">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                     : <div className="font-bold">{course.course_id}</div>}
             </div>
-            <div
-                className="text-sm sm:text-base break-words hyphens-auto max-w-full sm:max-w-[60%] text-left"
-                lang="da"
-            >
+            <div className="w-full h-full flex items-center justify-center leading-tight break-words text-center" lang="da">
                 <strong>{course.course_name}</strong>
             </div>
             <div className="font-medium whitespace-nowrap">
