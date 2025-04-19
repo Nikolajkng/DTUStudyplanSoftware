@@ -3,7 +3,8 @@ course_id,course_name,ects,placement,course_type
 01002,Matematik 1b ,10,Forår,Polyteknisk grundlag
 02402,Statistik ,5,"E3A (tirs 8-12), F4A (tirs 13-17)",Polyteknisk grundlag
 02403,Introduktion til matematisk statistik,5,Juni,Polyteknisk grundlag
-10060,Fysik ,10,Forår og Efterår,Polyteknisk grundlag
+10060,Fysik (del 1),5,F1A,Polyteknisk grundlag
+10060,Fysik (del 2),5,E1A,Polyteknisk grundlag
 26020,Kemi ,5,E1A (man 8-12),Polyteknisk grundlag
 26022,Kemi ,5,August,Polyteknisk grundlag
 26021,Kemi ,5,F5A (ons 8-12),Polyteknisk grundlag
