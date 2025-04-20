@@ -51,7 +51,7 @@ function StudyPlanContent() {
 
 
     // Function to check for overlap
-    const checkForOverlap = (courseWidth: number, courseHeight: number, courseX: number, courseY: number): boolean => {
+    const checkForOverlap = (courseWidth: number, courseHeight: number, courseX: number, courseY: number, excludeCourseId?: string): boolean => {
         // Get cells the course would occupy
         const targetCells = new Set<string>();
         for (let dx = 0; dx < courseWidth; dx++) {
@@ -62,6 +62,10 @@ function StudyPlanContent() {
 
         // Check for overlap
         const hasOverlap = placements.some((p) => {
+            if (excludeCourseId && p.course.course_id === excludeCourseId) {
+                return false; // skip checking against itself
+            }
+
             const px = p.x;
             const py = p.y;
             const pw = p.course.ects / 2.5;
@@ -118,8 +122,7 @@ function StudyPlanContent() {
             const courseY = y + 1;
             const courseWidth = scaledEcts;
             const courseHeight = course.sem || 1;
-            const hasOverlap = checkForOverlap(courseWidth, courseHeight, courseX, courseY);
-
+            const hasOverlap = checkForOverlap(courseWidth, courseHeight, courseX, courseY, course.course_id);
             if (
                 courseX + courseWidth - 1 <= 14 &&
                 courseY + courseHeight - 1 <= semesters &&
@@ -133,7 +136,7 @@ function StudyPlanContent() {
 
         }
 
-        setActiveCourse(null); // Clear the active course after dragging
+        setActiveCourse(null);
         setHoveredCell(null);
     };
 
@@ -202,9 +205,8 @@ function StudyPlanContent() {
                                             y + 1 < hy + courseHeight;
 
                                         if (isInRange) {
-                                            const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy);
+                                            const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy, activeCourse.course_id); 
                                             const isOutOfBounds = hx + courseWidth - 1 > 14 || hy + courseHeight - 1 > semesters;
-
                                             highlight = (hasOverlap || isOutOfBounds) ? "invalid" : "valid";
                                         }
                                     }
