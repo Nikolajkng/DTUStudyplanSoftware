@@ -30,8 +30,8 @@ export function ExportAsJsonBtn() {
 
     return (
         <button
-            className="bg-blue-500 text-white font-bold py-2 px-4 rounded"
-            onClick={handleExportAsJson}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+        onClick={handleExportAsJson}
         >
             Download Studieforløb som JSON
         </button>
