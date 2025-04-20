@@ -1,7 +1,7 @@
 "use client";
 
 import Head from "next/head";
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { useState } from "react";
 import DraggableCourse from "./components/DraggableCourse";
 import GridCourse from "./components/grid/GridCourse";
@@ -20,7 +20,7 @@ import ClearBtn from "./components/btn_handlers/ClearBtn";
 import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
 import { Course } from "@/db/fetchCourses";
 import DroppableCourseList from "./components/DroppableCourseList";
-import { getCourseDragId } from "./components/CourseTypes";
+import { CourseWithSem, getCourseDragId } from "./components/CourseTypes";
 
 
 
@@ -34,10 +34,11 @@ function StudyPlanContent() {
         selectedPlan, setSelectedPlan,
         courses,
         semesters, setSemesters,
-        selectedCourseType, setSelectedCourseType }
+        selectedCourseType, setSelectedCourseType,
+        hoveredCell, setHoveredCell, }
         = useStudyPlan();
 
-    const [activeCourse, setActiveCourse] = useState<Course | null>(null);
+    const [activeCourse, setActiveCourse] = useState<CourseWithSem | null>(null);
 
     const loadStudyPlan = (planName: string) => {
         const plan = savedPlans[planName];
@@ -84,6 +85,16 @@ function StudyPlanContent() {
         setActiveCourse(course || null);
     };
 
+    const handleDragOver = (event: DragOverEvent) => {
+        if (!event.over || !activeCourse) {
+            setHoveredCell(null);
+            return;
+        }
+
+        const [x, y] = event.over.id.toString().split("-").map(Number);
+        setHoveredCell([x + 1, y + 1]);
+    };
+
     const handleDragEnd = (event: DragEndEvent) => {
         const course = courses.find((c) => getCourseDragId(c) === event.active.id);
         if (!course) return;
@@ -123,6 +134,7 @@ function StudyPlanContent() {
         }
 
         setActiveCourse(null); // Clear the active course after dragging
+        setHoveredCell(null);
     };
 
     // Function for determining the courses not currently in the course grid (study plan)
@@ -160,6 +172,7 @@ function StudyPlanContent() {
 
             <DndContext
                 onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
                 <div className="flex justify-center mt-10 ">
@@ -175,9 +188,31 @@ function StudyPlanContent() {
                                     gridTemplateRows: `repeat(${semesters}, 1fr)`,
                                 }}
                             >
-                                {baseCoords.map(([x, y]) => (
-                                    <GridFiller key={`${x}-${y}`} x={x + 1} y={y + 1} />
-                                ))}
+                                {baseCoords.map(([x, y]) => {
+                                    let highlight: "valid" | "invalid" | null = null;
+
+                                    if (hoveredCell && activeCourse) {
+                                        const [hx, hy] = hoveredCell;
+                                        const courseWidth = activeCourse.ects / 2.5;
+                                        const courseHeight = activeCourse.sem || 1;
+
+                                        const isInRange = x + 1 >= hx &&
+                                            x + 1 < hx + courseWidth &&
+                                            y + 1 >= hy &&
+                                            y + 1 < hy + courseHeight;
+
+                                        if (isInRange) {
+                                            const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy);
+                                            const isOutOfBounds = hx + courseWidth - 1 > 14 || hy + courseHeight - 1 > semesters;
+
+                                            highlight = (hasOverlap || isOutOfBounds) ? "invalid" : "valid";
+                                        }
+                                    }
+
+                                    return (
+                                        <GridFiller key={`${x}-${y}`} x={x + 1} y={y + 1} highlight={highlight} />
+                                    );
+                                })}
                                 {placements.map((p) => {
                                     const isBeingDragged = activeCourse?.course_id === p.course.course_id;
                                     return (

@@ -22,12 +22,14 @@ type StudyPlanContextType = {
     selectedCourseType: string;
     setSelectedCourseType: React.Dispatch<React.SetStateAction<string>>;
     saveStudyPlan: () => void;
+    hoveredCell: [number, number] | null;
+    setHoveredCell: React.Dispatch<React.SetStateAction<[number, number] | null>>;
 };
 
 const StudyPlanContext = createContext<StudyPlanContextType | null>(null);
 
 export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
-    const [placements, setPlacements] = useState<CoursePlacement[]>([]);
+
     const [savedPlans, setSavedPlans] = useState<{
         [key: string]: { placements: CoursePlacement[]; semesters: number };
     }>(() => {
@@ -42,6 +44,8 @@ export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
         return {};
     });
 
+    const [placements, setPlacements] = useState<CoursePlacement[]>([]);
+    const [hoveredCell, setHoveredCell] = useState<[number, number] | null>(null);
     const [selectedPlan, setSelectedPlan] = useState<string>("");
     const [courses, setCourses] = useState<CourseWithSem[]>([]);
     const [semesters, setSemesters] = useState(7);
@@ -79,7 +83,8 @@ export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
             courses, setCourses,
             semesters, setSemesters,
             selectedCourseType, setSelectedCourseType,
-            saveStudyPlan
+            saveStudyPlan, 
+            hoveredCell, setHoveredCell,
         }}>
             {children}
         </StudyPlanContext.Provider>
