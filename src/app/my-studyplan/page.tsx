@@ -48,6 +48,37 @@ function StudyPlanContent() {
         setSelectedPlan(planName);
     };
 
+
+    // Function to check for overlap
+    const checkForOverlap = (courseWidth: number, courseHeight: number, courseX: number, courseY: number): boolean => {
+        // Get cells the course would occupy
+        const targetCells = new Set<string>();
+        for (let dx = 0; dx < courseWidth; dx++) {
+            for (let dy = 0; dy < courseHeight; dy++) {
+                targetCells.add(`${courseX + dx}-${courseY + dy}`);
+            }
+        }
+
+        // Check for overlap
+        const hasOverlap = placements.some((p) => {
+            const px = p.x;
+            const py = p.y;
+            const pw = p.course.ects / 2.5;
+            const ph = p.course.sem || 1;
+
+            for (let dx = 0; dx < pw; dx++) {
+                for (let dy = 0; dy < ph; dy++) {
+                    if (targetCells.has(`${px + dx}-${py + dy}`)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
+
+        return hasOverlap;
+    };
+
     const handleDragStart = (event: DragStartEvent) => {
         const course = courses.find((c) => getCourseDragId(c) === event.active.id);
         setActiveCourse(course || null);
@@ -60,7 +91,9 @@ function StudyPlanContent() {
         // Case 1: Dropped in the course list
         if (event.over?.id === "course-list") {
             setPlacements((prev) =>
-                prev.filter((p) => p.course.course_id !== course.course_id)
+                prev.filter(
+                    (p) => getCourseDragId(p.course) !== getCourseDragId(course)
+                )
             );
         }
 
@@ -69,18 +102,24 @@ function StudyPlanContent() {
             const [x, y] = event.over.id.toString().split("-").map(Number);
             const scaledEcts = course.ects / 2.5;
 
-            if (x + scaledEcts <= 14 && y + (course.sem || 1) <= semesters) {
+            // Check if the course can fit in the grid
+            const courseX = x + 1;
+            const courseY = y + 1;
+            const courseWidth = scaledEcts;
+            const courseHeight = course.sem || 1;
+            const hasOverlap = checkForOverlap(courseWidth, courseHeight, courseX, courseY);
+
+            if (
+                courseX + courseWidth - 1 <= 14 &&
+                courseY + courseHeight - 1 <= semesters &&
+                !hasOverlap
+            ) {
                 setPlacements((prev) => [
-                    ...prev.filter(
-                        (p) =>
-                            !(
-                                p.course.course_id === course.course_id &&
-                                p.course.course_name === course.course_name
-                            )
-                    ),
-                    { x: x + 1, y: y + 1, course },
+                    ...prev.filter((p) => getCourseDragId(p.course) !== getCourseDragId(course)),
+                    { x: courseX, y: courseY, course },
                 ]);
             }
+
         }
 
         setActiveCourse(null); // Clear the active course after dragging
