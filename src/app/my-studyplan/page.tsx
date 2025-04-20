@@ -117,16 +117,21 @@ function StudyPlanContent() {
             const [x, y] = event.over.id.toString().split("-").map(Number);
             const scaledEcts = course.ects / 2.5;
 
-            // Check if the course can fit in the grid
+
+            // Position on the grid
             const courseX = x + 1;
             const courseY = y + 1;
             const courseWidth = scaledEcts;
             const courseHeight = course.sem || 1;
+
+            // Conditions that checks for valid placement on the grid
             const hasOverlap = checkForOverlap(courseWidth, courseHeight, courseX, courseY, course.course_id);
+            const hasOverlapWithGridTitles = (x < 2) || (y == 0);
             if (
                 courseX + courseWidth - 1 <= 14 &&
                 courseY + courseHeight - 1 <= semesters &&
-                !hasOverlap
+                !hasOverlap &&
+                !hasOverlapWithGridTitles
             ) {
                 setPlacements((prev) => [
                     ...prev.filter((p) => getCourseDragId(p.course) !== getCourseDragId(course)),
