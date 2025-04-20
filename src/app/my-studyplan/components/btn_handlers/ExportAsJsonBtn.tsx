@@ -1,9 +1,11 @@
 import React from "react";
-import semesters from "../../page";
-import placements from "../../page";
+import { useStudyPlan } from "../hooks/useStudyPlan";
 
 export function ExportAsJsonBtn() {
-    
+
+    const { placements, semesters } = useStudyPlan();
+
+
     // Function to export the current study plan as a JSON file
     const handleExportAsJson = () => {
         const planName = prompt("Angiv et navn til studieforløbet:");
