@@ -223,7 +223,7 @@ function StudyPlanContent() {
                                     );
                                 })}
                                 {placements.map((p) => {
-                                    const isBeingDragged = activeCourse?.course_id === p.course.course_id;
+                                    const isBeingDragged = activeCourse && getCourseDragId(activeCourse) === getCourseDragId(p.course);
                                     return (
                                         <GridCourse
                                             key={p.course.course_id}

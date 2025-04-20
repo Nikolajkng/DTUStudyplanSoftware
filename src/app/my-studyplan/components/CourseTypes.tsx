@@ -19,5 +19,5 @@ export const courseTypeColors = new Map<string, string>([
 ]);
 
 
-export const getCourseDragId = (course: Course) =>
+export const getCourseDragId = (course: Course | CourseWithSem) =>
     `${course.course_id}-${course.course_name}`;
