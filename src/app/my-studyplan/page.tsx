@@ -194,6 +194,7 @@ function StudyPlanContent() {
                                     height: `${semesters}00px`,
                                     gridTemplateColumns: "repeat(14, 1fr)",
                                     gridTemplateRows: `repeat(${semesters}, 1fr)`,
+                                    overflowX: "auto",
                                 }}
                             >
                                 {baseCoords.map(([x, y]) => {
@@ -210,9 +211,10 @@ function StudyPlanContent() {
                                             y + 1 < hy + courseHeight;
 
                                         if (isInRange) {
-                                            const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy, activeCourse.course_id); 
+                                            const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy, activeCourse.course_id);
                                             const isOutOfBounds = hx + courseWidth - 1 > 14 || hy + courseHeight - 1 > semesters;
-                                            highlight = (hasOverlap || isOutOfBounds) ? "invalid" : "valid";
+                                            const hasOverlapWithGridTitles = (hx < 3) || (hy + 1 == 0);
+                                            highlight = (hasOverlap || isOutOfBounds || hasOverlapWithGridTitles) ? "invalid" : "valid";
                                         }
                                     }
 
