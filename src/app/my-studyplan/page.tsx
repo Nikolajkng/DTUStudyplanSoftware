@@ -34,7 +34,7 @@ function StudyPlanContent() {
         selectedPlan, setSelectedPlan,
         courses,
         semesters, setSemesters,
-        selectedCourseType, setSelectedCourseType}
+        selectedCourseType, setSelectedCourseType }
         = useStudyPlan();
 
     const [activeCourse, setActiveCourse] = useState<Course | null>(null);
@@ -134,9 +134,17 @@ function StudyPlanContent() {
                                 {baseCoords.map(([x, y]) => (
                                     <GridFiller key={`${x}-${y}`} x={x + 1} y={y + 1} />
                                 ))}
-                                {placements.map((p) => (
-                                    <GridCourse key={p.course.course_id} placement={p} />
-                                ))}
+                                {placements.map((p) => {
+                                    const isBeingDragged = activeCourse?.course_id === p.course.course_id;
+                                    return (
+                                        <GridCourse
+                                            key={p.course.course_id}
+                                            placement={p}
+                                            style={isBeingDragged ? { visibility: "hidden" } : {}}
+                                        />
+                                    );
+                                })}
+
 
                                 <div
                                     className="flex items-center justify-center bg-gray-200 text-black font-semibold"
