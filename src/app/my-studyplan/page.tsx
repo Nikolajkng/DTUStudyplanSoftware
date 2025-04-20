@@ -1,7 +1,7 @@
 "use client";
 
 import Head from "next/head";
-import { DndContext, DragOverlay } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { useState } from "react";
 import DraggableCourse from "./components/DraggableCourse";
 import GridCourse from "./components/grid/GridCourse";
@@ -20,9 +20,9 @@ import ClearBtn from "./components/btn_handlers/ClearBtn";
 import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
 import { Course } from "@/db/fetchCourses";
 import DroppableCourseList from "./components/DroppableCourseList";
+import { getCourseDragId } from "./components/CourseTypes";
 
-export const getCourseDragId = (course: Course) =>
-    `${course.course_id}-${course.course_name}`;
+
 
 
 function StudyPlanContent() {
@@ -34,8 +34,7 @@ function StudyPlanContent() {
         selectedPlan, setSelectedPlan,
         courses,
         semesters, setSemesters,
-        selectedCourseType, setSelectedCourseType, 
-        saveStudyPlan}
+        selectedCourseType, setSelectedCourseType}
         = useStudyPlan();
 
     const [activeCourse, setActiveCourse] = useState<Course | null>(null);
@@ -49,12 +48,12 @@ function StudyPlanContent() {
         setSelectedPlan(planName);
     };
 
-    const handleDragStart = (event: any) => {
+    const handleDragStart = (event: DragStartEvent) => {
         const course = courses.find((c) => getCourseDragId(c) === event.active.id);
         setActiveCourse(course || null);
     };
 
-    const handleDragEnd = (event: any) => {
+    const handleDragEnd = (event: DragEndEvent) => {
         const course = courses.find((c) => getCourseDragId(c) === event.active.id);
         if (!course) return;
 
@@ -228,7 +227,7 @@ function StudyPlanContent() {
                             </div>
                             <DroppableCourseList>
                                 {filteredCourses.map((c) => (
-                                    <DraggableCourse key={`${c.course_id}-${c.course_name}`} course={c} />
+                                    <DraggableCourse key={getCourseDragId(c)} course={c} />
                                 ))}
                             </DroppableCourseList>
                         </div>

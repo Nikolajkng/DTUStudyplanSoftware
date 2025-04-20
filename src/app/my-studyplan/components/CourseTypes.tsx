@@ -18,3 +18,6 @@ export const courseTypeColors = new Map<string, string>([
     ["Valgfrie kurser", "bg-yellow-500"],
 ]);
 
+
+export const getCourseDragId = (course: Course) =>
+    `${course.course_id}-${course.course_name}`;

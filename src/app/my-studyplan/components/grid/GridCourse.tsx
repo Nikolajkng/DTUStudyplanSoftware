@@ -1,6 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import { courseTypeColors, CoursePlacement } from "../CourseTypes";
-import { getCourseDragId } from "../../page";
+import { getCourseDragId } from "../CourseTypes";
 
 // Function to determine the color based on course type
 const courseColor = ({ course_type }: { course_type: string }) => {

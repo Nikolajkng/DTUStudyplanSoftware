@@ -1,6 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import { courseTypeColors, CourseWithSem } from "./CourseTypes";
-import { getCourseDragId } from "../page";
+import { getCourseDragId } from "./CourseTypes";
 
 
 // Function to determine the color based on course type
@@ -32,10 +32,8 @@ const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
             {...attributes}
             {...listeners}
         >
-
             <div className="font-medium whitespace-nowrap">
                 {course.course_id == '00000' ?
-                    // &nbsp = White-space, to fill out the gap
                     <div className="font-bold">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                     : <div className="font-bold">{course.course_id}</div>}
             </div>
