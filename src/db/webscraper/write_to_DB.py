@@ -74,26 +74,27 @@ for df in df:
             VALUES (%s, %s, %s, %s, %s)
         """
         
-        # Check if the course_id already exists in the table
-        cursor.execute(
-        "SELECT 1 FROM Courses WHERE course_id = %s AND course_name = %s LIMIT 1",
-        (course_id, course_name)
-        )
-        exists = cursor.fetchone() is not None
-        if exists:
-            print(f"skipping duplicate entry for course {course_id}")
-            duplicate_entries.append((course_id, course_name))
-            continue 
-        
-        print("hello world")
-        
+
+        # Check if the course_id already exists in the table        
+        # Exception for fysik 1 and 2 which needs duplicate course_id:
+        if course_id != '10060':    
+            cursor.execute(
+            "SELECT 1 FROM Courses WHERE course_id = %s OR course_name = %s LIMIT 1",
+            (course_id, course_name)
+            )
+            exists = cursor.fetchone() is not None
+            if exists:
+                print(f"skipping duplicate entry for course {course_id}")
+                duplicate_entries.append((course_id, course_name))
+                continue 
+                    
         cursor.execute(insert_query, (course_id, course_name, course_type, ects, placement))
         print(f"Inserted course {course_id} into the database.")
     conn.commit()
 
 
 # Close the cursor and connection
-print(f"Found Duplicate courses which was skipped in insertion: ")
+print(f"Found {len(duplicate_entries)} duplicate courses which was skipped in insertion: ")
 for course_id, course_name in duplicate_entries:
     print(f"Course ID: {course_id}, Course Name: {course_name}")
 

@@ -1,7 +1,8 @@
 "use client";
 
 import Head from "next/head";
-import { DndContext } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
+import { useState } from "react";
 import DraggableCourse from "./components/DraggableCourse";
 import GridCourse from "./components/grid/GridCourse";
 import GridFiller from "./components/grid/GridFiller";
@@ -17,6 +18,12 @@ import AddSemesterBtn from "./components/btn_handlers/AddSemesterBtn";
 import RemoveSemesterBtn from "./components/btn_handlers/RemoveSemesterBtn";
 import ClearBtn from "./components/btn_handlers/ClearBtn";
 import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
+import { Course } from "@/db/fetchCourses";
+import DroppableCourseList from "./components/DroppableCourseList";
+import { getCourseDragId } from "./components/CourseTypes";
+
+
+
 
 function StudyPlanContent() {
 
@@ -27,10 +34,10 @@ function StudyPlanContent() {
         selectedPlan, setSelectedPlan,
         courses,
         semesters, setSemesters,
-        selectedCourseType, setSelectedCourseType, }
+        selectedCourseType, setSelectedCourseType }
         = useStudyPlan();
 
-
+    const [activeCourse, setActiveCourse] = useState<Course | null>(null);
 
     const loadStudyPlan = (planName: string) => {
         const plan = savedPlans[planName];
@@ -41,13 +48,57 @@ function StudyPlanContent() {
         setSelectedPlan(planName);
     };
 
+    const handleDragStart = (event: DragStartEvent) => {
+        const course = courses.find((c) => getCourseDragId(c) === event.active.id);
+        setActiveCourse(course || null);
+    };
 
+    const handleDragEnd = (event: DragEndEvent) => {
+        const course = courses.find((c) => getCourseDragId(c) === event.active.id);
+        if (!course) return;
+
+        // Case 1: Dropped in the course list
+        if (event.over?.id === "course-list") {
+            setPlacements((prev) =>
+                prev.filter((p) => p.course.course_id !== course.course_id)
+            );
+        }
+
+        // Case 2: Dropped in the grid
+        if (event.over) {
+            const [x, y] = event.over.id.toString().split("-").map(Number);
+            const scaledEcts = course.ects / 2.5;
+
+            if (x + scaledEcts <= 14 && y + (course.sem || 1) <= semesters) {
+                setPlacements((prev) => [
+                    ...prev.filter(
+                        (p) =>
+                            !(
+                                p.course.course_id === course.course_id &&
+                                p.course.course_name === course.course_name
+                            )
+                    ),
+                    { x: x + 1, y: y + 1, course },
+                ]);
+            }
+        }
+
+        setActiveCourse(null); // Clear the active course after dragging
+    };
 
     // Function for determining the courses not currently in the course grid (study plan)
     // Used by the "tilgængelige kurser"
     const notUsedCourses = courses.filter(
-        (c) => !placements.some((p) => p.course.course_id === c.course_id)
+        (c) =>
+            !placements.some(
+                (p) => getCourseDragId(p.course) === getCourseDragId(c)
+            )
     );
+
+    const filteredCourses = notUsedCourses.filter(
+        (c) => !selectedCourseType || c.course_type === selectedCourseType
+    );
+
 
     const baseCoords = Array.from({ length: 14 })
         .map((_, x) =>
@@ -55,9 +106,6 @@ function StudyPlanContent() {
         )
         .flat();
 
-    const filteredCourses = notUsedCourses.filter(
-        (c) => !selectedCourseType || c.course_type === selectedCourseType
-    );
 
     return (<>
 
@@ -72,27 +120,9 @@ function StudyPlanContent() {
             <h1 className="text-4xl font-bold mt-10">DTU Software Teknologi Studieforløb</h1>
 
             <DndContext
-                onDragEnd={(e) => {
-                    if (!e.over) {
-                        setPlacements((prev) =>
-                            prev.filter((placement) => placement.course.course_id !== e.active.id));
-                        return;
-                    }
-                    const [x, y] = e.over.id.toString().split("-").map(Number);
-                    const course = courses.find((c) => c.course_id === e.active.id);
-                    if (!course) return;
-                    const scaledEcts = course.ects / 2.5;
-
-                    // Check border on right side (the end of semester)
-                    if (x + scaledEcts > 7 * 2 || (course.sem || 1 && y + (course.sem || 1) > semesters)) {
-                        return;
-                    }
-                    setPlacements((prev) => [
-                        ...prev.filter((c) => c.course.course_id !== course.course_id),
-                        { x: x + 1, y: y + 1, course },
-
-                    ]);
-                }}>
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+            >
                 <div className="flex justify-center mt-10 ">
                     <div className="flex justify-center mt-10">
                         <div className="m-10">
@@ -109,9 +139,17 @@ function StudyPlanContent() {
                                 {baseCoords.map(([x, y]) => (
                                     <GridFiller key={`${x}-${y}`} x={x + 1} y={y + 1} />
                                 ))}
-                                {placements.map((p) => (
-                                    <GridCourse key={p.course.course_id} placement={p} />
-                                ))}
+                                {placements.map((p) => {
+                                    const isBeingDragged = activeCourse?.course_id === p.course.course_id;
+                                    return (
+                                        <GridCourse
+                                            key={p.course.course_id}
+                                            placement={p}
+                                            style={isBeingDragged ? { visibility: "hidden" } : {}}
+                                        />
+                                    );
+                                })}
+
 
                                 <div
                                     className="flex items-center justify-center bg-gray-200 text-black font-semibold"
@@ -200,16 +238,20 @@ function StudyPlanContent() {
                                         </option>)}
                                 </select>
                             </div>
-
-
-                            <div className="overflow-y-scroll overflow-x-visible mb-20 p-3 h-170">
+                            <DroppableCourseList>
                                 {filteredCourses.map((c) => (
-                                    <DraggableCourse key={c.course_id} course={c} />
+                                    <DraggableCourse key={getCourseDragId(c)} course={c} />
                                 ))}
-                            </div>
+                            </DroppableCourseList>
                         </div>
                     </div>
                 </div>
+
+                <DragOverlay>
+                    {activeCourse ? (
+                        <DraggableCourse course={activeCourse} />
+                    ) : null}
+                </DragOverlay>
             </DndContext >
 
             {/* Dropdown Menu for Saved Plans */}

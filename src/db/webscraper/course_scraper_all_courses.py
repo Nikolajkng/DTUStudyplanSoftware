@@ -43,6 +43,9 @@ if response.status_code == 200:
     with open(csv_filename, "w", newline="", encoding="utf-8") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(["course_id", "course_name", "ects", "placement", "course_type"])
+        
+        # Edge-case: This course is not scraped due to ects being weird format, add it manually:
+        writer.writerow(["02100", "Indledende programmering og softwareteknologi ", 10, "E5 (ons 8-17) ", "Polyteknisk grundlag"])
 
         last_course = None
 
@@ -60,10 +63,10 @@ if response.status_code == 200:
                 if len(cols) >= 5:
                     course_id_tag = cols[0].find("a")
                     course_id = course_id_tag.text.strip() if course_id_tag else ""
+                    
                     if course_id == "10060":
                        splitCourse()# Fysik skal opdeles i to Blokke x 5 ects
                        continue # Tilføj ikke 10060 som hel blok med 10 ects
-                        
                     course_name = cols[1].text.strip().replace("(polyteknisk grundlag)", "").replace("(Polyteknisk grundlag)", "")
                     ects_points = cols[2].text.strip()
                     placement = cols[-1].text.strip()
