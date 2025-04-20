@@ -168,23 +168,17 @@ function StudyPlanContent() {
 
     return (<>
 
-        <Head>
-            <title>DTU Software Technology</title>
-            <meta charSet="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <link rel="icon" type="image/png" href="/assets/icons/favicon-32x32.png" />
-        </Head>
 
         <div className="flex flex-col min-h-screen items-center">
-            <h1 className="text-4xl font-bold mt-10">DTU Software Teknologi Studieforløb</h1>
+            <h1 className="text-4xl font-bold mt-10">Mine studieforløb</h1>
 
             <DndContext
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex justify-center mt-10 ">
-                    <div className="flex justify-center mt-10">
+                <div className="flex justify-center">
+                    <div className="flex justify-center mt-5">
                         <div className="m-10">
                             <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Nyt studieforløb"}</h2>
                             <div
