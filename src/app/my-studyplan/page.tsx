@@ -89,8 +89,16 @@ function StudyPlanContent() {
     // Function for determining the courses not currently in the course grid (study plan)
     // Used by the "tilgængelige kurser"
     const notUsedCourses = courses.filter(
-        (c) => !placements.some((p) => p.course.course_id === c.course_id)
+        (c) =>
+            !placements.some(
+                (p) => getCourseDragId(p.course) === getCourseDragId(c)
+            )
     );
+
+    const filteredCourses = notUsedCourses.filter(
+        (c) => !selectedCourseType || c.course_type === selectedCourseType
+    );
+
 
     const baseCoords = Array.from({ length: 14 })
         .map((_, x) =>
@@ -98,9 +106,6 @@ function StudyPlanContent() {
         )
         .flat();
 
-    const filteredCourses = notUsedCourses.filter(
-        (c) => !selectedCourseType || c.course_type === selectedCourseType
-    );
 
     return (<>
 
