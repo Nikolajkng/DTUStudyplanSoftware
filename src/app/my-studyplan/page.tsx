@@ -167,9 +167,12 @@ function StudyPlanContent() {
 
 
     return (<>
-
-
         <div className="flex flex-col min-h-screen items-center">
+            <Head>
+                <meta charSet="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <link rel="icon" type="image/png" href="/assets/icons/favicon-32x32.png" />
+            </Head>
             <h1 className="text-4xl font-bold mt-10">Mine studieforløb</h1>
 
             <DndContext
