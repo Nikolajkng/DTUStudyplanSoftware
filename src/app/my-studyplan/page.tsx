@@ -18,7 +18,6 @@ import AddSemesterBtn from "./components/btn_handlers/AddSemesterBtn";
 import RemoveSemesterBtn from "./components/btn_handlers/RemoveSemesterBtn";
 import ClearBtn from "./components/btn_handlers/ClearBtn";
 import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
-import { Course } from "@/db/fetchCourses";
 import DroppableCourseList from "./components/DroppableCourseList";
 import { CourseWithSem, getCourseDragId } from "./components/CourseTypes";
 
