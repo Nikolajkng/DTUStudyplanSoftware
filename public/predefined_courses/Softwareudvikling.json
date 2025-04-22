@@ -1,1 +1,49 @@
-{"placements":[{"x":7,"y":2,"course":{"course_id":"01017","course_name":"Diskret matematik","course_type":"Retningsspecifikke kurser","ects":5,"placement":"E2B (tors 8-12)"}},{"x":3,"y":3,"course":{"course_id":"01001","course_name":"Matematik 1a ","course_type":"Polyteknisk grundlag","ects":10,"placement":"Efterår"}},{"x":5,"y":6,"course":{"course_id":"02122","course_name":"Fagprojekt - Bachelor i Softwareteknologi","course_type":"Projekter","ects":10,"placement":"F5B (ons 13-17) og Juni"}},{"x":9,"y":3,"course":{"course_id":"02162","course_name":"Software Engineering 2","course_type":"Valgfrie kurser","ects":10,"placement":"E3 (tirs 8-12, fre 13-17)"}}],"semesters":7}
+{
+    "placements": [
+        {
+            "x": 7,
+            "y": 2,
+            "course": {
+                "course_id": "01017",
+                "course_name": "Diskret matematik",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": 5,
+                "placement": "E2B (tors 8-12)"
+            }
+        },
+        {
+            "x": 3,
+            "y": 3,
+            "course": {
+                "course_id": "01001",
+                "course_name": "Matematik 1a ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": 10,
+                "placement": "Efterår"
+            }
+        },
+        {
+            "x": 5,
+            "y": 6,
+            "course": {
+                "course_id": "02122",
+                "course_name": "Fagprojekt - Bachelor i Softwareteknologi",
+                "course_type": "Projekter",
+                "ects": 10,
+                "placement": "F5B (ons 13-17) og Juni"
+            }
+        },
+        {
+            "x": 9,
+            "y": 3,
+            "course": {
+                "course_id": "02162",
+                "course_name": "Software Engineering 2",
+                "course_type": "Valgfrie kurser",
+                "ects": 10,
+                "placement": "E3 (tirs 8-12, fre 13-17)"
+            }
+        }
+    ],
+    "semesters": 7
+}

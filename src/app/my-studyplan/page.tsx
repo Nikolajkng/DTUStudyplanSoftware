@@ -1,7 +1,7 @@
 "use client";
 
 import Head from "next/head";
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { useState } from "react";
 import DraggableCourse from "./components/DraggableCourse";
 import GridCourse from "./components/grid/GridCourse";
@@ -20,7 +20,7 @@ import ClearBtn from "./components/btn_handlers/ClearBtn";
 import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
 import { Course } from "@/db/fetchCourses";
 import DroppableCourseList from "./components/DroppableCourseList";
-import { getCourseDragId } from "./components/CourseTypes";
+import { CourseWithSem, getCourseDragId } from "./components/CourseTypes";
 
 
 
@@ -34,10 +34,11 @@ function StudyPlanContent() {
         selectedPlan, setSelectedPlan,
         courses,
         semesters, setSemesters,
-        selectedCourseType, setSelectedCourseType }
+        selectedCourseType, setSelectedCourseType,
+        hoveredCell, setHoveredCell, }
         = useStudyPlan();
 
-    const [activeCourse, setActiveCourse] = useState<Course | null>(null);
+    const [activeCourse, setActiveCourse] = useState<CourseWithSem | null>(null);
 
     const loadStudyPlan = (planName: string) => {
         const plan = savedPlans[planName];
@@ -48,9 +49,54 @@ function StudyPlanContent() {
         setSelectedPlan(planName);
     };
 
+
+    // Function to check for overlap
+    const checkForOverlap = (courseWidth: number, courseHeight: number, courseX: number, courseY: number, excludeCourseId?: string): boolean => {
+        // Get cells the course would occupy
+        const targetCells = new Set<string>();
+        for (let dx = 0; dx < courseWidth; dx++) {
+            for (let dy = 0; dy < courseHeight; dy++) {
+                targetCells.add(`${courseX + dx}-${courseY + dy}`);
+            }
+        }
+
+        // Check for overlap
+        const hasOverlap = placements.some((p) => {
+            if (excludeCourseId && p.course.course_id === excludeCourseId) {
+                return false; // skip checking against itself
+            }
+
+            const px = p.x;
+            const py = p.y;
+            const pw = p.course.ects / 2.5;
+            const ph = p.course.sem || 1;
+
+            for (let dx = 0; dx < pw; dx++) {
+                for (let dy = 0; dy < ph; dy++) {
+                    if (targetCells.has(`${px + dx}-${py + dy}`)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
+
+        return hasOverlap;
+    };
+
     const handleDragStart = (event: DragStartEvent) => {
         const course = courses.find((c) => getCourseDragId(c) === event.active.id);
         setActiveCourse(course || null);
+    };
+
+    const handleDragOver = (event: DragOverEvent) => {
+        if (!event.over || !activeCourse) {
+            setHoveredCell(null);
+            return;
+        }
+
+        const [x, y] = event.over.id.toString().split("-").map(Number);
+        setHoveredCell([x + 1, y + 1]);
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -60,7 +106,9 @@ function StudyPlanContent() {
         // Case 1: Dropped in the course list
         if (event.over?.id === "course-list") {
             setPlacements((prev) =>
-                prev.filter((p) => p.course.course_id !== course.course_id)
+                prev.filter(
+                    (p) => getCourseDragId(p.course) !== getCourseDragId(course)
+                )
             );
         }
 
@@ -69,21 +117,32 @@ function StudyPlanContent() {
             const [x, y] = event.over.id.toString().split("-").map(Number);
             const scaledEcts = course.ects / 2.5;
 
-            if (x + scaledEcts <= 14 && y + (course.sem || 1) <= semesters) {
+
+            // Position on the grid
+            const courseX = x + 1;
+            const courseY = y + 1;
+            const courseWidth = scaledEcts;
+            const courseHeight = course.sem || 1;
+
+            // Conditions that checks for valid placement on the grid
+            const hasOverlap = checkForOverlap(courseWidth, courseHeight, courseX, courseY, course.course_id);
+            const hasOverlapWithGridTitles = (x < 2) || (y == 0);
+            if (
+                courseX + courseWidth - 1 <= 14 &&
+                courseY + courseHeight - 1 <= semesters &&
+                !hasOverlap &&
+                !hasOverlapWithGridTitles
+            ) {
                 setPlacements((prev) => [
-                    ...prev.filter(
-                        (p) =>
-                            !(
-                                p.course.course_id === course.course_id &&
-                                p.course.course_name === course.course_name
-                            )
-                    ),
-                    { x: x + 1, y: y + 1, course },
+                    ...prev.filter((p) => getCourseDragId(p.course) !== getCourseDragId(course)),
+                    { x: courseX, y: courseY, course },
                 ]);
             }
+
         }
 
-        setActiveCourse(null); // Clear the active course after dragging
+        setActiveCourse(null);
+        setHoveredCell(null);
     };
 
     // Function for determining the courses not currently in the course grid (study plan)
@@ -109,22 +168,17 @@ function StudyPlanContent() {
 
     return (<>
 
-        <Head>
-            <title>DTU Software Technology</title>
-            <meta charSet="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <link rel="icon" type="image/png" href="/assets/icons/favicon-32x32.png" />
-        </Head>
 
         <div className="flex flex-col min-h-screen items-center">
-            <h1 className="text-4xl font-bold mt-10">DTU Software Teknologi Studieforløb</h1>
+            <h1 className="text-4xl font-bold mt-10">Mine studieforløb</h1>
 
             <DndContext
                 onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex justify-center mt-10 ">
-                    <div className="flex justify-center mt-10">
+                <div className="flex justify-center">
+                    <div className="flex justify-center mt-5">
                         <div className="m-10">
                             <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Nyt studieforløb"}</h2>
                             <div
@@ -134,13 +188,36 @@ function StudyPlanContent() {
                                     height: `${semesters}00px`,
                                     gridTemplateColumns: "repeat(14, 1fr)",
                                     gridTemplateRows: `repeat(${semesters}, 1fr)`,
+                                    overflowX: "auto",
                                 }}
                             >
-                                {baseCoords.map(([x, y]) => (
-                                    <GridFiller key={`${x}-${y}`} x={x + 1} y={y + 1} />
-                                ))}
+                                {baseCoords.map(([x, y]) => {
+                                    let highlight: "valid" | "invalid" | null = null;
+
+                                    if (hoveredCell && activeCourse) {
+                                        const [hx, hy] = hoveredCell;
+                                        const courseWidth = activeCourse.ects / 2.5;
+                                        const courseHeight = activeCourse.sem || 1;
+
+                                        const isInRange = x + 1 >= hx &&
+                                            x + 1 < hx + courseWidth &&
+                                            y + 1 >= hy &&
+                                            y + 1 < hy + courseHeight;
+
+                                        if (isInRange) {
+                                            const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy, activeCourse.course_id);
+                                            const isOutOfBounds = hx + courseWidth - 1 > 14 || hy + courseHeight - 1 > semesters;
+                                            const hasOverlapWithGridTitles = (hx < 3) || (hy + 1 == 0);
+                                            highlight = (hasOverlap || isOutOfBounds || hasOverlapWithGridTitles) ? "invalid" : "valid";
+                                        }
+                                    }
+
+                                    return (
+                                        <GridFiller key={`${x}-${y}`} x={x + 1} y={y + 1} highlight={highlight} />
+                                    );
+                                })}
                                 {placements.map((p) => {
-                                    const isBeingDragged = activeCourse?.course_id === p.course.course_id;
+                                    const isBeingDragged = activeCourse && getCourseDragId(activeCourse) === getCourseDragId(p.course);
                                     return (
                                         <GridCourse
                                             key={p.course.course_id}

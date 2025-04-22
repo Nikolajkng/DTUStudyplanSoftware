@@ -1,0 +1,203 @@
+{
+    "placements": [
+        {
+            "x": 3,
+            "y": 2,
+            "course": {
+                "course_id": "01001",
+                "course_name": "Matematik 1a ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "10.0",
+                "placement": "Efterår"
+            }
+        },
+        {
+            "x": 9,
+            "y": 2,
+            "course": {
+                "course_id": "02100",
+                "course_name": "Indledende programmering og softwareteknologi ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "10.0",
+                "placement": "E5 (ons 8-17) "
+            }
+        },
+        {
+            "x": 3,
+            "y": 3,
+            "course": {
+                "course_id": "01002",
+                "course_name": "Matematik 1b ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "10.0",
+                "placement": "Forår"
+            }
+        },
+        {
+            "x": 3,
+            "y": 7,
+            "course": {
+                "course_id": "27020",
+                "course_name": "Bioengineering ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "E2A (man 13-17) og F2A (man 13-17)"
+            }
+        },
+        {
+            "x": 3,
+            "y": 5,
+            "course": {
+                "course_id": "26020",
+                "course_name": "Kemi ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "E1A (man 8-12)"
+            }
+        },
+        {
+            "x": 7,
+            "y": 3,
+            "course": {
+                "course_id": "10060",
+                "course_name": "Fysik (del 1)",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "F1A"
+            }
+        },
+        {
+            "x": 3,
+            "y": 4,
+            "course": {
+                "course_id": "10060",
+                "course_name": "Fysik (del 2)",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "E1A"
+            }
+        },
+        {
+            "x": 5,
+            "y": 4,
+            "course": {
+                "course_id": "02402",
+                "course_name": "Statistik ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "E3A (tirs 8-12), F4A (tirs 13-17)"
+            }
+        },
+        {
+            "x": 13,
+            "y": 6,
+            "course": {
+                "course_id": "42620",
+                "course_name": "Videnskab, Teknologi og Samfund ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "Januar, Juni"
+            }
+        },
+        {
+            "x": 7,
+            "y": 2,
+            "course": {
+                "course_id": "01017",
+                "course_name": "Diskret matematik",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "5.0",
+                "placement": "E2B (tors 8-12)"
+            }
+        },
+        {
+            "x": 13,
+            "y": 2,
+            "course": {
+                "course_id": "02104",
+                "course_name": "Indledende programmeringsprojekt på Softwareteknologi",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "5.0",
+                "placement": "Januar"
+            }
+        },
+        {
+            "x": 9,
+            "y": 3,
+            "course": {
+                "course_id": "02105",
+                "course_name": "Algoritmer og datastrukturer 1",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "5.0",
+                "placement": "F2B (tors 8-12)"
+            }
+        },
+        {
+            "x": 11,
+            "y": 3,
+            "course": {
+                "course_id": "02161",
+                "course_name": "Software Engineering 1",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "5.0",
+                "placement": "F2A (man 13-17)"
+            }
+        },
+        {
+            "x": 7,
+            "y": 4,
+            "course": {
+                "course_id": "02132",
+                "course_name": "Computersystemer",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "10.0",
+                "placement": "E5 (ons 8-17)"
+            }
+        },
+        {
+            "x": 11,
+            "y": 4,
+            "course": {
+                "course_id": "02157",
+                "course_name": "Funktionsprogrammering",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "5.0",
+                "placement": "E4B (fre 8-12)"
+            }
+        },
+        {
+            "x": 5,
+            "y": 5,
+            "course": {
+                "course_id": "02141",
+                "course_name": "Datalogisk modellering",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "10.0",
+                "placement": "F3A (tirs 8-12) og F4B (fre 8-12)"
+            }
+        },
+        {
+            "x": 9,
+            "y": 7,
+            "course": {
+                "course_id": "00000",
+                "course_name": "Bachelorprojekt",
+                "course_type": "Projekter",
+                "ects": "15.0",
+                "placement": "Forår+juni eller efterår+januar"
+            }
+        },
+        {
+            "x": 11,
+            "y": 5,
+            "course": {
+                "course_id": "02122",
+                "course_name": "Fagprojekt - Bachelor i Softwareteknologi",
+                "course_type": "Projekter",
+                "ects": "10.0",
+                "placement": "F5B (ons 13-17) og Juni"
+            }
+        }
+    ],
+    "semesters": 7
+}

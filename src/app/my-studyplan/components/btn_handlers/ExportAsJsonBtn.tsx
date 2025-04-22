@@ -1,9 +1,11 @@
 import React from "react";
-import semesters from "../../page";
-import placements from "../../page";
+import { useStudyPlan } from "../hooks/useStudyPlan";
 
 export function ExportAsJsonBtn() {
-    
+
+    const { placements, semesters } = useStudyPlan();
+
+
     // Function to export the current study plan as a JSON file
     const handleExportAsJson = () => {
         const planName = prompt("Angiv et navn til studieforløbet:");
@@ -30,7 +32,7 @@ export function ExportAsJsonBtn() {
 
     return (
         <button
-            className="bg-blue-500 text-white font-bold py-2 px-4 rounded"
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
             onClick={handleExportAsJson}
         >
             Download Studieforløb som JSON

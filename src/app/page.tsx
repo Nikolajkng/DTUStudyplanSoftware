@@ -4,7 +4,7 @@ export default function HomePage() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-10">
         <div className="text-center">
-          <h1 className="text-4xl font-bold">DTU Softwareteknologi Studieplanlægger</h1>
+          <h1 className="text-4xl font-bold">Velkommen til DTU-Studieforløb for Software (BSc)</h1>
         </div>
 
         {/* About Section */}
