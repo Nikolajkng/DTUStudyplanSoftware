@@ -86,7 +86,7 @@ export default function RecommendedStudyPlan() {
                                         <GridFiller key={`${x}-${y}`} x={x + 1} y={y + 1} />
                                     ))}
                                     {placements.map((p) => (
-                                        <GridCourse key={`${p.course.course_id}-${p.course.course_name}`} placement={p} />
+                                        <GridCourse key={`${p.course.course_id}-${p.course.course_name}`} coord={p} />
                                     ))}
 
                                     <div

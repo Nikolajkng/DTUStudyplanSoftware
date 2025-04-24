@@ -7,11 +7,11 @@ const courseColor = ({ course_type }: { course_type: string }) => {
     return courseTypeColors.get(course_type) || "bg-slate-600";
 }
 type GridCourseProps = {
-    placement: CoursePlacement;
+    coord: CoursePlacement;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 
-const GridCourse = ({ placement, style, className, ...rest }: GridCourseProps) => {
+const GridCourse = ({ coord: placement, style, className, ...rest }: GridCourseProps) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: getCourseDragId(placement.course),
     });

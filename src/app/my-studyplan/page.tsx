@@ -129,6 +129,11 @@ function StudyPlanContent() {
                 course.ects = 5;
             }
 
+            // Handle placements:
+
+
+
+
             // Conditions that checks for valid placement on the grid
             const hasOverlap = checkForOverlap(courseWidth, courseHeight, courseX, courseY, course.course_id);
             const hasOverlapWithGridTitles = (x < 2) || (y == 0);
@@ -229,7 +234,7 @@ function StudyPlanContent() {
                                     return (
                                         <GridCourse
                                             key={p.course.course_id}
-                                            placement={p}
+                                            coord={p}
                                             style={isBeingDragged ? { visibility: "hidden" } : {}}
                                         />
                                     );
