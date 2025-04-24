@@ -158,7 +158,7 @@ function StudyPlanContent() {
 
     const getScheduleValue = (row: number, col: number): string[] => {
         const is3Weeks = row > 12;
-        const evenSem = (col+1) % 2 === 0;
+        const evenSem = (col + 1) % 2 === 0;
 
         if (is3Weeks) {
             return evenSem
@@ -166,8 +166,8 @@ function StudyPlanContent() {
                 : ["januar", "Januar"];
         } else {
             return evenSem
-                ? ["F","forår", "Forår"]
-                : ["E","efterår", "Efterår"];
+                ? ["F", "forår", "Forår"]
+                : ["E", "efterår", "Efterår"];
         }
     }
 
@@ -255,8 +255,8 @@ function StudyPlanContent() {
                                         if (isInRange) {
                                             const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy, activeCourse.course_id);
                                             const isOutOfBounds = hx + courseWidth - 1 > 14 || hy + courseHeight - 1 > semesters;
-                                            const hasOverlapWithGridTitles = hx < 3 || hy === 0;                   
-                                            const checkScheduleResult = schedule.map((s)=>(activeCourse.placement.includes(s)));
+                                            const hasOverlapWithGridTitles = hx < 3 || hy === 0;
+                                            const checkScheduleResult = schedule.map((s) => (activeCourse.placement.includes(s)));
                                             const correctSchedule = checkScheduleResult.some(foundMatch => foundMatch);
 
                                             //debugger;
@@ -328,10 +328,16 @@ function StudyPlanContent() {
                                 ))}
 
                             </div>
-                            <div className=" justify-between border border-gray-400 p-2" >
-                                <AddSemesterBtn />
-                                <RemoveSemesterBtn />
-                                <ClearBtn />
+                            <div className="flex justify-between items-center border border-gray-400 p-2">
+                                <div className="flex space-x-3">
+                                    <AddSemesterBtn />
+                                    <RemoveSemesterBtn />
+                                    <ClearBtn />
+                                </div>
+                                <div>
+                                    <SaveBtn />
+                                    <DeleteBtn />
+                                </div>
                             </div>
                             <p>
                                 <strong>*OBS: </strong>
@@ -414,7 +420,6 @@ function StudyPlanContent() {
 
             {/* Buttons for saving, deleting, and exporting study plans */}
             < div className="flex space-x-3 mt-6" >
-                <SaveBtn />
                 <DeleteBtn />
                 <ExportAsJsonBtn />
             </div>
