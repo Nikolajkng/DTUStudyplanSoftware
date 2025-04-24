@@ -336,10 +336,16 @@ function StudyPlanContent() {
                                 ))}
 
                             </div>
-                            <div className=" justify-between border border-gray-400 p-2" >
-                                <AddSemesterBtn />
-                                <RemoveSemesterBtn />
-                                <ClearBtn />
+                            <div className="flex justify-between items-center border border-gray-400 p-2">
+                                <div className="flex space-x-3">
+                                    <AddSemesterBtn />
+                                    <RemoveSemesterBtn />
+                                    <ClearBtn />
+                                </div>
+                                <div>
+                                    <SaveBtn />
+                                    <DeleteBtn />
+                                </div>
                             </div>
                             <p>
                                 <strong>*OBS: </strong>
@@ -422,7 +428,6 @@ function StudyPlanContent() {
 
             {/* Buttons for saving, deleting, and exporting study plans */}
             < div className="flex space-x-3 mt-6" >
-                <SaveBtn />
                 <DeleteBtn />
                 <ExportAsJsonBtn />
             </div>
