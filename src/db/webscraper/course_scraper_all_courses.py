@@ -30,6 +30,9 @@ if response.status_code == 200:
         
         # Edge-case: This course is not scraped due to ects being weird format, add it manually:
         writer.writerow(["02100", "Indledende programmering og softwareteknologi ", 10, "E5 (ons 8-17) ", "Polyteknisk grundlag & Retningsspecifikke kurser"])
+        
+        # Edge-case:
+        
         last_course = None
         for table in tables:
             # Get the section title by going backward through previous siblings
