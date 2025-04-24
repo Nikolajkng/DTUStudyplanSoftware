@@ -4,22 +4,6 @@ import csv
 import os
 
 
-def splitCourse():
-    course_id = "10060"
-    course_name = "Fysik (del 1)"
-    ects_points = "5"
-    placement = "F1A"
-    course_type = "Polyteknisk grundlag"
-    last_course = [course_id, course_name, ects_points, placement, course_type]
-    writer.writerow(last_course)
-    course_id = "10060"
-    course_name = "Fysik (del 2)"
-    ects_points = "5"
-    placement = "E1A"
-    course_type = "Polyteknisk grundlag"
-    last_course = [course_id, course_name, ects_points, placement, course_type]
-    writer.writerow(last_course)
-
 # URL of the webpage
 URL = "https://student.dtu.dk/studieordninger/bachelor/softwareteknologi/studieplan"
 headers = {
@@ -45,10 +29,11 @@ if response.status_code == 200:
         writer.writerow(["course_id", "course_name", "ects", "placement", "course_type"])
         
         # Edge-case: This course is not scraped due to ects being weird format, add it manually:
-        writer.writerow(["02100", "Indledende programmering og softwareteknologi ", 10, "E5 (ons 8-17) ", "Polyteknisk grundlag"])
-
+        writer.writerow(["02100", "Indledende programmering og softwareteknologi ", 10, "E5 (ons 8-17) ", "Polyteknisk grundlag & Retningsspecifikke kurser"])
+        
+        # Edge-case:
+        
         last_course = None
-
         for table in tables:
             # Get the section title by going backward through previous siblings
             course_type = "Unknown"
@@ -63,10 +48,6 @@ if response.status_code == 200:
                 if len(cols) >= 5:
                     course_id_tag = cols[0].find("a")
                     course_id = course_id_tag.text.strip() if course_id_tag else ""
-                    
-                    if course_id == "10060":
-                       splitCourse()# Fysik skal opdeles i to Blokke x 5 ects
-                       continue # Tilføj ikke 10060 som hel blok med 10 ects
                     course_name = cols[1].text.strip().replace("(polyteknisk grundlag)", "").replace("(Polyteknisk grundlag)", "")
                     ects_points = cols[2].text.strip()
                     placement = cols[-1].text.strip()
