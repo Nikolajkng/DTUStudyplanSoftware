@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/core";
-import { courseTypeColors, CoursePlacement } from "../CourseTypes";
+import { courseTypeColors, CourseCoords} from "../CourseTypes";
 import { getCourseDragId } from "../CourseTypes";
 
 // Function to determine the color based on course type
@@ -7,7 +7,7 @@ const courseColor = ({ course_type }: { course_type: string }) => {
     return courseTypeColors.get(course_type) || "bg-slate-600";
 }
 type GridCourseProps = {
-    coord: CoursePlacement;
+    coord: CourseCoords;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 

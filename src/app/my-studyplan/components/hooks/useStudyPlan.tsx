@@ -2,16 +2,16 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import Cookies from "js-cookie";
 import { cachedFetchCourses } from "../../../../db/fetchCourses";
-import { CoursePlacement, CourseWithSem } from "../CourseTypes";
+import { CourseCoords, CourseWithSem } from "../CourseTypes";
 
 type StudyPlanContextType = {
-    placements: CoursePlacement[];
-    setPlacements: React.Dispatch<React.SetStateAction<CoursePlacement[]>>;
+    placements: CourseCoords[];
+    setPlacements: React.Dispatch<React.SetStateAction<CourseCoords[]>>;
     savedPlans: {
-        [key: string]: { placements: CoursePlacement[]; semesters: number };
+        [key: string]: { placements: CourseCoords[]; semesters: number };
     };
     setSavedPlans: React.Dispatch<React.SetStateAction<{
-        [key: string]: { placements: CoursePlacement[]; semesters: number };
+        [key: string]: { placements: CourseCoords[]; semesters: number };
     }>>;
     selectedPlan: string;
     setSelectedPlan: React.Dispatch<React.SetStateAction<string>>;
@@ -31,7 +31,7 @@ const StudyPlanContext = createContext<StudyPlanContextType | null>(null);
 export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
 
     const [savedPlans, setSavedPlans] = useState<{
-        [key: string]: { placements: CoursePlacement[]; semesters: number };
+        [key: string]: { placements: CourseCoords[]; semesters: number };
     }>(() => {
         const savedPlansCookie = Cookies.get("savedStudyPlans");
         if (savedPlansCookie) {
@@ -44,7 +44,7 @@ export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
         return {};
     });
 
-    const [placements, setPlacements] = useState<CoursePlacement[]>([]);
+    const [placements, setPlacements] = useState<CourseCoords[]>([]);
     const [hoveredCell, setHoveredCell] = useState<[number, number] | null>(null);
     const [selectedPlan, setSelectedPlan] = useState<string>("");
     const [courses, setCourses] = useState<CourseWithSem[]>([]);

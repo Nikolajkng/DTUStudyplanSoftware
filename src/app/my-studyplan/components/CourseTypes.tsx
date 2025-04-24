@@ -4,7 +4,7 @@ export type CourseWithSem = Course & {
     sem?: number;
 };
 
-export type CoursePlacement = {
+export type CourseCoords = {
     x: number;
     y: number;
     course: CourseWithSem;
