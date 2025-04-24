@@ -126,6 +126,7 @@ function StudyPlanContent() {
             // Fysik should fill out two courses
             if(course.course_id === "10060" || course.course_name === "Fysik") {
                 course.sem = 2;
+                course.ects = 5;
             }
 
             // Conditions that checks for valid placement on the grid
