@@ -23,5 +23,5 @@ const fetchCoursesFromDB = async (): Promise<Course[]> => {
 };
 
 export const cachedFetchCourses = unstable_cache(fetchCoursesFromDB, [], {
-  revalidate: 600,
+  revalidate: 10*60,
 });

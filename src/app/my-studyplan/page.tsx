@@ -123,6 +123,12 @@ function StudyPlanContent() {
             const courseWidth = scaledEcts;
             const courseHeight = course.sem || 1;
 
+            // Fysik should fill out two courses
+            if(course.course_id === "10060" || course.course_name === "Fysik") {
+                course.sem = 2;
+                course.ects = 5;
+            }
+
             // Conditions that checks for valid placement on the grid
             const hasOverlap = checkForOverlap(courseWidth, courseHeight, courseX, courseY, course.course_id);
             const hasOverlapWithGridTitles = (x < 2) || (y == 0);
