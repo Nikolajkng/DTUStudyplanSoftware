@@ -153,9 +153,22 @@ function StudyPlanContent() {
             )
     );
 
-    const filteredCourses = notUsedCourses.filter(
-        (c) => !selectedCourseType || c.course_type === selectedCourseType
-    );
+    const filteredCourses = notUsedCourses.filter((c) => {
+        if (!selectedCourseType) {
+            return true; // Show all courses if no filter is selected
+        }
+
+        // Special case: Include the course in both "Polyteknisk grundlag" and "Retningsspecifikke kurser"
+        if (c.course_type === "Polyteknisk grundlag & Retningsspecifikke kurser") {
+            return (
+                selectedCourseType === "Polyteknisk grundlag" ||
+                selectedCourseType === "Retningsspecifikke kurser"
+            );
+        }
+
+        // Default case: Match the selected course type
+        return c.course_type === selectedCourseType;
+    });
 
 
     const baseCoords = Array.from({ length: 14 })
@@ -311,10 +324,17 @@ function StudyPlanContent() {
                                     className="px-4 py-4 border rounded"
                                 >
                                     <option value=""> Alle Kurser </option>
-                                    {[...new Set(courses.map((c) => c.course_type))].map((type) =>
+                                    {[...new Set(
+                                        courses.flatMap((c) =>
+                                            c.course_type === "Polyteknisk grundlag & Retningsspecifikke kurser"
+                                                ? ["Polyteknisk grundlag", "Retningsspecifikke kurser"]
+                                                : [c.course_type]
+                                        )
+                                    )].map((type) => (
                                         <option key={type} value={type}>
                                             {type}
-                                        </option>)}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                             <DroppableCourseList>
