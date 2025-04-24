@@ -22,9 +22,14 @@ const GridCourse = ({ placement, style, className, ...rest }: GridCourseProps) =
         ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
         : undefined;
 
+    const isHardSplit =
+        placement.course.course_type === "Polyteknisk grundlag & Retningsspecifikke kurser";
+
     return (
         <div
-            className={`${courseColor({ course_type: placement.course.course_type })} text-white flex justify-center items-center z-10 ${className ?? ""}`}
+            className={`relative text-white flex justify-center items-center z-10 ${className ?? ""} ${
+                isHardSplit ? "" : courseColor({ course_type: placement.course.course_type })
+            }`}
             style={{
                 width: "99%",
                 height: "100%",
@@ -40,6 +45,19 @@ const GridCourse = ({ placement, style, className, ...rest }: GridCourseProps) =
             {...listeners}
             {...rest}
         >
+            {/* Pseudo-elements for the hard split */}
+            {isHardSplit && (
+                <>
+                    <div
+                        className="absolute top-0 left-0 h-full w-1/2 bg-green-500"
+                        style={{ zIndex: -1 }}
+                    />
+                    <div
+                        className="absolute top-0 right-0 h-full w-1/2 bg-blue-400"
+                        style={{ zIndex: -1 }}
+                    />
+                </>
+            )}
             <strong className="w-full h-full flex items-center justify-center text-sm leading-tight break-words text-center">
                 {placement.course.course_name}
             </strong>

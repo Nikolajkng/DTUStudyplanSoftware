@@ -12,6 +12,7 @@ export type CoursePlacement = {
 
 
 export const courseTypeColors = new Map<string, string>([
+    ["Polyteknisk grundlag & Retningsspecifikke kurser", "hard-split"],
     ["Polyteknisk grundlag", "bg-green-500"],
     ["Projekter", "bg-red-500"],
     ["Retningsspecifikke kurser", "bg-blue-400"],
