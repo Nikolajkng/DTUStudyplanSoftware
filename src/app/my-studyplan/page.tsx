@@ -334,7 +334,7 @@ function StudyPlanContent() {
                                     <RemoveSemesterBtn />
                                     <ClearBtn />
                                 </div>
-                                <div>
+                                <div className="flex space-x-3">
                                     <SaveBtn />
                                     <DeleteBtn />
                                 </div>
@@ -420,7 +420,6 @@ function StudyPlanContent() {
 
             {/* Buttons for saving, deleting, and exporting study plans */}
             < div className="flex space-x-3 mt-6" >
-                <DeleteBtn />
                 <ExportAsJsonBtn />
             </div>
             <div className="flex space-x-3 mt-6">

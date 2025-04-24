@@ -1,4 +1,5 @@
 import { useStudyPlan } from "../hooks/useStudyPlan";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/solid"; // Import the scale icon
 
 export default function SaveBtn() {
     const { placements, semesters, setSavedPlans } = useStudyPlan();
@@ -13,13 +14,13 @@ export default function SaveBtn() {
         }
     };
 
-
     return (
         <button
             onClick={handleSave}
-            className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
+            className="flex items-center px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
         >
-            Gem nuværende studieforløb
+            <ArrowDownTrayIcon className="h-5 w-5 mr-2" /> {/* Add the save icon */}
+            Gem
         </button>
-    )
+    );
 }
