@@ -30,6 +30,10 @@ if response.status_code == 200:
         
         # Edge case - bachelor projektet
         writer.writerow(["00000", "Bachelorprojekt", "15", "Forår+juni eller efterår+januar", "Projekter"])  
+        
+        # Edge case - kommunikationskursus
+        writer.writerow(["34220", "Kommunikationssystemer", "5", "jan/jun/aug", "Projekter"])  
+
 
         # Skip de 3 første tabeller, kun inkludere de 5 sidste (valgfag)
         for idx, table in enumerate(tables):

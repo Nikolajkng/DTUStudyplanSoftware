@@ -12,17 +12,6 @@
             }
         },
         {
-            "x": 9,
-            "y": 2,
-            "course": {
-                "course_id": "02100",
-                "course_name": "Indledende programmering og softwareteknologi ",
-                "course_type": "Polyteknisk grundlag",
-                "ects": "10.0",
-                "placement": "E5 (ons 8-17) "
-            }
-        },
-        {
             "x": 3,
             "y": 3,
             "course": {
@@ -34,72 +23,6 @@
             }
         },
         {
-            "x": 3,
-            "y": 7,
-            "course": {
-                "course_id": "27020",
-                "course_name": "Bioengineering ",
-                "course_type": "Polyteknisk grundlag",
-                "ects": "5.0",
-                "placement": "E2A (man 13-17) og F2A (man 13-17)"
-            }
-        },
-        {
-            "x": 3,
-            "y": 5,
-            "course": {
-                "course_id": "26020",
-                "course_name": "Kemi ",
-                "course_type": "Polyteknisk grundlag",
-                "ects": "5.0",
-                "placement": "E1A (man 8-12)"
-            }
-        },
-        {
-            "x": 7,
-            "y": 3,
-            "course": {
-                "course_id": "10060",
-                "course_name": "Fysik (del 1)",
-                "course_type": "Polyteknisk grundlag",
-                "ects": "5.0",
-                "placement": "F1A"
-            }
-        },
-        {
-            "x": 3,
-            "y": 4,
-            "course": {
-                "course_id": "10060",
-                "course_name": "Fysik (del 2)",
-                "course_type": "Polyteknisk grundlag",
-                "ects": "5.0",
-                "placement": "E1A"
-            }
-        },
-        {
-            "x": 5,
-            "y": 4,
-            "course": {
-                "course_id": "02402",
-                "course_name": "Statistik ",
-                "course_type": "Polyteknisk grundlag",
-                "ects": "5.0",
-                "placement": "E3A (tirs 8-12), F4A (tirs 13-17)"
-            }
-        },
-        {
-            "x": 13,
-            "y": 6,
-            "course": {
-                "course_id": "42620",
-                "course_name": "Videnskab, Teknologi og Samfund ",
-                "course_type": "Polyteknisk grundlag",
-                "ects": "5.0",
-                "placement": "Januar, Juni"
-            }
-        },
-        {
             "x": 7,
             "y": 2,
             "course": {
@@ -108,6 +31,17 @@
                 "course_type": "Retningsspecifikke kurser",
                 "ects": "5.0",
                 "placement": "E2B (tors 8-12)"
+            }
+        },
+        {
+            "x": 9,
+            "y": 2,
+            "course": {
+                "course_id": "02100",
+                "course_name": "Indledende programmering og softwareteknologi ",
+                "course_type": "Polyteknisk grundlag & Retningsspecifikke kurser",
+                "ects": "10.0",
+                "placement": "E5 (ons 8-17) "
             }
         },
         {
@@ -144,18 +78,7 @@
             }
         },
         {
-            "x": 7,
-            "y": 4,
-            "course": {
-                "course_id": "02132",
-                "course_name": "Computersystemer",
-                "course_type": "Retningsspecifikke kurser",
-                "ects": "10.0",
-                "placement": "E5 (ons 8-17)"
-            }
-        },
-        {
-            "x": 11,
+            "x": 9,
             "y": 4,
             "course": {
                 "course_id": "02157",
@@ -166,14 +89,48 @@
             }
         },
         {
-            "x": 5,
-            "y": 5,
+            "x": 7,
+            "y": 3,
             "course": {
-                "course_id": "02141",
-                "course_name": "Datalogisk modellering",
+                "course_id": "10060",
+                "course_name": "Fysik ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": 5,
+                "placement": "Forår og Efterår",
+                "sem": 2
+            }
+        },
+        {
+            "x": 3,
+            "y": 4,
+            "course": {
+                "course_id": "02132",
+                "course_name": "Computersystemer",
                 "course_type": "Retningsspecifikke kurser",
                 "ects": "10.0",
-                "placement": "F3A (tirs 8-12) og F4B (fre 8-12)"
+                "placement": "E5 (ons 8-17)"
+            }
+        },
+        {
+            "x": 3,
+            "y": 5,
+            "course": {
+                "course_id": "26020",
+                "course_name": "Kemi ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "E1A (man 8-12)"
+            }
+        },
+        {
+            "x": 3,
+            "y": 7,
+            "course": {
+                "course_id": "27020",
+                "course_name": "Bioengineering ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "E2A (man 13-17) og F2A (man 13-17)"
             }
         },
         {
@@ -196,6 +153,105 @@
                 "course_type": "Projekter",
                 "ects": "10.0",
                 "placement": "F5B (ons 13-17) og Juni"
+            }
+        },
+        {
+            "x": 5,
+            "y": 5,
+            "course": {
+                "course_id": "02141",
+                "course_name": "Datalogisk modellering",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "10.0",
+                "placement": "F3A (tirs 8-12) og F4B (fre 8-12)"
+            }
+        },
+        {
+            "x": 3,
+            "y": 6,
+            "course": {
+                "course_id": "02156",
+                "course_name": "Specialisering",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "5.0",
+                "placement": "E4A (tirs 13-17)"
+            }
+        },
+        {
+            "x": 11,
+            "y": 4,
+            "course": {
+                "course_id": "02402",
+                "course_name": "Statistik ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "E3A (tirs 8-12), F4A (tirs 13-17)"
+            }
+        },
+        {
+            "x": 13,
+            "y": 6,
+            "course": {
+                "course_id": "42620",
+                "course_name": "Videnskab, Teknologi og Samfund ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "Januar, Juni"
+            }
+        },
+        {
+            "x": 13,
+            "y": 3,
+            "course": {
+                "course_id": "00000",
+                "course_name": "(Valgfri kursus)",
+                "course_type": "Valgfrie kurser",
+                "ects": "5.0",
+                "placement": ""
+            }
+        },
+        {
+            "x": 13,
+            "y": 4,
+            "course": {
+                "course_id": "00000",
+                "course_name": "(Valgfri kursus)",
+                "course_type": "Valgfrie kurser",
+                "ects": "5.0",
+                "placement": ""
+            }
+        },
+        {
+            "x": 9,
+            "y": 5,
+            "course": {
+                "course_id": "00000",
+                "course_name": "(Valgfri kursus)",
+                "course_type": "Valgfrie kurser",
+                "ects": "5.0",
+                "placement": ""
+            }
+        },
+        {
+            "x": 5,
+            "y": 6,
+            "course": {
+                "course_id": "00000",
+                "course_name": "(Valgfri kursus)",
+                "course_type": "Valgfrie kurser",
+                "ects": "20.0",
+                "placement": ""
+            }
+        },
+        {
+            "x": 5,
+            "y": 7,
+            "course": {
+                "course_id": "00000",
+                "course_name": "(Valgfri kursus)",
+                "course_type": "Valgfrie kurser",
+                "ects": "10.0",
+                "placement": ""
             }
         }
     ],

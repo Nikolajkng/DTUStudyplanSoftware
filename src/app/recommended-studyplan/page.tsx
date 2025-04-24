@@ -51,6 +51,13 @@ export default function RecommendedStudyPlan() {
         setSelectedPlan(planName);
     };
 
+    const handleLoadStudyPlan = (planName: string) => {
+            setPlacements([]); // Clear the board
+            loadStudyPlan(planName); // Load the new study plan
+    };
+
+
+
     const baseCoords = Array.from({ length: 14 })
         .map((_, x) =>
             Array.from({ length: semesters }).map((_, y) => [x, y] as [number, number])
@@ -142,7 +149,7 @@ export default function RecommendedStudyPlan() {
                                     <button
                                         key={index}
                                         className="w-60 h-15 bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-slate-500"
-                                        onClick={() => loadStudyPlan(course)}
+                                        onClick={() => handleLoadStudyPlan(course)}
                                     >
                                         <strong>{course}</strong>
                                     </button>

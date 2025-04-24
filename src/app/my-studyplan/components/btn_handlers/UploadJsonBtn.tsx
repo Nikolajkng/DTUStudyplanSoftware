@@ -3,13 +3,14 @@ import Cookies from "js-cookie";
 import { useStudyPlan } from "../hooks/useStudyPlan";
 
 export function UploadAsJsonBtn() {
-    const { setPlacements, setSemesters, setSavedPlans, setSelectedPlan } = useStudyPlan();
+    const { setPlacements, setSemesters, setSavedPlans, setSelectedPlan
+        , savedPlans, setCourses, setSelectedCourseType, selectedPlan, semesters, placements
+     } = useStudyPlan();
 
     // Function to upload a study plan from a JSON file
     // The file should contain an array of course placements
     // The function parses the file and updates the state with the new placements
     const handleUploadAsJSON = async (file: File) => {
-
         const reader = new FileReader();
         reader.onload = async (event) => {
             const fileContent = event.target?.result;
@@ -31,15 +32,13 @@ export function UploadAsJsonBtn() {
                         return;
                     }
 
-                    // Save the uploaded plan to the savedPlans state
-                    setSavedPlans((prevPlans) => {
-                        const updatedPlans = {
-                            ...prevPlans,
-                            [planName]: { placements, semesters },
-                        };
-                        Cookies.set("savedStudyPlans", JSON.stringify(updatedPlans), { expires: 365 * 100 }); // Save to cookies
-                        return updatedPlans;
-                    });
+                    // Update the saved plans state and cookies
+                    const updatedPlans = {
+                        ...savedPlans,
+                        [planName]: { placements, semesters },
+                    };
+                    setSavedPlans(updatedPlans); // Update the state
+                    Cookies.set("savedStudyPlans", JSON.stringify(updatedPlans), { expires: 365 * 100 }); // Save to cookies
 
                     // Set the uploaded plan as the currently selected plan
                     setPlacements(placements);

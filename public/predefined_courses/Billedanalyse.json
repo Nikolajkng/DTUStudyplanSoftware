@@ -1,102 +1,191 @@
 {
     "placements": [
         {
-            "x": 7,
+            "x": 3,
             "y": 2,
             "course": {
-                "course_id": "01017",
-                "course_name": "Diskret matematik",
-                "course_type": "Retningsspecifikke kurser",
-                "ects": 5,
-                "placement": "E2B (tors 8-12)"
+                "course_id": "01001",
+                "course_name": "Matematik 1a ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "10.0",
+                "placement": "Efterår"
             }
         },
         {
             "x": 3,
             "y": 3,
             "course": {
-                "course_id": "01001",
-                "course_name": "Matematik 1a ",
+                "course_id": "01002",
+                "course_name": "Matematik 1b ",
                 "course_type": "Polyteknisk grundlag",
-                "ects": 10,
-                "placement": "Efterår"
+                "ects": "10.0",
+                "placement": "Forår"
             }
         },
         {
-            "x": 5,
-            "y": 6,
+            "x": 7,
+            "y": 2,
             "course": {
-                "course_id": "02122",
-                "course_name": "Fagprojekt - Bachelor i Softwareteknologi",
-                "course_type": "Projekter",
-                "ects": 10,
-                "placement": "F5B (ons 13-17) og Juni"
+                "course_id": "01017",
+                "course_name": "Diskret matematik",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "5.0",
+                "placement": "E2B (tors 8-12)"
+            }
+        },
+        {
+            "x": 9,
+            "y": 2,
+            "course": {
+                "course_id": "02100",
+                "course_name": "Indledende programmering og softwareteknologi ",
+                "course_type": "Polyteknisk grundlag & Retningsspecifikke kurser",
+                "ects": "10.0",
+                "placement": "E5 (ons 8-17) "
+            }
+        },
+        {
+            "x": 13,
+            "y": 2,
+            "course": {
+                "course_id": "02104",
+                "course_name": "Indledende programmeringsprojekt på Softwareteknologi",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "5.0",
+                "placement": "Januar"
             }
         },
         {
             "x": 9,
             "y": 3,
             "course": {
-                "course_id": "02162",
-                "course_name": "Software Engineering 2",
-                "course_type": "Valgfrie kurser",
-                "ects": 10,
-                "placement": "E3 (tirs 8-12, fre 13-17)"
+                "course_id": "02105",
+                "course_name": "Algoritmer og datastrukturer 1",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "5.0",
+                "placement": "F2B (tors 8-12)"
             }
         },
         {
-            "x": 9,
-            "y": 6,
+            "x": 11,
+            "y": 3,
             "course": {
-                "course_id": "02157",
-                "course_name": "Funktionsprogrammering",
+                "course_id": "02161",
+                "course_name": "Software Engineering 1",
                 "course_type": "Retningsspecifikke kurser",
-                "ects": 5,
-                "placement": "E4B (fre 8-12)"
-            }
-        },
-        {
-            "x": 7,
-            "y": 5,
-            "course": {
-                "course_id": "02159",
-                "course_name": "Operativsystemer",
-                "course_type": "Retningsspecifikke kurser",
-                "ects": 5,
-                "placement": "E2B (tors 8-12)"
+                "ects": "5.0",
+                "placement": "F2A (man 13-17)"
             }
         },
         {
             "x": 9,
             "y": 4,
             "course": {
-                "course_id": "02141",
-                "course_name": "Datalogisk modellering",
+                "course_id": "02157",
+                "course_name": "Funktionsprogrammering",
                 "course_type": "Retningsspecifikke kurser",
-                "ects": 10,
-                "placement": "F3A (tirs 8-12) og F4B (fre 8-12)"
+                "ects": "5.0",
+                "placement": "E4B (fre 8-12)"
             }
         },
         {
             "x": 7,
-            "y": 7,
+            "y": 3,
             "course": {
-                "course_id": "02233",
-                "course_name": "Netværkssikkerhed",
-                "course_type": "Valgfrie kurser",
+                "course_id": "10060",
+                "course_name": "Fysik ",
+                "course_type": "Polyteknisk grundlag",
                 "ects": 5,
-                "placement": "F4A (tirs 13-17)"
+                "placement": "Forår og Efterår",
+                "sem": 2
+            }
+        },
+        {
+            "x": 3,
+            "y": 4,
+            "course": {
+                "course_id": "02132",
+                "course_name": "Computersystemer",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "10.0",
+                "placement": "E5 (ons 8-17)"
             }
         },
         {
             "x": 11,
             "y": 5,
             "course": {
-                "course_id": "02504",
-                "course_name": "Computer Vision",
+                "course_id": "02122",
+                "course_name": "Fagprojekt - Bachelor i Softwareteknologi",
+                "course_type": "Projekter",
+                "ects": "10.0",
+                "placement": "F5B (ons 13-17) og Juni"
+            }
+        },
+        {
+            "x": 13,
+            "y": 3,
+            "course": {
+                "course_id": "02403",
+                "course_name": "Introduktion til matematisk statistik",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "Juni"
+            }
+        },
+        {
+            "x": 5,
+            "y": 6,
+            "course": {
+                "course_id": "02158",
+                "course_name": "Parallelprogrammering",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "5.0",
+                "placement": "E1B (tors 13-17)"
+            }
+        },
+        {
+            "x": 13,
+            "y": 4,
+            "course": {
+                "course_id": "02148",
+                "course_name": "Introduktion til koordinering af fordelte applikationer",
                 "course_type": "Valgfrie kurser",
-                "ects": 5,
-                "placement": "F3B (fre 13-17)"
+                "ects": "5.0",
+                "placement": "januar"
+            }
+        },
+        {
+            "x": 9,
+            "y": 6,
+            "course": {
+                "course_id": "02110",
+                "course_name": "Algoritmer og Datastrukturer 2",
+                "course_type": "Valgfrie kurser",
+                "ects": "5.0",
+                "placement": "E2B"
+            }
+        },
+        {
+            "x": 13,
+            "y": 6,
+            "course": {
+                "course_id": "42620",
+                "course_name": "Videnskab, Teknologi og Samfund ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "Januar, Juni"
+            }
+        },
+        {
+            "x": 9,
+            "y": 7,
+            "course": {
+                "course_id": "00000",
+                "course_name": "Bachelorprojekt",
+                "course_type": "Projekter",
+                "ects": "15.0",
+                "placement": "Forår+juni eller efterår+januar"
             }
         },
         {
@@ -106,8 +195,96 @@
                 "course_id": "02561",
                 "course_name": "Computergrafik",
                 "course_type": "Valgfrie kurser",
-                "ects": 5,
+                "ects": "5.0",
                 "placement": "E5A (ons 8-12)"
+            }
+        },
+        {
+            "x": 3,
+            "y": 7,
+            "course": {
+                "course_id": "27020",
+                "course_name": "Bioengineering ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "E2A (man 13-17) og F2A (man 13-17)"
+            }
+        },
+        {
+            "x": 7,
+            "y": 6,
+            "course": {
+                "course_id": "02156",
+                "course_name": "Logiske Systemer og Logikprogrammering",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "5.0",
+                "placement": "E4A (tirs 13-17)"
+            }
+        },
+        {
+            "x": 3,
+            "y": 6,
+            "course": {
+                "course_id": "26020",
+                "course_name": "Kemi ",
+                "course_type": "Polyteknisk grundlag",
+                "ects": "5.0",
+                "placement": "E1A (man 8-12)"
+            }
+        },
+        {
+            "x": 3,
+            "y": 5,
+            "course": {
+                "course_id": "02141",
+                "course_name": "Datalogisk modellering",
+                "course_type": "Retningsspecifikke kurser",
+                "ects": "10.0",
+                "placement": "F3A (tirs 8-12) og F4B (fre 8-12)"
+            }
+        },
+        {
+            "x": 11,
+            "y": 4,
+            "course": {
+                "course_id": "02502",
+                "course_name": "Billedanalyse",
+                "course_type": "Valgfrie kurser",
+                "ects": "5.0",
+                "placement": "E3A, F3A"
+            }
+        },
+        {
+            "x": 9,
+            "y": 5,
+            "course": {
+                "course_id": "02504",
+                "course_name": "Computer Vision",
+                "course_type": "Valgfrie kurser",
+                "ects": "5.0",
+                "placement": "F3B (fre 13-17)"
+            }
+        },
+        {
+            "x": 7,
+            "y": 5,
+            "course": {
+                "course_id": "02170",
+                "course_name": "Databasesystemer",
+                "course_type": "Valgfrie kurser",
+                "ects": "5.0",
+                "placement": "F2B"
+            }
+        },
+        {
+            "x": 5,
+            "y": 7,
+            "course": {
+                "course_id": "00000",
+                "course_name": "(Valgfri kursus)",
+                "course_type": "Valgfrie kurser",
+                "ects": "10.0",
+                "placement": ""
             }
         }
     ],
