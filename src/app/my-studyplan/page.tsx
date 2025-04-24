@@ -117,17 +117,21 @@ function StudyPlanContent() {
             const scaledEcts = course.ects / 2.5;
 
 
-            // Position on the grid
+            // Positions and values of gridcell
             const courseX = x + 1;
             const courseY = y + 1;
             const courseWidth = scaledEcts;
             const courseHeight = course.sem || 1;
 
             // Fysik should fill out two courses
-            if(course.course_id === "10060" || course.course_name === "Fysik") {
+            if (course.course_id === "10060" || course.course_name === "Fysik") {
                 course.sem = 2;
                 course.ects = 5;
             }
+
+            // Check for schedule placement of course:
+            // const scheduleList = getScheduleValue(courseX, courseY);
+            // const correctSchedule = scheduleList.some(s => s.toLowerCase().includes(course.placement));
 
             // Conditions that checks for valid placement on the grid
             const hasOverlap = checkForOverlap(courseWidth, courseHeight, courseX, courseY, course.course_id);
@@ -136,7 +140,8 @@ function StudyPlanContent() {
                 courseX + courseWidth - 1 <= 14 &&
                 courseY + courseHeight - 1 <= semesters &&
                 !hasOverlap &&
-                !hasOverlapWithGridTitles
+                !hasOverlapWithGridTitles //&&
+                //correctSchedule
             ) {
                 setPlacements((prev) => [
                     ...prev.filter((p) => getCourseDragId(p.course) !== getCourseDragId(course)),
@@ -149,6 +154,23 @@ function StudyPlanContent() {
         setActiveCourse(null);
         setHoveredCell(null);
     };
+
+
+    const getScheduleValue = (row: number, col: number): string[] => {
+        const is3Weeks = row > 12;
+        const evenSem = (col+1) % 2 === 0;
+
+        if (is3Weeks) {
+            return evenSem
+                ? ["juni", "juli", "august", "Juni", "Juli", "August"]
+                : ["januar", "Januar"];
+        } else {
+            return evenSem
+                ? ["F","forår", "Forår"]
+                : ["E","efterår", "Efterår"];
+        }
+    }
+
 
     // Function for determining the courses not currently in the course grid (study plan)
     // Used by the "tilgængelige kurser"
@@ -179,7 +201,11 @@ function StudyPlanContent() {
 
     const baseCoords = Array.from({ length: 14 })
         .map((_, x) =>
-            Array.from({ length: semesters }).map((_, y) => [x, y] as [number, number])
+            Array.from({ length: semesters }).map((_, y) => ({
+                x: x + 1,
+                y: y + 1,
+                schedule: getScheduleValue(x + 1, y + 1),
+            }))
         )
         .flat();
 
@@ -212,7 +238,7 @@ function StudyPlanContent() {
                                     overflowX: "auto",
                                 }}
                             >
-                                {baseCoords.map(([x, y]) => {
+                                {baseCoords.map(({ x, y, schedule }) => {
                                     let highlight: "valid" | "invalid" | null = null;
 
                                     if (hoveredCell && activeCourse) {
@@ -220,30 +246,37 @@ function StudyPlanContent() {
                                         const courseWidth = activeCourse.ects / 2.5;
                                         const courseHeight = activeCourse.sem || 1;
 
-                                        const isInRange = x + 1 >= hx &&
-                                            x + 1 < hx + courseWidth &&
-                                            y + 1 >= hy &&
-                                            y + 1 < hy + courseHeight;
+                                        const isInRange =
+                                            x >= hx &&
+                                            x < hx + courseWidth &&
+                                            y >= hy &&
+                                            y < hy + courseHeight;
 
                                         if (isInRange) {
                                             const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy, activeCourse.course_id);
                                             const isOutOfBounds = hx + courseWidth - 1 > 14 || hy + courseHeight - 1 > semesters;
-                                            const hasOverlapWithGridTitles = (hx < 3) || (hy + 1 == 0);
-                                            highlight = (hasOverlap || isOutOfBounds || hasOverlapWithGridTitles) ? "invalid" : "valid";
+                                            const hasOverlapWithGridTitles = hx < 3 || hy === 0;                   
+                                            const checkScheduleResult = schedule.map((s)=>(activeCourse.placement.includes(s)));
+                                            const correctSchedule = checkScheduleResult.some(foundMatch => foundMatch);
+
+                                            //debugger;
+
+                                            highlight = (hasOverlap || isOutOfBounds || hasOverlapWithGridTitles || !correctSchedule)
+                                                ? "invalid"
+                                                : "valid";
                                         }
                                     }
 
-                                    return (
-                                        <GridFiller key={`${x}-${y}`} x={x + 1} y={y + 1} highlight={highlight} />
-                                    );
+                                    return <GridFiller key={`${x}-${y}`} x={x} y={y} highlight={highlight} />;
                                 })}
+
                                 {placements.map((p) => {
                                     const isBeingDragged = activeCourse && getCourseDragId(activeCourse) === getCourseDragId(p.course);
                                     return (
                                         <GridCourse
                                             key={p.course.course_id}
-                                            placement={p}
                                             style={isBeingDragged ? { visibility: "hidden" } : {}}
+                                            placement={p}
                                         />
                                     );
                                 })}
