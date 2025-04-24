@@ -49,10 +49,23 @@ export default function Courses() {
 
   // Group courses by course_type
   const groupedCourses = courses.reduce((acc, course) => {
-    if (!acc[course.course_type]) {
-      acc[course.course_type] = [];
+    if (course.course_type === "Polyteknisk grundlag & Retningsspecifikke kurser") {
+      // Add the course to both "Polyteknisk grundlag" and "Retningsspecifikke kurser"
+      if (!acc["Polyteknisk grundlag"]) {
+        acc["Polyteknisk grundlag"] = [];
+      }
+      if (!acc["Retningsspecifikke kurser"]) {
+        acc["Retningsspecifikke kurser"] = [];
+      }
+      acc["Polyteknisk grundlag"].push(course);
+      acc["Retningsspecifikke kurser"].push(course);
+    } else {
+      // Add the course to its respective category
+      if (!acc[course.course_type]) {
+        acc[course.course_type] = [];
+      }
+      acc[course.course_type].push(course);
     }
-    acc[course.course_type].push(course);
     return acc;
   }, {} as Record<string, Course[]>);
 
