@@ -1,15 +1,9 @@
-import React from 'react'
-import Cookies from "js-cookie";
+import React from 'react';
 import { useStudyPlan } from "../hooks/useStudyPlan";
 
 export function UploadAsJsonBtn() {
-    const { setPlacements, setSemesters, setSavedPlans, setSelectedPlan
-        , savedPlans, setCourses, setSelectedCourseType, selectedPlan, semesters, placements
-     } = useStudyPlan();
+    const { setPlacements, setSemesters, setSavedPlans, setSelectedPlan, savedPlans } = useStudyPlan();
 
-    // Function to upload a study plan from a JSON file
-    // The file should contain an array of course placements
-    // The function parses the file and updates the state with the new placements
     const handleUploadAsJSON = async (file: File) => {
         const reader = new FileReader();
         reader.onload = async (event) => {
@@ -32,13 +26,13 @@ export function UploadAsJsonBtn() {
                         return;
                     }
 
-                    // Update the saved plans state and cookies
+                    // Update the saved plans state and localStorage
                     const updatedPlans = {
                         ...savedPlans,
                         [planName]: { placements, semesters },
                     };
                     setSavedPlans(updatedPlans); // Update the state
-                    Cookies.set("savedStudyPlans", JSON.stringify(updatedPlans), { expires: 365 * 100 }); // Save to cookies
+                    localStorage.setItem("savedStudyPlans", JSON.stringify(updatedPlans)); // Save to localStorage
 
                     // Set the uploaded plan as the currently selected plan
                     setPlacements(placements);
@@ -56,22 +50,25 @@ export function UploadAsJsonBtn() {
     };
 
     return (
-        <><input
-            type="file"
-            id="fileInput"
-            style={{ display: "none" }}
-            onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                    handleUploadAsJSON(file);
-                }
-            }} /><button
+        <>
+            <input
+                type="file"
+                id="fileInput"
+                style={{ display: "none" }}
+                onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                        handleUploadAsJSON(file);
+                    }
+                }}
+            />
+            <button
                 onClick={() => document.getElementById("fileInput")?.click()}
                 className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
             >
                 Upload Studieforløb (importér JSON fil)
             </button>
         </>
-    )
+    );
 }
 

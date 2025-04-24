@@ -1,6 +1,5 @@
 // hooks/useStudyPlan.tsx
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import Cookies from "js-cookie";
 import { cachedFetchCourses } from "../../../../db/fetchCourses";
 import { CoursePlacement, CourseWithSem } from "../CourseTypes";
 
@@ -29,27 +28,29 @@ type StudyPlanContextType = {
 const StudyPlanContext = createContext<StudyPlanContextType | null>(null);
 
 export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
-
     const [savedPlans, setSavedPlans] = useState<{
         [key: string]: { placements: CoursePlacement[]; semesters: number };
     }>(() => {
-        const savedPlansCookie = Cookies.get("savedStudyPlans");
-        if (savedPlansCookie) {
-            try {
-                return JSON.parse(savedPlansCookie);
-            } catch (error) {
-                console.error("Error parsing saved plans from cookies during initialization:", error);
+        if (typeof window !== "undefined") {
+            // Check if running in the browser
+            const savedPlansFromStorage = localStorage.getItem("savedStudyPlans");
+            if (savedPlansFromStorage) {
+                try {
+                    return JSON.parse(savedPlansFromStorage);
+                } catch (error) {
+                    console.error("Error parsing saved plans from localStorage during initialization:", error);
+                }
             }
         }
         return {};
     });
 
     const [placements, setPlacements] = useState<CoursePlacement[]>([]);
-    const [hoveredCell, setHoveredCell] = useState<[number, number] | null>(null);
     const [selectedPlan, setSelectedPlan] = useState<string>("");
     const [courses, setCourses] = useState<CourseWithSem[]>([]);
     const [semesters, setSemesters] = useState(7);
     const [selectedCourseType, setSelectedCourseType] = useState<string>("");
+    const [hoveredCell, setHoveredCell] = useState<[number, number] | null>(null);
 
     useEffect(() => {
         cachedFetchCourses().then((data) => {
@@ -58,10 +59,10 @@ export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     useEffect(() => {
-        Cookies.set("savedStudyPlans", JSON.stringify(savedPlans), {
-            expires: 365 * 100,
-            path: "/",
-        });
+        if (typeof window !== "undefined") {
+            // Save to localStorage only in the browser
+            localStorage.setItem("savedStudyPlans", JSON.stringify(savedPlans));
+        }
     }, [savedPlans]);
 
     const saveStudyPlan = () => {
@@ -83,7 +84,7 @@ export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
             courses, setCourses,
             semesters, setSemesters,
             selectedCourseType, setSelectedCourseType,
-            saveStudyPlan, 
+            saveStudyPlan,
             hoveredCell, setHoveredCell,
         }}>
             {children}
