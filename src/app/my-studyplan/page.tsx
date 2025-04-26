@@ -238,162 +238,162 @@ function StudyPlanContent() {
                 <div className="w-full overflow-x-auto">
                     <div className="flex mt-5 justify-around">
                         <div className="flex flex-row">
-                        <div className="m-10">
-                            <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Nyt studieforløb"}</h2>
-                            <div
-                                className={`grid grid-rows-${semesters} grid-cols-14 gap-y-1 border border-gray-400 p-2`}
-                                style={{
-                                    width: "1200px",
-                                    height: `${semesters}00px`,
-                                    gridTemplateColumns: "repeat(14, minmax(0, 1fr))",
-                                    gridTemplateRows: `repeat(${semesters}, 1fr)`,
-                                }}
-                            >
-                                {baseCoords.map(({ x, y, schedule }) => {
-                                    let highlight: "valid" | "invalid" | null = null;
+                            {/* ######################### Grid for the study plan ######################### */}
+                            <div className="m-10">
+                                <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Nyt studieforløb"}</h2>
+                                <div
+                                    className={`grid grid-rows-${semesters} grid-cols-14 gap-y-1 border border-gray-400 p-2`}
+                                    style={{
+                                        width: "1200px",
+                                        height: `${semesters}00px`,
+                                        gridTemplateColumns: "repeat(14, minmax(0, 1fr))",
+                                        gridTemplateRows: `repeat(${semesters}, 1fr)`,
+                                    }}
+                                >
+                                    {baseCoords.map(({ x, y, schedule }) => {
+                                        let highlight: "valid" | "invalid" | null = null;
 
-                                    if (hoveredCell && activeCourse) {
-                                        const [hx, hy] = hoveredCell;
-                                        const courseWidth = activeCourse.ects / 2.5;
-                                        const courseHeight = activeCourse.sem || 1;
+                                        if (hoveredCell && activeCourse) {
+                                            const [hx, hy] = hoveredCell;
+                                            const courseWidth = activeCourse.ects / 2.5;
+                                            const courseHeight = activeCourse.sem || 1;
 
-                                        const isInRange =
-                                            x >= hx &&
-                                            x < hx + courseWidth &&
-                                            y >= hy &&
-                                            y < hy + courseHeight;
+                                            const isInRange =
+                                                x >= hx &&
+                                                x < hx + courseWidth &&
+                                                y >= hy &&
+                                                y < hy + courseHeight;
 
-                                        if (isInRange) {
-                                            const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy, activeCourse.course_id);
-                                            const isOutOfBounds = hx + courseWidth - 1 > 14 || hy + courseHeight - 1 > semesters;
-                                            const hasOverlapWithGridTitles = hx < 3 || hy === 0;
-                                            const checkScheduleResult = schedule.map((s) => (activeCourse.placement.includes(s)));
-                                            const correctSchedule = checkScheduleResult.some(foundMatch => foundMatch);
+                                            if (isInRange) {
+                                                const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy, activeCourse.course_id);
+                                                const isOutOfBounds = hx + courseWidth - 1 > 14 || hy + courseHeight - 1 > semesters;
+                                                const hasOverlapWithGridTitles = hx < 3 || hy === 0;
+                                                const checkScheduleResult = schedule.map((s) => (activeCourse.placement.includes(s)));
+                                                const correctSchedule = checkScheduleResult.some(foundMatch => foundMatch);
 
-                                            highlight = (hasOverlap || isOutOfBounds || hasOverlapWithGridTitles || !correctSchedule)
-                                                ? "invalid"
-                                                : "valid";
+                                                highlight = (hasOverlap || isOutOfBounds || hasOverlapWithGridTitles || !correctSchedule)
+                                                    ? "invalid"
+                                                    : "valid";
+                                            }
                                         }
-                                    }
 
-                                    return <GridFiller key={`${x}-${y}`} x={x} y={y} highlight={highlight} />;
-                                })}
+                                        return <GridFiller key={`${x}-${y}`} x={x} y={y} highlight={highlight} />;
+                                    })}
 
-                                {placements.map((p) => {
-                                    const isBeingDragged = activeCourse && getCourseDragId(activeCourse) === getCourseDragId(p.course);
-                                    return (
-                                        <GridCourse
-                                            key={p.course.course_id}
-                                            style={isBeingDragged ? { visibility: "hidden" } : {}}
-                                            placement={p}
-                                        />
-                                    );
-                                })}
-
-
-                                <div
-                                    className="flex items-center justify-center bg-gray-200 text-black font-semibold"
-                                    style={{
-                                        gridRowStart: 1,
-                                        gridColumnStart: 1,
-                                        gridColumnEnd: 3,
-                                    }}
-                                ><strong>Semester</strong>
-                                </div>
-
-                                <div
-                                    className="flex items-center justify-center bg-gray-200 text-black font-semibold"
-                                    style={{
-                                        gridRowStart: 1,
-                                        gridColumnStart: 3,
-                                        gridColumnEnd: 14,
-                                    }}
-                                >
-                                    13-ugers periode <br></br> (25 ects)
-                                </div>
-                                <div
-                                    className="flex items-center p-2 justify-center bg-gray-200 text-black font-semibold"
-                                    style={{
-                                        gridRowStart: 1,
-                                        gridColumnStart: 13,
-                                        gridColumnEnd: 15,
-                                    }}
-                                >
-                                    jan/jun/aug <br></br> (5 ects)
-                                </div>
-
-                                {Array.from({ length: semesters - 1 }).map((_, y) => (
+                                    {placements.map((p) => {
+                                        const isBeingDragged = activeCourse && getCourseDragId(activeCourse) === getCourseDragId(p.course);
+                                        return (
+                                            <GridCourse
+                                                key={p.course.course_id}
+                                                style={isBeingDragged ? { visibility: "hidden" } : {}}
+                                                placement={p}
+                                            />
+                                        );
+                                    })}
                                     <div
-                                        key={`row-label-${y}`}
                                         className="flex items-center justify-center bg-gray-200 text-black font-semibold"
                                         style={{
-                                            gridRowStart: y + 2,
+                                            gridRowStart: 1,
                                             gridColumnStart: 1,
                                             gridColumnEnd: 3,
                                         }}
-                                    >
-                                        {y + 1}
+                                    ><strong>Semester</strong>
                                     </div>
-                                ))}
+                                    <div
+                                        className="flex items-center justify-center bg-gray-200 text-black font-semibold"
+                                        style={{
+                                            gridRowStart: 1,
+                                            gridColumnStart: 3,
+                                            gridColumnEnd: 14,
+                                        }}
+                                    >
+                                        13-ugers periode <br></br> (25 ects)
+                                    </div>
+                                    <div
+                                        className="flex items-center p-2 justify-center bg-gray-200 text-black font-semibold"
+                                        style={{
+                                            gridRowStart: 1,
+                                            gridColumnStart: 13,
+                                            gridColumnEnd: 15,
+                                        }}
+                                    >
+                                        jan/jun/aug <br></br> (5 ects)
+                                    </div>
 
-                            </div>
-                            <div className="flex justify-between items-center border border-gray-400 p-2">
-                                <div className="flex space-x-3">
-                                    <AddSemesterBtn />
-                                    <RemoveSemesterBtn />
-                                    <ClearBtn />
-                                </div>
-                                <div className="flex space-x-3">
-                                    <SaveBtn />
-                                    <DeleteBtn />
-                                </div>
-                            </div>
-                            <p>
-                                <strong>*OBS: </strong>
-                                Værktøjet er tiltænkt som et <u>vejledende</u> værktøj, der kan hjælpe med at skabe overblik over din studieplan
-                                som bachelorstuderende i Softwareteknologi.
-                                <br />
-                                Det er derfor vigtigt at få bekræftet din studieplan i <a href="https://kurser.dtu.dk/search" className="text-blue-500 underline">DTU&apos;s studieplanlægger</a>,
-                                hos &nbsp;
-                                <a href="https://www.dtu.dk/uddannelse/vejledning/studievejledningen" className="text-blue-500 underline">DTU Studievejledning</a>
-                                &nbsp; eller hos studielederen for Software Bachelor,&nbsp;
-                                <a href="/contact" className="text-blue-500 underline">Carsten Witt</a>.
-                                <br />
-                                For mere information om kurserne og kursusfordeling, henvises der til &nbsp;
-                                <a href="https://student.dtu.dk/studieordninger/bachelor/softwareteknologi/studieplan" className="text-blue-500 underline">DTU officielle studieplan for Softwareteknologi</a>.
-
-                                <br />
-                            </p>
-                        </div>
-                        <div className="m-10 flex flex-col">
-                            <h2 className="text-2xl font-semibold mb-4">Tilgængelige kurser</h2>
-                            <div className="mb-4">
-                                <select
-                                    id="courseType"
-                                    value={selectedCourseType}
-                                    onChange={(e) => setSelectedCourseType(e.target.value)}
-                                    className="px-4 py-4 border rounded relative w-80"
-                                >
-                                    <option value=""> Alle Kurser </option>
-                                    {[...new Set(
-                                        courses.flatMap((c) =>
-                                            c.course_type === "Polyteknisk grundlag & Retningsspecifikke kurser"
-                                                ? ["Polyteknisk grundlag", "Retningsspecifikke kurser"]
-                                                : [c.course_type]
-                                        )
-                                    )].map((type) => (
-                                        <option key={type} value={type}>
-                                            {type}
-                                        </option>
+                                    {Array.from({ length: semesters - 1 }).map((_, y) => (
+                                        <div
+                                            key={`row-label-${y}`}
+                                            className="flex items-center justify-center bg-gray-200 text-black font-semibold"
+                                            style={{
+                                                gridRowStart: y + 2,
+                                                gridColumnStart: 1,
+                                                gridColumnEnd: 3,
+                                            }}
+                                        >
+                                            {y + 1}
+                                        </div>
                                     ))}
-                                </select>
+
+                                </div>
+                                <div className="flex justify-between items-center border border-gray-400 p-2">
+                                    <div className="flex space-x-3">
+                                        <AddSemesterBtn />
+                                        <RemoveSemesterBtn />
+                                        <ClearBtn />
+                                    </div>
+                                    <div className="flex space-x-3">
+                                        <SaveBtn />
+                                        <DeleteBtn />
+                                    </div>
+                                </div>
+                                <p>
+                                    <strong>*OBS: </strong>
+                                    Værktøjet er tiltænkt som et <u>vejledende</u> værktøj, der kan hjælpe med at skabe overblik over din studieplan
+                                    som bachelorstuderende i Softwareteknologi.
+                                    <br />
+                                    Det er derfor vigtigt at få bekræftet din studieplan i <a href="https://kurser.dtu.dk/search" className="text-blue-500 underline">DTU&apos;s studieplanlægger</a>,
+                                    hos &nbsp;
+                                    <a href="https://www.dtu.dk/uddannelse/vejledning/studievejledningen" className="text-blue-500 underline">DTU Studievejledning</a>
+                                    &nbsp; eller hos studielederen for Software Bachelor,&nbsp;
+                                    <a href="/contact" className="text-blue-500 underline">Carsten Witt</a>.
+                                    <br />
+                                    For mere information om kurserne og kursusfordeling, henvises der til &nbsp;
+                                    <a href="https://student.dtu.dk/studieordninger/bachelor/softwareteknologi/studieplan" className="text-blue-500 underline">DTU officielle studieplan for Softwareteknologi</a>.
+
+                                    <br />
+                                </p>
                             </div>
-                            <DroppableCourseList>
-                                {filteredCourses.map((c) => (
-                                    <DraggableCourse key={getCourseDragId(c)} course={c} />
-                                ))}
-                            </DroppableCourseList>
-                        </div>
+
+                            {/* ######################### Course list for available courses ######################### */}
+                            <div className="m-10 flex flex-col">
+                                <h2 className="text-2xl font-semibold mb-4">Tilgængelige kurser</h2>
+                                <div className="mb-4">
+                                    <select
+                                        id="courseType"
+                                        value={selectedCourseType}
+                                        onChange={(e) => setSelectedCourseType(e.target.value)}
+                                        className="px-4 py-4 border rounded relative w-80"
+                                    >
+                                        <option value=""> Alle Kurser </option>
+                                        {[...new Set(
+                                            courses.flatMap((c) =>
+                                                c.course_type === "Polyteknisk grundlag & Retningsspecifikke kurser"
+                                                    ? ["Polyteknisk grundlag", "Retningsspecifikke kurser"]
+                                                    : [c.course_type]
+                                            )
+                                        )].map((type) => (
+                                            <option key={type} value={type}>
+                                                {type}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <DroppableCourseList>
+                                    {filteredCourses.map((c) => (
+                                        <DraggableCourse key={getCourseDragId(c)} course={c} />
+                                    ))}
+                                </DroppableCourseList>
+                            </div>
                         </div>
                     </div>
                 </div>
