@@ -132,7 +132,7 @@ function StudyPlanContent() {
             // Check for out of bounds:
             const isOutOfBounds = x + courseWidth - 1 > 14 || y + courseHeight - 1 > semesters;
             const inBound = courseX + courseWidth - 1 <= 14 &&
-            courseY + courseHeight - 1 <= semesters;
+                courseY + courseHeight - 1 <= semesters;
 
             // Check for schedule placement of course
             const checkScheduleResult = getScheduleValue(courseX, courseY).map((s) => (course.placement.includes(s)));
@@ -235,8 +235,9 @@ function StudyPlanContent() {
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex justify-center">
-                    <div className="flex justify-center mt-5">
+                <div className="w-full overflow-x-auto">
+                    <div className="flex mt-5 justify-around">
+                        <div className="flex flex-row">
                         <div className="m-10">
                             <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Nyt studieforløb"}</h2>
                             <div
@@ -244,9 +245,8 @@ function StudyPlanContent() {
                                 style={{
                                     width: "1200px",
                                     height: `${semesters}00px`,
-                                    gridTemplateColumns: "repeat(14, 1fr)",
+                                    gridTemplateColumns: "repeat(14, minmax(0, 1fr))",
                                     gridTemplateRows: `repeat(${semesters}, 1fr)`,
-                                    overflowX: "auto",
                                 }}
                             >
                                 {baseCoords.map(({ x, y, schedule }) => {
@@ -269,8 +269,6 @@ function StudyPlanContent() {
                                             const hasOverlapWithGridTitles = hx < 3 || hy === 0;
                                             const checkScheduleResult = schedule.map((s) => (activeCourse.placement.includes(s)));
                                             const correctSchedule = checkScheduleResult.some(foundMatch => foundMatch);
-
-                                            //debugger;
 
                                             highlight = (hasOverlap || isOutOfBounds || hasOverlapWithGridTitles || !correctSchedule)
                                                 ? "invalid"
@@ -352,32 +350,29 @@ function StudyPlanContent() {
                             </div>
                             <p>
                                 <strong>*OBS: </strong>
-                                Værktøjet er tiltænkt som et <u>vejledende</u> værktøj, der kan hjælpe med at skabe overblik over din studieplan,
+                                Værktøjet er tiltænkt som et <u>vejledende</u> værktøj, der kan hjælpe med at skabe overblik over din studieplan
                                 som bachelorstuderende i Softwareteknologi.
                                 <br />
-                                Det er derfor vigtigt at få bekræftet din studieplan hos&nbsp;
+                                Det er derfor vigtigt at få bekræftet din studieplan i <a href="https://kurser.dtu.dk/search" className="text-blue-500 underline">DTU&apos;s studieplanlægger</a>,
+                                hos &nbsp;
                                 <a href="https://www.dtu.dk/uddannelse/vejledning/studievejledningen" className="text-blue-500 underline">DTU Studievejledning</a>
                                 &nbsp; eller hos studielederen for Software Bachelor,&nbsp;
                                 <a href="/contact" className="text-blue-500 underline">Carsten Witt</a>.
                                 <br />
-                                For detaljeret og opdateret information om kurser og studieforløb henvises der til&nbsp;
-                                <a href="https://kurser.dtu.dk/search" className="text-blue-500 underline">DTU&apos;s studieplanlægger</a>.
+                                For mere information om kurserne og kursusfordeling, henvises der til &nbsp;
+                                <a href="https://student.dtu.dk/studieordninger/bachelor/softwareteknologi/studieplan" className="text-blue-500 underline">DTU officielle studieplan for Softwareteknologi</a>.
+
                                 <br />
                             </p>
                         </div>
-
-
                         <div className="m-10 flex flex-col">
                             <h2 className="text-2xl font-semibold mb-4">Tilgængelige kurser</h2>
                             <div className="mb-4">
-                                <label htmlFor="courseType" className="mr-2 font-semibold">
-                                    Vælg kursustype:
-                                </label>
                                 <select
                                     id="courseType"
                                     value={selectedCourseType}
                                     onChange={(e) => setSelectedCourseType(e.target.value)}
-                                    className="px-4 py-4 border rounded"
+                                    className="px-4 py-4 border rounded relative w-80"
                                 >
                                     <option value=""> Alle Kurser </option>
                                     {[...new Set(
@@ -398,6 +393,7 @@ function StudyPlanContent() {
                                     <DraggableCourse key={getCourseDragId(c)} course={c} />
                                 ))}
                             </DroppableCourseList>
+                        </div>
                         </div>
                     </div>
                 </div>
