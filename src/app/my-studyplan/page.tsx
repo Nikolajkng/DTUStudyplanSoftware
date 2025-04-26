@@ -21,11 +21,7 @@ import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
 import DroppableCourseList from "./components/DroppableCourseList";
 import { CourseWithSem, getCourseDragId } from "./components/CourseTypes";
 
-
-
-
 function StudyPlanContent() {
-
     // Load all hooks and states from hooks/useStudyPlan
     const {
         placements, setPlacements,

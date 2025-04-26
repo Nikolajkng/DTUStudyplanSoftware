@@ -24,7 +24,8 @@ const predefinedCourses = [
     "Billedanalyse",
     "Datasikkerhed",
     "Kunstig intelligens",
-    "Softwareudvikling"
+    "Softwareudvikling",
+    "Udveksling",
 ];
 
 export default function RecommendedStudyPlan() {

@@ -11,6 +11,11 @@ type GridCourseProps = {
 } & React.HTMLAttributes<HTMLDivElement>;
 
 
+// Fix: Prevents breaking text by inserting a hyphen before all course name with "programmering".
+function insertSoftHyphens(text: string) {
+    return text.replace(/(?<!\s)(programmering)/gi, '\u00AD$1');
+}
+
 const GridCourse = ({ placement, style, className, ...rest }: GridCourseProps) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: getCourseDragId(placement.course),
@@ -27,9 +32,8 @@ const GridCourse = ({ placement, style, className, ...rest }: GridCourseProps) =
 
     return (
         <div
-            className={`relative text-white flex justify-center items-center z-10 ${className ?? ""} ${
-                isHardSplit ? "" : courseColor({ course_type: placement.course.course_type })
-            }`}
+            className={`relative text-white flex justify-center items-center z-10 ${className ?? ""} ${isHardSplit ? "" : courseColor({ course_type: placement.course.course_type })
+                }`}
             style={{
                 width: "99%",
                 height: "100%",
@@ -58,8 +62,9 @@ const GridCourse = ({ placement, style, className, ...rest }: GridCourseProps) =
                     />
                 </>
             )}
+            {/* Course name */}
             <strong className="w-full h-full flex items-center justify-center text-sm leading-tight break-words text-center">
-                {placement.course.course_name}
+                {insertSoftHyphens(placement.course.course_name)}
             </strong>
         </div>
     );
