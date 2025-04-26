@@ -163,6 +163,9 @@ function StudyPlanContent() {
         setHoveredCell(null);
     };
 
+    const check3Weeks = (row: number): boolean => {
+        return row > 12;
+    }
 
     const getScheduleValue = (row: number, col: number): string[] => {
         const is3Weeks = row > 12;
