@@ -27,24 +27,30 @@ const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
     const ectsNum = Number(course.ects);
     const isWholeNumber = Number.isInteger(ectsNum);
 
+    // Fix: Prevents breaking text by inserting a hyphen before all course name with "programmering".
+    function insertSoftHyphens(text: string) {
+        return text.replace(/(?<!\s)(programmering)/gi, '\u00AD$1');
+    }
+
+
     return (
         <div
-            className={`relative w-120 min-h-16 m-1 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between p-2 rounded-2xl overflow-hidden ${
-                isHardSplit ? "" : courseTypeClass
-            }`}
+            className={`relative w-74 min-h-15 m-1 text-white 
+                        flex flex-col sm:flex-row sm:items-center sm:justify-between 
+                        p-2 rounded-2xl overflow-hidden ${isHardSplit ? "" : courseTypeClass}`}
             ref={setNodeRef}
             style={style}
             {...attributes}
             {...listeners}
         >
-            {/* Hard split background */}
+            {/* Edge-case for 02100 Indledende programmering og softwareteknologi */}
             {isHardSplit && (
                 <div className="absolute inset-0 flex">
                     <div className="w-1/2 h-full bg-green-500" />
                     <div className="w-1/2 h-full bg-blue-400" />
                 </div>
             )}
-            {/* Course content */}
+            {/* Course ID display */}
             <div className="relative z-10 font-medium whitespace-nowrap">
                 {course.course_id === "00000" ? (
                     <div className="font-bold">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
@@ -52,12 +58,13 @@ const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
                     <div className="font-bold">{course.course_id}</div>
                 )}
             </div>
+            {/* Course name display */}
             <div
-                className="relative z-10 w-full h-full flex items-center justify-center leading-tight break-words text-center"
-                lang="da"
-            >
-                <strong>{course.course_name}</strong>
-            </div>
+                className="relative z-10 w-full h-full flex-1 p-3 flex items-center justify-center 
+                            text-center leading-tight break-words hyphens-auto" lang="da">
+
+                <strong>{insertSoftHyphens(course.course_name)}</strong>            </div>
+            {/* ECTS display */}
             <div className="relative z-10 font-medium whitespace-nowrap">
                 <strong> {isWholeNumber ? ectsNum : ectsNum.toFixed(1)} ects</strong>
             </div>

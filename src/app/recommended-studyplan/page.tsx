@@ -52,8 +52,8 @@ export default function RecommendedStudyPlan() {
     };
 
     const handleLoadStudyPlan = (planName: string) => {
-            setPlacements([]); // Clear the board
-            loadStudyPlan(planName); // Load the new study plan
+        setPlacements([]); // Clear the board
+        loadStudyPlan(planName); // Load the new study plan
     };
 
 
@@ -74,9 +74,11 @@ export default function RecommendedStudyPlan() {
 
             <div className="flex flex-col min-h-screen items-center">
                 <h1 className="text-4xl font-bold mt-10">Anbefalede studieforløb</h1>
-                <div className="flex justify-center">
-                    <div className="flex justify-center ">
+                <div className="w-full overflow-x-auto">
+                    <div className="flex mt-5 justify-around">
                         <div className="flex flex-row m-10">
+                            {/* ########################## Grid display of study plan ########################## */}
+
                             <div className="flex flex-col">
                                 <h2 className="text-2xl font-semibold mb-4">{selectedPlan || ""}</h2>
                                 <div
@@ -86,7 +88,6 @@ export default function RecommendedStudyPlan() {
                                         height: `${semesters}00px`,
                                         gridTemplateColumns: "repeat(14, 1fr)",
                                         gridTemplateRows: `repeat(${semesters}, 1fr)`,
-                                        overflowX: "auto",
                                     }}
                                 >
                                     {baseCoords.map(([x, y]) => (
@@ -143,6 +144,8 @@ export default function RecommendedStudyPlan() {
                                     ))}
                                 </div>
                             </div>
+
+                            {/* ########################## Predefined courses section (Anbefalede studieforløb) ########################## */}
                             <div className="ml-20 flex flex-col">
                                 <h2 className="text-2xl font-semibold mb-4">Forløbseksempler</h2>
                                 {predefinedCourses.map((course, index) => (
@@ -160,5 +163,6 @@ export default function RecommendedStudyPlan() {
                 </div>
             </div>
         </div>
+
     );
 }

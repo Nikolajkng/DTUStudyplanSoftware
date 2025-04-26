@@ -10,7 +10,7 @@ const DroppableCourseList = ({ children }: { children: ReactNode }) => {
     return (
         <div
             ref={setNodeRef}
-            className={`overflow-y-scroll p-3 h-170 transition-all rounded-xl ${
+            className={`overflow-y-scroll relative w-80 p-2 h-170 transition-all rounded-xl ${
                 isOver ? "bg-blue-100 border-2 border-blue-500" : "bg-white border"
             }`}
         >
