@@ -242,7 +242,7 @@ function StudyPlanContent() {
                             <div className="m-10">
                                 <h2 className="text-2xl font-semibold mb-4">{selectedPlan || "Nyt studieforløb"}</h2>
                                 <div
-                                    className={`grid grid-rows-${semesters} grid-cols-14 gap-y-1 border border-gray-400 p-2`}
+                                    className={`grid grid-rows-${semesters} grid-cols-14 gap-y-1 border border-gray-400 p-2 rounded`}
                                     style={{
                                         width: "1200px",
                                         height: `${semesters}00px`,

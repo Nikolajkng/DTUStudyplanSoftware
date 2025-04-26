@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Course } from "../../db/fetchCourses";
 import GridCourse from "../my-studyplan/components/grid/GridCourse";
 import GridFiller from "../my-studyplan/components/grid/GridFiller";
+import { courseTypeColors } from "../my-studyplan/components/CourseTypes";
 
 type CourseWithSem = Course & {
     sem?: number;
@@ -82,7 +83,7 @@ export default function RecommendedStudyPlan() {
                             <div className="flex flex-col">
                                 <h2 className="text-2xl font-semibold mb-4">{selectedPlan || ""}</h2>
                                 <div
-                                    className={`grid grid-rows-${semesters} grid-cols-14 gap-y-1 border border-gray-400 p-2`}
+                                    className={`grid grid-rows-${semesters} grid-cols-14 gap-y-1 border border-gray-400 p-2 rounded`}
                                     style={{
                                         width: "1200px",
                                         height: `${semesters}00px`,
@@ -93,10 +94,10 @@ export default function RecommendedStudyPlan() {
                                     {baseCoords.map(([x, y]) => (
                                         <GridFiller key={`${x}-${y}`} x={x + 1} y={y + 1} />
                                     ))}
-                                    {placements.map((p) => (
-                                        <GridCourse key={`${p.course.course_id}-${p.course.course_name}`} placement={p} />
+                                    {/* Fix: added index -> '00000-Valgfrikursus-index' to make unique key*/}
+                                    {placements.map((p, index) => (
+                                        <GridCourse key={`${p.course.course_id}-${p.course.course_name}-${index}`} placement={p} />
                                     ))}
-
                                     <div
                                         className="flex items-center justify-center bg-gray-200 text-black font-semibold"
                                         style={{
@@ -161,8 +162,31 @@ export default function RecommendedStudyPlan() {
                         </div>
                     </div>
                 </div>
+                {/* ########################## Display color code for coursetypes ########################## */}
+                <div className="flex flex-col items-center mt-20">
+                    <h2 className="text-2xl font-semibold mb-4">Farvekode for kursustype</h2>
+                    <div className="grid grid-cols-2 gap-1  border-1 border-gray-400 rounded p-1">
+                        {Array.from(courseTypeColors.entries())
+                            .slice(0, -1)
+                            .map(([courseType, color]) => (
+                                <div
+                                    key={courseType}
+                                    className={`
+                                        flex items-center justify-center ${color}
+                                        text-white font-semibold p-2 rounded
+                                        w-70 h-25`}>
+                                    <p className="text-xl">
+                                        <strong>
+                                            {courseType}
+                                        </strong>
+                                    </p>
+                                </div>
+                            ))}
+                    </div>
+                </div>
             </div>
         </div>
 
     );
 }
+
