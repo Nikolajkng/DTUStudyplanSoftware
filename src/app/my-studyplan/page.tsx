@@ -20,6 +20,9 @@ import ClearBtn from "./components/btn_handlers/ClearBtn";
 import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
 import DroppableCourseList from "./components/DroppableCourseList";
 import { CourseWithSem, getCourseDragId } from "./components/CourseTypes";
+import { checkPlacementRules } from "./validations/placementValidation";
+import { getScheduleValue } from "./validations/helper_functions";
+import { checkPlacementHighlightRules } from "./validations/highlightValidation";
 
 function StudyPlanContent() {
     // Load all hooks and states from hooks/useStudyPlan
@@ -44,40 +47,6 @@ function StudyPlanContent() {
         setSelectedPlan(planName);
     };
 
-
-    // Function to check for overlap
-    const checkForOverlap = (courseWidth: number, courseHeight: number, courseX: number, courseY: number, excludeCourseId?: string): boolean => {
-        // Get cells the course would occupy
-        const targetCells = new Set<string>();
-        for (let dx = 0; dx < courseWidth; dx++) {
-            for (let dy = 0; dy < courseHeight; dy++) {
-                targetCells.add(`${courseX + dx}-${courseY + dy}`);
-            }
-        }
-
-        // Check for overlap
-        const hasOverlap = placements.some((p) => {
-            if (excludeCourseId && p.course.course_id === excludeCourseId) {
-                return false; // skip checking against itself
-            }
-
-            const px = p.x;
-            const py = p.y;
-            const pw = p.course.ects / 2.5;
-            const ph = p.course.sem || 1;
-
-            for (let dx = 0; dx < pw; dx++) {
-                for (let dy = 0; dy < ph; dy++) {
-                    if (targetCells.has(`${px + dx}-${py + dy}`)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        });
-
-        return hasOverlap;
-    };
 
     const handleDragStart = (event: DragStartEvent) => {
         const course = courses.find((c) => getCourseDragId(c) === event.active.id);
@@ -117,66 +86,19 @@ function StudyPlanContent() {
             const courseWidth = course.ects / 2.5;;
             const courseHeight = course.sem || 1;
 
-            // Fysik should fill out two courses
-            if (course.course_id === "10060" || course.course_name === "Fysik") {
-                course.sem = 2;
-                course.ects = 5;
-            }
-
-            // Check for out of bounds:
-            const courseXwithWidth = courseX + courseWidth - 1;
-            const courseYwithHeight = courseY + courseHeight - 1;
-            const inBound = courseXwithWidth <= 14 && courseYwithHeight <= semesters;
-
-
-            // Check for schedule placement of course
-            const checkScheduleResult = getScheduleValue(courseXwithWidth, courseY).map((s) => (course.placement.includes(s)));
-            const correctSchedule = checkScheduleResult.some(foundMatch => foundMatch);
-
-            // Checks for overlap
-            const hasOverlap = checkForOverlap(courseWidth, courseHeight, courseX, courseY, course.course_id);
-            const hasOverlapWithGridTitles = (x < 2) || (y == 0);
-
-            // Check for large project course
-            const projectHasCorrectWeekSpan = checkProjectCourses(courseX, courseY, course);
-
-            const validPlacement =
-                inBound &&
-                !hasOverlap &&
-                !hasOverlapWithGridTitles &&
-                correctSchedule &&
-                  
-                projectHasCorrectWeekSpan;
-
+            const validPlacement = checkPlacementRules(x,y, course, courseX, courseY, courseWidth, courseHeight, semesters)
             if (validPlacement) {
                 setPlacements((prev) => [
                     ...prev.filter((p) => getCourseDragId(p.course) !== getCourseDragId(course)),
                     { x: courseX, y: courseY, course },
                 ]);
             }
-            //debugger;
-
         }
 
         setActiveCourse(null);
         setHoveredCell(null);
     };
 
-
-    const getScheduleValue = (row: number, col: number): string[] => {
-        const is3Weeks = row > 12;
-        const evenSem = (col + 1) % 2 === 0;
-
-        if (is3Weeks) {
-            return evenSem
-                ? ["juni", "juli", "august", "Juni", "Juli", "August"]
-                : ["januar", "Januar"];
-        } else {
-            return evenSem
-                ? ["F", "forår", "Forår"]
-                : ["E", "efterår", "Efterår"];
-        }
-    }
 
 
     // Function for determining the courses not currently in the course grid (study plan)
@@ -216,18 +138,7 @@ function StudyPlanContent() {
         )
         .flat();
 
-    // Check for project courses
-    const checkProjectCourses = (hx: number, hy: number, activeCourse: CourseWithSem): boolean => {
-        const isLargeProjectCourse = activeCourse.course_type.includes("Projekt") && activeCourse.ects >= 10;
-        if (activeCourse.course_name.includes("Bachelorprojekt") && isLargeProjectCourse) {
-            // Bachelorprojekt must be taken in 6th semester or later
-            return (hy >= 7) && (hx >= 9);
-        } else if (activeCourse.course_name.includes("Fagprojekt") && isLargeProjectCourse) {
-            // Fagprojekt must be taken in 4th semester
-            return (hx >= 11 && hy === 5);
-        }
-        return true;
-    };
+   
 
     return (<>
         <div className="flex flex-col min-h-screen items-center">
@@ -273,24 +184,7 @@ function StudyPlanContent() {
                                                 y < hy + courseHeight;
 
                                             if (isInRange) {
-
-                                                const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy, activeCourse.course_id);
-                                                const isOutOfBounds = hx + courseWidth - 1 > 14 || hy + courseHeight - 1 > semesters;
-                                                const hasOverlapWithGridTitles = hx < 3 || hy === 0;
-                                                const checkScheduleResult = schedule.map((s) => (activeCourse.placement.includes(s)));
-                                                const correctSchedule = checkScheduleResult.some(foundMatch => foundMatch);
-
-                                                let projectHasCorrectWeekSpan = checkProjectCourses(hx, hy, activeCourse);
-
-
-
-                                                highlight = (
-                                                    hasOverlap ||
-                                                    isOutOfBounds ||
-                                                    hasOverlapWithGridTitles ||
-                                                    !correctSchedule ||
-                                                    (!projectHasCorrectWeekSpan)
-                                                )
+                                                highlight = checkPlacementHighlightRules(activeCourse, hx, hy, courseWidth, courseHeight, schedule, semesters)
                                                     ? "invalid"
                                                     : "valid";
                                             }
