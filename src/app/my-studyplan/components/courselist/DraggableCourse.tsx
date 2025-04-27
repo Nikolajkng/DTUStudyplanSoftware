@@ -29,9 +29,33 @@ const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
 
     // Fix: Prevents breaking text by inserting a hyphen before all course name with "programmering".
     function insertSoftHyphens(text: string) {
-        return text.replace(/(?<!\s)(programmering)/gi, '\u00AD$1');
+        // List of patterns where we want to insert soft hyphens
+        const patterns = [
+            { regex: /(?<!\s)(programmering)/gi, splitAt: 'programmering' },
+            { regex: /([a-zæøå]+)(konstruktion)/gi, splitAt: 'konstruktion' },
+            { regex: /([a-zæøå]+)(projekt)/gi, splitAt: 'projekt' },
+            { regex: /(data)([a-zæøå]+)/gi, splitAt: 'data' },
+            { regex: /([a-zæøå]+)(netværk)/gi, splitAt: 'netværk' },
+        ];
+    
+        let newText = text;
+        for (const { regex, splitAt } of patterns) {
+            newText = newText.replace(regex, (...args) => {
+                const match = args[0];
+                const groups = args.slice(1, -2); // Get all groups
+                if (groups.length === 2) {
+                    // Two groups: insert hyphen between
+                    return `${groups[0]}\u00AD${groups[1]}`;
+                } else if (groups.length === 1) {
+                    // Only one group: insert hyphen before the word
+                    return `\u00AD${groups[0]}`;
+                }
+                return match; // fallback
+            });
+        }
+        return newText;
     }
-
+    
 
     return (
         <div
@@ -63,7 +87,8 @@ const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
                 className="relative z-10 w-full h-full flex-1 p-3 flex items-center justify-center 
                             text-center leading-tight break-words hyphens-auto" lang="da">
 
-                <strong>{insertSoftHyphens(course.course_name)}</strong>            </div>
+                <strong>{insertSoftHyphens(course.course_name)}</strong>
+            </div>
             {/* ECTS display */}
             <div className="relative z-10 font-medium whitespace-nowrap">
                 <strong> {isWholeNumber ? ectsNum : ectsNum.toFixed(1)} ects</strong>
