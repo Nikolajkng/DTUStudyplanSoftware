@@ -110,13 +110,11 @@ function StudyPlanContent() {
         // Case 2: Dropped in the grid
         if (event.over) {
             const [x, y] = event.over.id.toString().split("-").map(Number);
-            const scaledEcts = course.ects / 2.5;
-
-
-            // Positions and values of gridcell
+        
+            // Positions and size of gridcell
             const courseX = x + 1;
             const courseY = y + 1;
-            const courseWidth = scaledEcts;
+            const courseWidth = course.ects / 2.5;;
             const courseHeight = course.sem || 1;
 
             // Fysik should fill out two courses
@@ -126,24 +124,29 @@ function StudyPlanContent() {
             }
 
             // Check for out of bounds:
-            const isOutOfBounds = x + courseWidth - 1 > 14 || y + courseHeight - 1 > semesters;
-            const inBound = courseX + courseWidth - 1 <= 14 &&
-                courseY + courseHeight - 1 <= semesters;
+            const courseXwithWidth = courseX + courseWidth - 1;
+            const courseYwithHeight = courseY + courseHeight - 1;
+            const inBound = courseXwithWidth <= 14 && courseYwithHeight <= semesters;
+
 
             // Check for schedule placement of course
-            const checkScheduleResult = getScheduleValue(courseX, courseY).map((s) => (course.placement.includes(s)));
+            const checkScheduleResult = getScheduleValue(courseXwithWidth, courseY).map((s) => (course.placement.includes(s)));
             const correctSchedule = checkScheduleResult.some(foundMatch => foundMatch);
 
             // Checks for overlap
             const hasOverlap = checkForOverlap(courseWidth, courseHeight, courseX, courseY, course.course_id);
             const hasOverlapWithGridTitles = (x < 2) || (y == 0);
 
+            // Check for large project course
+            const projectHasCorrectWeekSpan = checkProjectCourses(courseX, courseY, course);
+
             const validPlacement =
                 inBound &&
                 !hasOverlap &&
                 !hasOverlapWithGridTitles &&
                 correctSchedule &&
-                !isOutOfBounds;
+                  
+                projectHasCorrectWeekSpan;
 
             if (validPlacement) {
                 setPlacements((prev) => [
@@ -159,9 +162,6 @@ function StudyPlanContent() {
         setHoveredCell(null);
     };
 
-    const check3Weeks = (row: number): boolean => {
-        return row > 12;
-    }
 
     const getScheduleValue = (row: number, col: number): string[] => {
         const is3Weeks = row > 12;
