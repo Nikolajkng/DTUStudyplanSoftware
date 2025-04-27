@@ -35,7 +35,8 @@ function StudyPlanContent() {
         courses,
         semesters, setSemesters,
         selectedCourseType, setSelectedCourseType,
-        hoveredCell, setHoveredCell, }
+        hoveredCell, setHoveredCell, 
+        searchQuery, setSearchQuery}
         = useStudyPlan();
 
     const [activeCourse, setActiveCourse] = useState<CourseWithSem | null>(null);
@@ -105,28 +106,33 @@ function StudyPlanContent() {
 
     // Function for determining the courses not currently in the course grid (study plan)
     // Used by the "tilgængelige kurser"
+    // First get everything not placed
     const notUsedCourses = courses.filter(
-        (c) =>
-            !placements.some(
-                (p) => getCourseDragId(p.course) === getCourseDragId(c)
-            )
+        (c) => !placements.some((p) => getCourseDragId(p.course) === getCourseDragId(c))
     );
 
+    // Then filter it
     const filteredCourses = notUsedCourses.filter((c) => {
-        if (!selectedCourseType) {
-            return true; // Show all courses if no filter is selected
-        }
+        // Check course type
+        const courseTypeMatch = (() => {
+            if (!selectedCourseType) return true;
+            if (c.course_type === "Polyteknisk grundlag & Retningsspecifikke kurser") {
+                return selectedCourseType === "Polyteknisk grundlag" || selectedCourseType === "Retningsspecifikke kurser";
+            }
+            return c.course_type === selectedCourseType;
+        })();
 
-        // Special case: Include the course in both "Polyteknisk grundlag" and "Retningsspecifikke kurser"
-        if (c.course_type === "Polyteknisk grundlag & Retningsspecifikke kurser") {
+        // Check search field (course_id or course_name)
+        const searchFieldMatch = (() => {
+            if (!searchQuery) return true;
             return (
-                selectedCourseType === "Polyteknisk grundlag" ||
-                selectedCourseType === "Retningsspecifikke kurser"
+                c.course_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                c.course_name.toLowerCase().includes(searchQuery.toLowerCase())
             );
-        }
+        })();
 
-        // Default case: Match the selected course type
-        return c.course_type === selectedCourseType;
+        // Both must match
+        return courseTypeMatch && searchFieldMatch;
     });
 
 
@@ -280,13 +286,13 @@ function StudyPlanContent() {
                             {/* ######################### Course list for available courses ######################### */}
                             <div className="m-10 flex flex-col">
                                 <h2 className="text-2xl font-semibold mb-4">Tilgængelige kurser</h2>
-                                <SearchField/>
+                                <SearchField />
                                 <DroppableCourseList>
                                     {filteredCourses.map((c) => (
                                         <DraggableCourse key={getCourseDragId(c)} course={c} />
                                     ))}
                                 </DroppableCourseList>
-                                <Filter/>
+                                <Filter />
                             </div>
                         </div>
                     </div>
