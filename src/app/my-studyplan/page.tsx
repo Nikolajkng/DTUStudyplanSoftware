@@ -216,6 +216,18 @@ function StudyPlanContent() {
         )
         .flat();
 
+    // Check for project courses
+    const checkProjectCourses = (hx: number, hy: number, activeCourse: CourseWithSem): boolean => {
+        const isLargeProjectCourse = activeCourse.course_type.includes("Projekt") && activeCourse.ects >= 10;
+        if (activeCourse.course_name.includes("Bachelorprojekt") && isLargeProjectCourse) {
+            // Bachelorprojekt must be taken in 6th semester or later
+            return (hy >= 7) && (hx >= 9);
+        } else if (activeCourse.course_name.includes("Fagprojekt") && isLargeProjectCourse) {
+            // Fagprojekt must be taken in 4th semester
+            return (hx >= 11 && hy === 5);
+        }
+        return true;
+    };
 
     return (<>
         <div className="flex flex-col min-h-screen items-center">
@@ -261,13 +273,24 @@ function StudyPlanContent() {
                                                 y < hy + courseHeight;
 
                                             if (isInRange) {
+
                                                 const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy, activeCourse.course_id);
                                                 const isOutOfBounds = hx + courseWidth - 1 > 14 || hy + courseHeight - 1 > semesters;
                                                 const hasOverlapWithGridTitles = hx < 3 || hy === 0;
                                                 const checkScheduleResult = schedule.map((s) => (activeCourse.placement.includes(s)));
                                                 const correctSchedule = checkScheduleResult.some(foundMatch => foundMatch);
 
-                                                highlight = (hasOverlap || isOutOfBounds || hasOverlapWithGridTitles || !correctSchedule)
+                                                let projectHasCorrectWeekSpan = checkProjectCourses(hx, hy, activeCourse);
+
+
+
+                                                highlight = (
+                                                    hasOverlap ||
+                                                    isOutOfBounds ||
+                                                    hasOverlapWithGridTitles ||
+                                                    !correctSchedule ||
+                                                    (!projectHasCorrectWeekSpan)
+                                                )
                                                     ? "invalid"
                                                     : "valid";
                                             }
@@ -315,7 +338,6 @@ function StudyPlanContent() {
                                     >
                                         jan/jun/aug <br></br> (5 ects)
                                     </div>
-
                                     {Array.from({ length: semesters - 1 }).map((_, y) => (
                                         <div
                                             key={`row-label-${y}`}
@@ -329,7 +351,6 @@ function StudyPlanContent() {
                                             {y + 1}
                                         </div>
                                     ))}
-
                                 </div>
                                 <div className="flex justify-between items-center border border-gray-400 p-2">
                                     <div className="flex space-x-3">
