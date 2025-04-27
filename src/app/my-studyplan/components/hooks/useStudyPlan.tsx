@@ -1,7 +1,7 @@
 // hooks/useStudyPlan.tsx
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { cachedFetchCourses } from "../../../../db/fetchCourses";
-import { CoursePlacement, CourseWithSem } from "../CourseTypes";
+import { CoursePlacement, CourseWithSem } from "../courselist/CourseTypes";
 
 type StudyPlanContextType = {
     placements: CoursePlacement[];

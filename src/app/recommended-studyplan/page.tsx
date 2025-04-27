@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Course } from "../../db/fetchCourses";
 import GridCourse from "../my-studyplan/components/grid/GridCourse";
 import GridFiller from "../my-studyplan/components/grid/GridFiller";
-import { courseTypeColors } from "../my-studyplan/components/CourseTypes";
+import { courseTypeColors } from "../my-studyplan/components/courselist/CourseTypes";
 
 type CourseWithSem = Course & {
     sem?: number;

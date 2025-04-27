@@ -1,4 +1,4 @@
-import { CoursePlacement, CourseWithSem } from "../components/CourseTypes";
+import { CoursePlacement, CourseWithSem } from "../components/courselist/CourseTypes";
 
 export const getScheduleValue = (row: number, col: number): string[] => {
     const is3Weeks = row > 12;

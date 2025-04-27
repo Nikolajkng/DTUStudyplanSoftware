@@ -1,4 +1,4 @@
-import { CourseWithSem } from "../components/CourseTypes";
+import { CourseWithSem } from "../components/courselist/CourseTypes";
 import { checkForOverlap, checkLargeProjectCourses } from "./helper_functions";
 
 export const checkPlacementHighlightRules = (

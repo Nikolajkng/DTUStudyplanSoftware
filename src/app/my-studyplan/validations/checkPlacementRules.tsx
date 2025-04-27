@@ -1,4 +1,4 @@
-import { CourseWithSem } from "../components/CourseTypes";
+import { CourseWithSem } from "../components/courselist/CourseTypes";
 import { checkForOverlap, checkLargeProjectCourses, getScheduleValue } from "./helper_functions";
 
 
