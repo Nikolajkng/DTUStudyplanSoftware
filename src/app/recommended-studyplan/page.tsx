@@ -59,6 +59,9 @@ export default function RecommendedStudyPlan() {
     };
 
 
+    const handleCopyStudyPlan = () => {
+        // TODO: handle copy study plan to 'Mine Studieforløb'
+    };
 
     const baseCoords = Array.from({ length: 14 })
         .map((_, x) =>
@@ -144,6 +147,16 @@ export default function RecommendedStudyPlan() {
                                             {y + 1}
                                         </div>
                                     ))}
+                                </div>
+                                <div className="flex justify-between items-center border border-gray-400 p-2">
+                                    <div className="flex space-x-3">
+                                        <button
+                                            onClick={handleCopyStudyPlan}
+                                            className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800 mr-2"
+                                        >
+                                            Gem studieforlab i 'Mine Studieforløb'
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
