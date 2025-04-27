@@ -106,14 +106,11 @@ function StudyPlanContent() {
 
     // Function for determining the courses not currently in the course grid (study plan)
     // Used by the "tilgængelige kurser"
-    // First get everything not placed
     const notUsedCourses = courses.filter(
         (c) => !placements.some((p) => getCourseDragId(p.course) === getCourseDragId(c))
     );
 
-    // Then filter it
     const filteredCourses = notUsedCourses.filter((c) => {
-        // Check course type
         const courseTypeMatch = (() => {
             if (!selectedCourseType) return true;
             if (c.course_type === "Polyteknisk grundlag & Retningsspecifikke kurser") {
