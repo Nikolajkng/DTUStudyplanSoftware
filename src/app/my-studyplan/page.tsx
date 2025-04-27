@@ -20,9 +20,9 @@ import ClearBtn from "./components/btn_handlers/ClearBtn";
 import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
 import DroppableCourseList from "./components/DroppableCourseList";
 import { CourseWithSem, getCourseDragId } from "./components/CourseTypes";
-import { checkPlacementRules } from "./validations/placementValidation";
+import { checkPlacementRules } from "./validations/checkPlacementRules";
 import { getScheduleValue } from "./validations/helper_functions";
-import { checkPlacementHighlightRules } from "./validations/highlightValidation";
+import { checkPlacementHighlightRules } from "./validations/checkPlacementHighlightRules";
 
 function StudyPlanContent() {
     // Load all hooks and states from hooks/useStudyPlan
@@ -79,14 +79,14 @@ function StudyPlanContent() {
         // Case 2: Dropped in the grid
         if (event.over) {
             const [x, y] = event.over.id.toString().split("-").map(Number);
-        
+
             // Positions and size of gridcell
             const courseX = x + 1;
             const courseY = y + 1;
             const courseWidth = course.ects / 2.5;;
             const courseHeight = course.sem || 1;
 
-            const validPlacement = checkPlacementRules(x,y, course, courseX, courseY, courseWidth, courseHeight, semesters)
+            const validPlacement = checkPlacementRules(x, y, course, courseX, courseY, courseWidth, courseHeight, semesters)
             if (validPlacement) {
                 setPlacements((prev) => [
                     ...prev.filter((p) => getCourseDragId(p.course) !== getCourseDragId(course)),
@@ -138,7 +138,7 @@ function StudyPlanContent() {
         )
         .flat();
 
-   
+
 
     return (<>
         <div className="flex flex-col min-h-screen items-center">
