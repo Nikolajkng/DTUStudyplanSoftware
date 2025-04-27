@@ -20,7 +20,7 @@ export default function SaveBtn() {
             className="flex items-center px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800"
         >
             <ArrowDownTrayIcon className="h-5 w-5 mr-2" /> {/* Add the save icon */}
-            Gem
+            <strong>Gem</strong>
         </button>
     );
 }

@@ -154,7 +154,7 @@ export default function RecommendedStudyPlan() {
                                             onClick={handleCopyStudyPlan}
                                             className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800 mr-2"
                                         >
-                                            Gem studieforlab i 'Mine Studieforløb'
+                                            <strong>Gem studieforlab i 'Mine Studieforløb'</strong>
                                         </button>
                                     </div>
                                 </div>

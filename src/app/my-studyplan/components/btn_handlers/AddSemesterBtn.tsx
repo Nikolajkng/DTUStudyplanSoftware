@@ -16,7 +16,7 @@ function AddSemesterBtn() {
       onClick={addAnotherSemester}
       className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800 mr-2"
     >
-      Tilføj semester
+      <strong>Tilføj semester</strong>
     </button>
   )
 }

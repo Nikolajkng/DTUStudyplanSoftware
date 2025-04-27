@@ -50,7 +50,7 @@ function ExportAsPdfBtn() {
             onClick={handleExportAsPDF}
             className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
         >
-            Eksportér Studieforløb som PDF
+            <strong>Eksportér Studieforløb som PDF</strong>
         </button>
     )
 }
