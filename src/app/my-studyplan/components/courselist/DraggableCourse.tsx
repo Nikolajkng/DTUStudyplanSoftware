@@ -29,33 +29,28 @@ const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
 
     // Fix: Prevents breaking text by inserting a hyphen before all course name with "programmering".
     function insertSoftHyphens(text: string) {
-        // List of patterns where we want to insert soft hyphens
+        // Smarter patterns to insert soft hyphens before/inside important keywords
         const patterns = [
-            { regex: /(?<!\s)(programmering)/gi, splitAt: 'programmering' },
-            { regex: /([a-zæøå]+)(konstruktion)/gi, splitAt: 'konstruktion' },
-            { regex: /([a-zæøå]+)(projekt)/gi, splitAt: 'projekt' },
-            { regex: /(data)([a-zæøå]+)/gi, splitAt: 'data' },
-            { regex: /([a-zæøå]+)(netværk)/gi, splitAt: 'netværk' },
+            { regex: /(\w+?)(programmering)/gi },
+            { regex: /(\w+?)(konstruktion(er)?)/gi },
+            { regex: /(\w+?)(projekt(er|styring|ledelse)?)/gi },
+            { regex: /(data)(\w+)/gi },
+            { regex: /(\w+?)(netværk|netværksopsamling)/gi },
         ];
-    
+
         let newText = text;
-        for (const { regex, splitAt } of patterns) {
+        for (const { regex } of patterns) {
             newText = newText.replace(regex, (...args) => {
                 const match = args[0];
                 const groups = args.slice(1, -2); // Get all groups
-                if (groups.length === 2) {
-                    // Two groups: insert hyphen between
+                if (groups.length >= 2) {
                     return `${groups[0]}\u00AD${groups[1]}`;
-                } else if (groups.length === 1) {
-                    // Only one group: insert hyphen before the word
-                    return `\u00AD${groups[0]}`;
                 }
-                return match; // fallback
+                return match;
             });
         }
         return newText;
     }
-    
 
     return (
         <div
