@@ -23,6 +23,8 @@ import { CourseWithSem, getCourseDragId } from "./components/courselist/CourseTy
 import { checkPlacementRules } from "./validations/checkPlacementRules";
 import { getScheduleValue } from "./validations/helper_functions";
 import { checkPlacementHighlightRules } from "./validations/checkPlacementHighlightRules";
+import Filter from "./components/courselist/Filter";
+import SearchField from "./components/courselist/SearchField";
 
 function StudyPlanContent() {
     // Load all hooks and states from hooks/useStudyPlan
@@ -33,7 +35,8 @@ function StudyPlanContent() {
         courses,
         semesters, setSemesters,
         selectedCourseType, setSelectedCourseType,
-        hoveredCell, setHoveredCell, }
+        hoveredCell, setHoveredCell, 
+        searchQuery, setSearchQuery}
         = useStudyPlan();
 
     const [activeCourse, setActiveCourse] = useState<CourseWithSem | null>(null);
@@ -103,28 +106,33 @@ function StudyPlanContent() {
 
     // Function for determining the courses not currently in the course grid (study plan)
     // Used by the "tilgængelige kurser"
+    // First get everything not placed
     const notUsedCourses = courses.filter(
-        (c) =>
-            !placements.some(
-                (p) => getCourseDragId(p.course) === getCourseDragId(c)
-            )
+        (c) => !placements.some((p) => getCourseDragId(p.course) === getCourseDragId(c))
     );
 
+    // Then filter it
     const filteredCourses = notUsedCourses.filter((c) => {
-        if (!selectedCourseType) {
-            return true; // Show all courses if no filter is selected
-        }
+        // Check course type
+        const courseTypeMatch = (() => {
+            if (!selectedCourseType) return true;
+            if (c.course_type === "Polyteknisk grundlag & Retningsspecifikke kurser") {
+                return selectedCourseType === "Polyteknisk grundlag" || selectedCourseType === "Retningsspecifikke kurser";
+            }
+            return c.course_type === selectedCourseType;
+        })();
 
-        // Special case: Include the course in both "Polyteknisk grundlag" and "Retningsspecifikke kurser"
-        if (c.course_type === "Polyteknisk grundlag & Retningsspecifikke kurser") {
+        // Check search field (course_id or course_name)
+        const searchFieldMatch = (() => {
+            if (!searchQuery) return true;
             return (
-                selectedCourseType === "Polyteknisk grundlag" ||
-                selectedCourseType === "Retningsspecifikke kurser"
+                c.course_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                c.course_name.toLowerCase().includes(searchQuery.toLowerCase())
             );
-        }
+        })();
 
-        // Default case: Match the selected course type
-        return c.course_type === selectedCourseType;
+        // Both must match
+        return courseTypeMatch && searchFieldMatch;
     });
 
 
@@ -278,32 +286,13 @@ function StudyPlanContent() {
                             {/* ######################### Course list for available courses ######################### */}
                             <div className="m-10 flex flex-col">
                                 <h2 className="text-2xl font-semibold mb-4">Tilgængelige kurser</h2>
-                                <div className="mb-4">
-                                    <select
-                                        id="courseType"
-                                        value={selectedCourseType}
-                                        onChange={(e) => setSelectedCourseType(e.target.value)}
-                                        className="px-4 py-4 border rounded relative w-80"
-                                    >
-                                        <option value=""> Alle Kurser </option>
-                                        {[...new Set(
-                                            courses.flatMap((c) =>
-                                                c.course_type === "Polyteknisk grundlag & Retningsspecifikke kurser"
-                                                    ? ["Polyteknisk grundlag", "Retningsspecifikke kurser"]
-                                                    : [c.course_type]
-                                            )
-                                        )].map((type) => (
-                                            <option key={type} value={type}>
-                                                {type}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                <SearchField />
                                 <DroppableCourseList>
                                     {filteredCourses.map((c) => (
                                         <DraggableCourse key={getCourseDragId(c)} course={c} />
                                     ))}
                                 </DroppableCourseList>
+                                <Filter />
                             </div>
                         </div>
                     </div>

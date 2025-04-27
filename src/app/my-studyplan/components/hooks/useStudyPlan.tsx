@@ -23,6 +23,8 @@ type StudyPlanContextType = {
     saveStudyPlan: () => void;
     hoveredCell: [number, number] | null;
     setHoveredCell: React.Dispatch<React.SetStateAction<[number, number] | null>>;
+    searchQuery: string;
+    setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const StudyPlanContext = createContext<StudyPlanContextType | null>(null);
@@ -51,6 +53,8 @@ export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
     const [semesters, setSemesters] = useState(7);
     const [selectedCourseType, setSelectedCourseType] = useState<string>("");
     const [hoveredCell, setHoveredCell] = useState<[number, number] | null>(null);
+    const [searchQuery, setSearchQuery] = useState("");
+
 
     useEffect(() => {
         cachedFetchCourses().then((data) => {
@@ -86,6 +90,7 @@ export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
             selectedCourseType, setSelectedCourseType,
             saveStudyPlan,
             hoveredCell, setHoveredCell,
+            searchQuery, setSearchQuery,
         }}>
             {children}
         </StudyPlanContext.Provider>
