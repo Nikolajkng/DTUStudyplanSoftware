@@ -154,7 +154,7 @@ export default function RecommendedStudyPlan() {
                                             onClick={handleCopyStudyPlan}
                                             className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800 mr-2"
                                         >
-                                            <strong>Gem studieforlab i 'Mine Studieforløb'</strong>
+                                            <strong>Gem studieforlab i &apos;Mine Studieforløb&apos;</strong>
                                         </button>
                                     </div>
                                 </div>

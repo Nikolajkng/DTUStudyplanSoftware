@@ -34,9 +34,9 @@ function StudyPlanContent() {
         selectedPlan, setSelectedPlan,
         courses,
         semesters, setSemesters,
-        selectedCourseType, setSelectedCourseType,
+        selectedCourseType, 
         hoveredCell, setHoveredCell, 
-        searchQuery, setSearchQuery}
+        searchQuery}
         = useStudyPlan();
 
     const [activeCourse, setActiveCourse] = useState<CourseWithSem | null>(null);

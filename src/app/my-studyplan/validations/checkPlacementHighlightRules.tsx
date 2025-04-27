@@ -7,7 +7,7 @@ export const checkPlacementHighlightRules = (
     hy: number,
     courseWidth: number,
     courseHeight: number,
-    schedule: any[],
+    schedule: string[],
     semesters: number) => {
 
     const hasOverlap = checkForOverlap(courseWidth, courseHeight, hx, hy, activeCourse.course_id);
@@ -16,7 +16,7 @@ export const checkPlacementHighlightRules = (
     const checkScheduleResult = schedule.map((s) => (activeCourse.placement.includes(s)));
     const correctSchedule = checkScheduleResult.some(foundMatch => foundMatch);
 
-    let projectHasCorrectWeekSpan = checkLargeProjectCourses(hx, hy, activeCourse);
+    const projectHasCorrectWeekSpan = checkLargeProjectCourses(hx, hy, activeCourse);
     return (hasOverlap ||
         isOutOfBounds ||
         hasOverlapWithGridTitles ||

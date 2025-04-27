@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useStudyPlan } from "../hooks/useStudyPlan";
 function SearchField() {
     const { searchQuery, setSearchQuery } = useStudyPlan();
