@@ -66,7 +66,7 @@ export function UploadAsJsonBtn() {
                 onClick={() => document.getElementById("fileInput")?.click()}
                 className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-gray-800"
             >
-                Upload Studieforløb (importér JSON fil)
+                <strong>Upload Studieforløb (importér JSON fil)</strong>
             </button>
         </>
     );

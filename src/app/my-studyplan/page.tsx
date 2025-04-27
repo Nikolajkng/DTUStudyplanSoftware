@@ -284,12 +284,13 @@ function StudyPlanContent() {
                             <div className="m-10 flex flex-col">
                                 <h2 className="text-2xl font-semibold mb-4">Tilgængelige kurser</h2>
                                 <SearchField />
+                                <Filter />
                                 <DroppableCourseList>
                                     {filteredCourses.map((c) => (
                                         <DraggableCourse key={getCourseDragId(c)} course={c} />
                                     ))}
                                 </DroppableCourseList>
-                                <Filter />
+
                             </div>
                         </div>
                     </div>
