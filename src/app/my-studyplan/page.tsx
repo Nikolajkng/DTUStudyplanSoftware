@@ -34,9 +34,10 @@ function StudyPlanContent() {
         selectedPlan, setSelectedPlan,
         courses,
         semesters, setSemesters,
-        selectedCourseType, 
-        hoveredCell, setHoveredCell, 
-        searchQuery}
+        selectedCourseType,
+        hoveredCell, setHoveredCell,
+        searchQuery, 
+        validGridCells, setValidGridCells, }
         = useStudyPlan();
 
     const [activeCourse, setActiveCourse] = useState<CourseWithSem | null>(null);
@@ -54,6 +55,20 @@ function StudyPlanContent() {
     const handleDragStart = (event: DragStartEvent) => {
         const course = courses.find((c) => getCourseDragId(c) === event.active.id);
         setActiveCourse(course || null);
+
+        if (course) {
+            const validCells = baseCoords.filter(({ x, y }) => {
+                const courseWidth = course.ects / 2.5;
+                const courseHeight = course.sem || 1;
+                const courseX = x;
+                const courseY = y;
+
+                return checkPlacementRules(x, y, course, courseX, courseY, courseWidth, courseHeight, semesters);
+            });
+
+            setValidGridCells(validCells);
+        }
+
     };
 
     const handleDragOver = (event: DragOverEvent) => {
@@ -98,6 +113,7 @@ function StudyPlanContent() {
             }
         }
 
+        setValidGridCells([]);
         setActiveCourse(null);
         setHoveredCell(null);
     };
@@ -177,6 +193,12 @@ function StudyPlanContent() {
                                     {baseCoords.map(({ x, y, schedule }) => {
                                         let highlight: "valid" | "invalid" | null = null;
 
+                                        // Highlight valid cells on drag start
+                                        if (validGridCells.some((cell) => cell.x === x && cell.y === y)) {
+                                            highlight = "valid";
+                                        }
+
+                                        // Highlight valid cell on hover
                                         if (hoveredCell && activeCourse) {
                                             const [hx, hy] = hoveredCell;
                                             const courseWidth = activeCourse.ects / 2.5;
