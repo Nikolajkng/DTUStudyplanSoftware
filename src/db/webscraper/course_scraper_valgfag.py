@@ -29,10 +29,13 @@ if response.status_code == 200:
         writer.writerow(["course_id", "course_name", "ects", "placement", "course_type"])
         
         # Edge case - bachelor projektet
-        writer.writerow(["00000", "Bachelorprojekt", "15", "Forår+juni eller efterår+januar", "Projekter"])  
+        writer.writerow(["00000", "Bachelorprojekt", "15", "Forår eller Efterår", "Projekter"])  
+        writer.writerow(["00001", "Bachelorprojekt", "17.5", "Forår eller Efterår", "Projekter"])  
+        writer.writerow(["00002", "Bachelorprojekt", "20", "Forår+juni eller Efterår+januar", "Projekter"])  
+        
         
         # Edge case - kommunikationskursus
-        writer.writerow(["34220", "Kommunikationssystemer", "5", "jan/jun/aug", "Projekter"])  
+        writer.writerow(["34220", "Kommunikationssystemer", "5", "juni", "Valfrie kurser"])  
 
 
         # Skip de 3 første tabeller, kun inkludere de 5 sidste (valgfag)

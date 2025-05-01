@@ -60,6 +60,9 @@ for df in df:
         
         # Edgecase for Bachelorprojektets id:
         if len(course_id) == 1 and course_id == '0': course_id = '00000'
+        if len(course_id) == 1 and course_id == '1': course_id = '00001'
+        if len(course_id) == 1 and course_id == '2': course_id = '00002'
+
         
         #Edgecase for course_id hvor 0 bliver fjernet, tilføj igen:
         if len(course_id) == 4: course_id = "0" + course_id
@@ -79,12 +82,12 @@ for df in df:
         cursor.execute("SELECT 1 FROM Courses WHERE course_id = %s LIMIT 1", (course_id,))
         exists = cursor.fetchone() is not None
         if exists:
-            print(f"- Found duplicate course_id. Skipped {course_id}")
+            print(f"[!] Found duplicate course_id. Skipped {course_id}")
             duplicate_entries.append((course_id, course_name))
             continue 
                     
         cursor.execute(insert_query, (course_id, course_name, course_type, ects, placement))
-        print(f"+ Inserted course {course_id} into the database.")
+        print(f"[+] Inserted course {course_id} into the database.")
     conn.commit()
 
 

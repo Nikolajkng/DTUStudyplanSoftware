@@ -6,7 +6,7 @@ function AddSemesterBtn() {
 
   // Adds another row in the course grid, representing a semester
   const addAnotherSemester = () => {
-    if (semesters >= 10) return;
+    if (semesters >= 11) return;
     setSemesters((prev) => prev + 1);
     console.log(semesters);
   };

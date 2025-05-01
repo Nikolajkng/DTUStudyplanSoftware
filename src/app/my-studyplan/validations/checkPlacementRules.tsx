@@ -1,5 +1,5 @@
 import { CourseWithSem } from "../components/courselist/CourseTypes";
-import { checkForOverlap, checkLargeProjectCourses, getScheduleValue } from "./helper_functions";
+import { checkForOverlap, checkLargeProjectCourses, getScheduleValue } from "./shared_functions";
 
 
 export const checkPlacementRules = (

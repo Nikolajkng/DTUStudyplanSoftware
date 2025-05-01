@@ -71,7 +71,7 @@ const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
             )}
             {/* Course ID display */}
             <div className="relative z-10 font-medium whitespace-nowrap">
-                {course.course_id === "00000" ? (
+                {course.course_id === "00000" || course.course_id === "00001" || course.course_id === "00002" ? (
                     <div className="font-bold">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                 ) : (
                     <div className="font-bold">{course.course_id}</div>

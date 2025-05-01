@@ -1,5 +1,5 @@
 import { CourseWithSem } from "../components/courselist/CourseTypes";
-import { checkForOverlap, checkLargeProjectCourses } from "./helper_functions";
+import { checkForOverlap, checkLargeProjectCourses } from "./shared_functions";
 
 export const checkPlacementHighlightRules = (
     activeCourse: CourseWithSem,
