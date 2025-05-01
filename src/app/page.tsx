@@ -9,7 +9,7 @@ export default function HomePage() {
 
         {/* About Section */}
         <section className="max-w-4xl mx-auto mt-20">
-          <h2 className="text-2xl font-semibold mb-4">Om Softwareteknologi Studieforløbs planlægger</h2>
+          <h2 className="text-2xl font-semibold mb-4">Om Softwareteknologi-studieforløbsplanlægger</h2>
           <p className="text-gray-700">
             Velkommen til hjemmesiden for studerende på DTUs bacheloruddannelse i softwareteknologi.
             På hjemmesiden kan du finde konkrete oplysninger om studiet som er særligt relevant for software-studerende.
@@ -28,7 +28,7 @@ export default function HomePage() {
           <h2 className="text-2xl font-semibold mb-4">Sidste nyt</h2>
           <div className="space-y-6">
             {[
-              { date: 'Februar 7, 2025', title: 'Ny studieforløb hjemmeside', content: 'Den tidligere hjemmeside for studieforløb for softwareteknologi er blevet opdateret og erstattet af denne hjemmeside.', link: 'https://www2.compute.dtu.dk/softwareteknologi/index.html' },
+              { date: 'Februar 7, 2025', title: 'Ny studieforløb-hjemmeside', content: 'Den tidligere hjemmeside for studieforløb for softwareteknologi er blevet opdateret og erstattet af denne hjemmeside.', link: 'https://www2.compute.dtu.dk/softwareteknologi/nyt_forloeb.html' },
               { date: 'November 30, 2023', title: 'Tilpasset kursusnummer for Projektledelse', content: 'Udbydes som 3-ugers kursus i januar og august og tages fortrinsvist sent i studiet.' },
               { date: 'July 28, 2023', title: 'Tilpasset siden til det nye polytekniske grundlag', content: 'Opdatering af siden og eksemplariske studieforløb tilpasset regler for studerende fra 2023.' },
               { date: 'December 19, 2022', title: 'Kurset 42610 udgår', content: 'Kurset 42610 (Ingeniørfagets Videnskabsteori) afholdes sidste gang i foråret 2023. Fremover henvises til 42611.' },
@@ -44,7 +44,7 @@ export default function HomePage() {
                   <p>{news.content}</p>
                   {news.link && (
                     <p>
-                      <a href={news.link} className="text-blue-600 hover:underline">Læs mere</a>
+                      <a target="_blank" href={news.link} className="text-blue-600 hover:underline">Læs mere</a>
                     </p>
                   )}
                 </div>
