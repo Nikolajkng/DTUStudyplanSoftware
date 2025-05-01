@@ -63,7 +63,7 @@ function StudyPlanContent() {
                 const courseX = x;
                 const courseY = y;
 
-                return checkPlacementRules(x, y, course, courseX, courseY, courseWidth, courseHeight, semesters);
+                return checkPlacementRules(x, y, course, courseX, courseY, courseWidth, courseHeight, semesters, placements);
             });
 
             setValidGridCells(validCells);
@@ -104,7 +104,7 @@ function StudyPlanContent() {
             const courseWidth = course.ects / 2.5;;
             const courseHeight = course.sem || 1;
 
-            const validPlacement = checkPlacementRules(x, y, course, courseX, courseY, courseWidth, courseHeight, semesters)
+            const validPlacement = checkPlacementRules(x, y, course, courseX, courseY, courseWidth, courseHeight, semesters, placements)
             if (validPlacement) {
                 setPlacements((prev) => [
                     ...prev.filter((p) => getCourseDragId(p.course) !== getCourseDragId(course)),
@@ -211,7 +211,7 @@ function StudyPlanContent() {
                                                 y < hy + courseHeight;
 
                                             if (isInRange) {
-                                                highlight = checkPlacementHighlightRules(activeCourse, hx, hy, courseWidth, courseHeight, schedule, semesters)
+                                                highlight = checkPlacementHighlightRules(activeCourse, hx, hy, courseWidth, courseHeight, schedule, semesters, placements)
                                                     ? "invalid"
                                                     : "valid";
                                             }
