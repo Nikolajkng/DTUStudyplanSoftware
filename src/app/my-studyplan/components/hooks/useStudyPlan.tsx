@@ -25,6 +25,8 @@ type StudyPlanContextType = {
     setHoveredCell: React.Dispatch<React.SetStateAction<[number, number] | null>>;
     searchQuery: string;
     setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+    validGridCells: { x: number; y: number }[];
+    setValidGridCells: React.Dispatch<React.SetStateAction<{ x: number; y: number }[]>>;
 };
 
 const StudyPlanContext = createContext<StudyPlanContextType | null>(null);
@@ -54,6 +56,7 @@ export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
     const [selectedCourseType, setSelectedCourseType] = useState<string>("");
     const [hoveredCell, setHoveredCell] = useState<[number, number] | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const [validGridCells, setValidGridCells] = useState<{ x: number; y: number }[]>([]); 
 
 
     useEffect(() => {
@@ -91,6 +94,7 @@ export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
             saveStudyPlan,
             hoveredCell, setHoveredCell,
             searchQuery, setSearchQuery,
+            validGridCells, setValidGridCells,
         }}>
             {children}
         </StudyPlanContext.Provider>

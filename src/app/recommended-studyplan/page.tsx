@@ -121,7 +121,7 @@ export default function RecommendedStudyPlan() {
                                             gridColumnEnd: 14,
                                         }}
                                     >
-                                        13-ugers periode (25 ects)
+                                        13-ugers periode (25 ECTS)
                                     </div>
                                     <div
                                         className="flex items-center p-2 justify-center bg-gray-200 text-black font-semibold"
@@ -131,7 +131,7 @@ export default function RecommendedStudyPlan() {
                                             gridColumnEnd: 15,
                                         }}
                                     >
-                                        jan/jun/aug (5 ects)
+                                        jan/jun/aug (5 ECTS)
                                     </div>
 
                                     {Array.from({ length: semesters - 1 }).map((_, y) => (
