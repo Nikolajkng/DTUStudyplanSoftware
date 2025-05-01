@@ -3,7 +3,7 @@
 import Head from "next/head";
 import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { useState } from "react";
-import DraggableCourse from "./components/courselist/DraggableCourse";
+import DraggableCourse from "./components/courselist/DraggableCourseItem";
 import GridCourse from "./components/grid/GridCourse";
 import GridFiller from "./components/grid/GridFiller";
 import { useStudyPlan } from "./components/hooks/useStudyPlan";
@@ -247,7 +247,7 @@ function StudyPlanContent() {
                                             gridColumnEnd: 14,
                                         }}
                                     >
-                                        13-ugers periode <br></br> (25 ects)
+                                        13-ugers periode <br></br> (25 ECTS)
                                     </div>
                                     <div
                                         className="flex items-center p-2 justify-center bg-gray-200 text-black font-semibold"
@@ -257,7 +257,7 @@ function StudyPlanContent() {
                                             gridColumnEnd: 15,
                                         }}
                                     >
-                                        jan/jun/aug <br></br> (5 ects)
+                                        jan/jun/aug <br></br> (5 ECTS)
                                     </div>
                                     {Array.from({ length: semesters - 1 }).map((_, y) => (
                                         <div

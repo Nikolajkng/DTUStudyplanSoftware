@@ -54,7 +54,7 @@ const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
 
     return (
         <div
-            className={`relative w-74 min-h-15 m-1 text-white 
+            className={`relative w-80 min-h-15 m-1 text-white 
                         flex flex-col sm:flex-row sm:items-center sm:justify-between 
                         p-2 rounded-2xl overflow-hidden ${isHardSplit ? "" : courseTypeClass}`}
             ref={setNodeRef}
@@ -86,7 +86,7 @@ const DraggableCourse = ({ course }: { course: CourseWithSem }) => {
             </div>
             {/* ECTS display */}
             <div className="relative z-10 font-medium whitespace-nowrap">
-                <strong> {isWholeNumber ? ectsNum : ectsNum.toFixed(1)} ects</strong>
+                <strong> {isWholeNumber ? ectsNum : ectsNum.toFixed(1)} ECTS</strong>
             </div>
         </div>
     );
