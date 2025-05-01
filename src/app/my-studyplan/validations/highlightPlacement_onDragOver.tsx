@@ -1,7 +1,7 @@
 import { CoursePlacement, CourseWithSem } from "../components/courselist/CourseTypes";
 import { checkForOverlap, checkLargeProjectCourses } from "./shared_functions";
 
-export const checkPlacementHighlightRules = (
+export const highlightPlacement_onDragOver = (
     activeCourse: CourseWithSem,
     hx: number,
     hy: number,

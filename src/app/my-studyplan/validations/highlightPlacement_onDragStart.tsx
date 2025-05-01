@@ -2,7 +2,7 @@ import { CoursePlacement, CourseWithSem } from "../components/courselist/CourseT
 import { checkForOverlap, checkLargeProjectCourses, getScheduleValue } from "./shared_functions";
 
 
-export const checkPlacementRules = (
+export const highlightPlacement_onDragStart = (
     x: number,
     y: number,
     course: CourseWithSem,
@@ -27,7 +27,6 @@ export const checkPlacementRules = (
 
 
     // Check for schedule placement of course
-    const checkScheduleResult = getScheduleValue(courseXwithWidth, courseY).map((s) => (course.placement.includes(s)));
     let correctSchedule = true;
     for (let dx = 0; dx < courseWidth; dx++) {
         for (let dy = 0; dy < courseHeight; dy++) {

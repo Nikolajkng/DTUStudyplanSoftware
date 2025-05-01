@@ -27,6 +27,8 @@ type StudyPlanContextType = {
     setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
     validGridCells: { x: number; y: number }[];
     setValidGridCells: React.Dispatch<React.SetStateAction<{ x: number; y: number }[]>>;
+    previewCells: { x: number; y: number; valid: boolean }[];
+    setPreviewCells: React.Dispatch<React.SetStateAction<{ x: number; y: number; valid: boolean }[]>>;
 };
 
 const StudyPlanContext = createContext<StudyPlanContextType | null>(null);
@@ -57,6 +59,7 @@ export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
     const [hoveredCell, setHoveredCell] = useState<[number, number] | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [validGridCells, setValidGridCells] = useState<{ x: number; y: number }[]>([]); 
+    const [previewCells, setPreviewCells] = useState<{ x: number; y: number; valid: boolean }[]>([]);
 
 
     useEffect(() => {
@@ -95,6 +98,7 @@ export const StudyPlanProvider = ({ children }: { children: ReactNode }) => {
             hoveredCell, setHoveredCell,
             searchQuery, setSearchQuery,
             validGridCells, setValidGridCells,
+            previewCells, setPreviewCells,
         }}>
             {children}
         </StudyPlanContext.Provider>

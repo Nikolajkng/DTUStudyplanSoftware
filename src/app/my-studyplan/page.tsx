@@ -2,7 +2,7 @@
 
 import Head from "next/head";
 import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import DraggableCourse from "./components/courselist/DraggableCourseItem";
 import GridCourse from "./components/grid/GridCourse";
 import GridFiller from "./components/grid/GridFiller";
@@ -20,9 +20,10 @@ import ClearBtn from "./components/btn_handlers/ClearBtn";
 import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
 import DroppableCourseList from "./components/courselist/DroppableCourseList";
 import { CourseWithSem, getCourseDragId } from "./components/courselist/CourseTypes";
-import { checkPlacementRules } from "./validations/checkPlacementRules";
+import { checkValidPlacementRules } from "./validations/checkValidPlacementRules";
 import { getScheduleValue } from "./validations/shared_functions";
-import { checkPlacementHighlightRules } from "./validations/checkPlacementHighlightRules";
+import { highlightPlacement_onDragOver } from "./validations/highlightPlacement_onDragOver";
+import { highlightPlacement_onDragStart } from "./validations/highlightPlacement_onDragStart";
 import Filter from "./components/courselist/Filter";
 import SearchField from "./components/courselist/SearchField";
 
@@ -36,11 +37,24 @@ function StudyPlanContent() {
         semesters, setSemesters,
         selectedCourseType,
         hoveredCell, setHoveredCell,
-        searchQuery, 
+        searchQuery,
         validGridCells, setValidGridCells, }
         = useStudyPlan();
 
     const [activeCourse, setActiveCourse] = useState<CourseWithSem | null>(null);
+
+
+    const baseCoords = useMemo(() => {
+        return Array.from({ length: 14 })
+            .map((_, x) =>
+                Array.from({ length: semesters }).map((_, y) => ({
+                    x: x + 1,
+                    y: y + 1,
+                    schedule: getScheduleValue(x + 1, y + 1),
+                }))
+            )
+            .flat();
+    }, [semesters]);
 
     const loadStudyPlan = (planName: string) => {
         const plan = savedPlans[planName];
@@ -60,15 +74,14 @@ function StudyPlanContent() {
             const validCells = baseCoords.filter(({ x, y }) => {
                 const courseWidth = course.ects / 2.5;
                 const courseHeight = course.sem || 1;
-                const courseX = x;
-                const courseY = y;
+                const highlightX = (x - courseWidth) + 1;
+                const highlightY = y;
 
-                return checkPlacementRules(x, y, course, courseX, courseY, courseWidth, courseHeight, semesters, placements);
+                return highlightPlacement_onDragStart(x, y, course, highlightX, highlightY, courseWidth, courseHeight, semesters, placements);
             });
 
             setValidGridCells(validCells);
         }
-
     };
 
     const handleDragOver = (event: DragOverEvent) => {
@@ -104,7 +117,7 @@ function StudyPlanContent() {
             const courseWidth = course.ects / 2.5;;
             const courseHeight = course.sem || 1;
 
-            const validPlacement = checkPlacementRules(x, y, course, courseX, courseY, courseWidth, courseHeight, semesters, placements)
+            const validPlacement = checkValidPlacementRules(x, y, course, courseX, courseY, courseWidth, courseHeight, semesters, placements)
             if (validPlacement) {
                 setPlacements((prev) => [
                     ...prev.filter((p) => getCourseDragId(p.course) !== getCourseDragId(course)),
@@ -144,21 +157,8 @@ function StudyPlanContent() {
             );
         })();
 
-        // Both must match
         return courseTypeMatch && searchFieldMatch;
     });
-
-
-    const baseCoords = Array.from({ length: 14 })
-        .map((_, x) =>
-            Array.from({ length: semesters }).map((_, y) => ({
-                x: x + 1,
-                y: y + 1,
-                schedule: getScheduleValue(x + 1, y + 1),
-            }))
-        )
-        .flat();
-
 
 
     return (<>
@@ -211,7 +211,7 @@ function StudyPlanContent() {
                                                 y < hy + courseHeight;
 
                                             if (isInRange) {
-                                                highlight = checkPlacementHighlightRules(activeCourse, hx, hy, courseWidth, courseHeight, schedule, semesters, placements)
+                                                highlight = highlightPlacement_onDragOver(activeCourse, hx, hy, courseWidth, courseHeight, schedule, semesters, placements)
                                                     ? "invalid"
                                                     : "valid";
                                             }

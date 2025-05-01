@@ -27,9 +27,7 @@ const GridFiller = ({ x, y, highlight = null }: GridFillerProps) => {
                 gridColumnStart: x,
             }}
 
-        >
-            {`${x - 1},${y - 1}`}
-        </div>
+        />
 
     );
 };
