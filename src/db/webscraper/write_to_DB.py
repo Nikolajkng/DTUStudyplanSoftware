@@ -60,6 +60,7 @@ for df in df:
         
         # Edgecase for Bachelorprojektets id:
         if len(course_id) == 1 and course_id == '0': course_id = '00000'
+        if len(course_id) == 1 and course_id == '1': course_id = '00001'
         
         #Edgecase for course_id hvor 0 bliver fjernet, tilføj igen:
         if len(course_id) == 4: course_id = "0" + course_id
