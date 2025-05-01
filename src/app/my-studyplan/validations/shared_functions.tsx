@@ -26,8 +26,8 @@ export const checkForOverlap = (
     excludeCourseId?: string,
     placements: CoursePlacement[] = [],):
     boolean => {
-    
-        // Get cells the course would occupy
+
+    // Get cells the course would occupy
     const targetCells = new Set<string>();
     for (let dx = 0; dx < courseWidth; dx++) {
         for (let dy = 0; dy < courseHeight; dy++) {
@@ -38,7 +38,7 @@ export const checkForOverlap = (
     // Check for overlap
     const hasOverlap = placements.some((p) => {
         if (excludeCourseId && p.course.course_id === excludeCourseId) {
-            return false; // skip checking against itself
+            return false;
         }
 
         const px = p.x;
@@ -63,12 +63,25 @@ export const checkForOverlap = (
 // Check for project courses
 export const checkLargeProjectCourses = (hx: number, hy: number, activeCourse: CourseWithSem): boolean => {
     const isLargeProjectCourse = activeCourse.course_type.includes("Projekt") && activeCourse.ects >= 10;
-    if (activeCourse.course_name.includes("Bachelorprojekt") && isLargeProjectCourse) {
-        // Bachelorprojekt must be taken in 6th semester or later
-        return (hy >= 7) && (hx >= 9);
-    } else if (activeCourse.course_name.includes("Fagprojekt") && isLargeProjectCourse) {
-        // Fagprojekt must be taken in 4th semester
-        return (hx >= 11 && hy === 5);
+
+    // Bachelorprojekt can be taken in any semester
+
+    const _13Weeks = hx <= 10;
+    const _span3weeks = hx >= 11;
+    const _evenSem = ((hy-1) % 2 === 0);
+
+    switch (activeCourse.course_id) {
+        case "00000": // Bachelorprojekt 15 ECTS
+            return _13Weeks;
+        case "00001": // Bachelorprojekt 17.5 ECTS
+            return _13Weeks;
+        case "00002": // Bachelorprojekt 20 ECTS - allowed to span 3 weeks
+            return true;
+        case "02122": // Fagprojekt 10 ECTS
+            return _span3weeks && _evenSem;
+        default:
+            break;
     }
+
     return true;
 };

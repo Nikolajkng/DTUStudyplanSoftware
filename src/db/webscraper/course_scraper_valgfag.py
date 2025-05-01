@@ -30,8 +30,9 @@ if response.status_code == 200:
         
         # Edge case - bachelor projektet
         writer.writerow(["00000", "Bachelorprojekt", "15", "Forår eller Efterår", "Projekter"])  
-        writer.writerow(["00001", "Bachelorprojekt", "20", "Forår+juni eller efterår+januar", "Projekter"])  
-
+        writer.writerow(["00001", "Bachelorprojekt", "17.5", "Forår eller Efterår", "Projekter"])  
+        writer.writerow(["00002", "Bachelorprojekt", "20", "Forår+juni eller Efterår+januar", "Projekter"])  
+        
         
         # Edge case - kommunikationskursus
         writer.writerow(["34220", "Kommunikationssystemer", "5", "juni", "Valfrie kurser"])  

@@ -21,7 +21,7 @@ import { StudyPlanProvider } from "./components/hooks/useStudyPlan";
 import DroppableCourseList from "./components/courselist/DroppableCourseList";
 import { CourseWithSem, getCourseDragId } from "./components/courselist/CourseTypes";
 import { checkPlacementRules } from "./validations/checkPlacementRules";
-import { getScheduleValue } from "./validations/helper_functions";
+import { getScheduleValue } from "./validations/shared_functions";
 import { checkPlacementHighlightRules } from "./validations/checkPlacementHighlightRules";
 import Filter from "./components/courselist/Filter";
 import SearchField from "./components/courselist/SearchField";

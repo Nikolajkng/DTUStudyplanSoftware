@@ -3,7 +3,7 @@ import React from 'react'
 
 
 export default function CourseID(props: { courseID: string }) {
-    const bachelorProject_IDs = ['00000', '00001']
+    const bachelorProject_IDs = ['00000', '00001', '00002']
     const matched_BachelorProjectID = bachelorProject_IDs.map((id) => 
         props.courseID.match(id))
         .some((match) => match !== null);
