@@ -273,7 +273,7 @@ function StudyPlanContent() {
                                         </div>
                                     ))}
                                 </div>
-                                <div className="flex justify-between items-center border border-gray-400 p-2">
+                                <div className="flex justify-between items-center border border-gray-400 p-2 rounded">
                                     <div className="flex space-x-3">
                                         <AddSemesterBtn />
                                         <RemoveSemesterBtn />

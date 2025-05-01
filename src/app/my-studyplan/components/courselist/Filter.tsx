@@ -14,7 +14,7 @@ function Filter() {
                 id="courseType"
                 value={selectedCourseType}
                 onChange={(e) => setSelectedCourseType(e.target.value)}
-                className="w-full md:w-80 pl-10 pr-8 py-2 rounded-full border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:outline-none text-base appearance-none bg-white"
+                className="w-full md:wd-86 pl-10 pr-8 py-2 rounded-full border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:outline-none text-base appearance-none bg-white"
             >
                 <option value="">Alle kurser </option>
                 {[...new Set(
