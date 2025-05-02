@@ -62,7 +62,8 @@ export const checkForOverlap = (
 
 // Check for project courses
 export const checkLargeProjectCourses = (hx: number, hy: number, activeCourse: CourseWithSem): boolean => {
-    const isLargeProjectCourse = activeCourse.course_type.includes("Projekt") && activeCourse.ects >= 10;
+    // function is unused
+    // const isLargeProjectCourse = activeCourse.course_type.includes("Projekt") && activeCourse.ects >= 10;
 
     // Bachelorprojekt can be taken in any semester
 
