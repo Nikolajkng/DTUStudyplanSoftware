@@ -6,6 +6,8 @@ import { Course } from "../../db/fetchCourses";
 import GridCourse from "../my-studyplan/components/grid/GridCourse";
 import GridFiller from "../my-studyplan/components/grid/GridFiller";
 import { courseTypeColors } from "../my-studyplan/components/courselist/CourseTypes";
+import { useStudyPlan } from "../my-studyplan/components/hooks/useStudyPlan";
+import { StudyPlanProvider } from "../my-studyplan/components/hooks/useStudyPlan";
 
 type CourseWithSem = Course & {
     sem?: number;
@@ -28,10 +30,20 @@ const predefinedCourses = [
     "Udveksling",
 ];
 
-export default function RecommendedStudyPlan() {
+export default function RecommendedStudyPlanPage() {
+    return (
+        <StudyPlanProvider>
+            <RecommendedStudyPlan />
+        </StudyPlanProvider>
+    );
+}
+
+// Rename your main component:
+function RecommendedStudyPlan() {
     const [placements, setPlacements] = useState<CoursePlacement[]>([]);
     const [semesters, setSemesters] = useState(7);
     const [selectedPlan, setSelectedPlan] = useState<string>("");
+    const { setSavedPlans } = useStudyPlan();
 
     const loadStudyPlan = (planName: string) => {
         const fetchPlan = async (planName: string) => {
@@ -60,7 +72,14 @@ export default function RecommendedStudyPlan() {
 
 
     const handleCopyStudyPlan = () => {
-        // TODO: handle copy study plan to 'Mine Studieforløb'
+        const planName = prompt("Angiv et navn til studieforløbet:");
+        if (planName) {
+            setSavedPlans((prevPlans) => ({
+                ...prevPlans,
+                [planName]: { placements, semesters, },
+            }));
+            alert(`Studieforløb "${planName}" gemt!`);
+        };
     };
 
     const baseCoords = Array.from({ length: 14 })
@@ -154,7 +173,7 @@ export default function RecommendedStudyPlan() {
                                             onClick={handleCopyStudyPlan}
                                             className="px-4 py-2 bg-red-700 text-white rounded hover:bg-gray-800 mr-2"
                                         >
-                                            <strong>Gem studieforlab i &apos;Mine Studieforløb&apos;</strong>
+                                            <strong>Gem studieforløb i &apos;Mine Studieforløb&apos;</strong>
                                         </button>
                                     </div>
                                 </div>
