@@ -35,7 +35,7 @@ if response.status_code == 200:
         
         
         # Edge case - kommunikationskursus
-        writer.writerow(["34220", "Kommunikationssystemer", "5", "juni", "Valfrie kurser"])  
+        writer.writerow(["34220", "Kommunikationssystemer", "5", "juni", "Valgfrie kurser"])  
 
 
         # Skip de 3 første tabeller, kun inkludere de 5 sidste (valgfag)
